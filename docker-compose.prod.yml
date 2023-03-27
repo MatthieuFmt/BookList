@@ -1,0 +1,43 @@
+# /booklist/docker-compose.prod.yml
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+    container_name: booklist-api
+    ports:
+      - "8000:8000"
+    networks:
+      - booklist-network
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    container_name: booklist-client
+    ports:
+      - "80:80"
+    networks:
+      - booklist-network
+
+
+  mongo:
+    image: mongo:4.4
+    container_name: booklist-mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin_password
+      - MONGO_INITDB_DATABASE=booklist
+    volumes:
+      - booklist-mongo-data:/data/db
+    networks:
+      - booklist-network
+
+networks:
+  booklist-network:
+    driver: bridge
+
+volumes:
+  booklist-mongo-data:
