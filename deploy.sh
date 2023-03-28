@@ -1,6 +1,5 @@
 #!/bin/bash
-BOOKLIST_PATH="C:/Users/matt1/Desktop/BookList" # Remplacez par le chemin absolu de votre répertoire BookList
-
+BOOKLIST_PATH="C:\Users\matt1\Desktop\BookList" 
 if [[ $1 = "prod" || $1 = "dev" ]] && [[ $2 = "down" || $2 = "up" ]]; then
   fileEnv="docker-compose.${1}.yml"
   downOrUp=$2
