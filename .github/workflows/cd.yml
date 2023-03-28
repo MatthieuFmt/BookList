@@ -1,0 +1,42 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: |
+          cd api
+          npm ci
+          cd ../client
+          npm ci
+
+      - name: Build application
+        run: |
+          cd api
+          npm run build
+          cd ../client
+          npm run build
+
+      # Etapes de déploiement spécifiques à votre plateforme
+      # - name: Deploy to [PLATFORM]
+      #   run: |
+      #     # Remplacez cette section par les commandes de déploiement spécifiques à votre plateforme
+      #     # Par exemple, pour Heroku :
+      #     # git subtree push --prefix api heroku master
+      #     # Pour AWS Elastic Beanstalk :
+      #     # aws elasticbeanstalk create-application-version --application-name my-app --version-label my-app-version --source-bundle S3Bucket="my-bucket",S3Key="api.zip"
+      #     # aws elasticbeanstalk update-environment --environment-name my-app-environment --version-label my-app-version
