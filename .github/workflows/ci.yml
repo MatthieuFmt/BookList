@@ -25,8 +25,8 @@ jobs:
         run: |
           cd api
           npm ci
-          npm lint
-          npm test
+          npm run lint
+          npm run test
           
       - name: Install dependencies and run tests for Client
         run: |
