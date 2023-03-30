@@ -22,7 +22,7 @@ app.use("/book", bookRoutes);
 app.use("/conversation", conversationRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Bonjour, voici mon API !");
+  res.send("BookList api");
 });
 
 app.listen(PORT, () => {
