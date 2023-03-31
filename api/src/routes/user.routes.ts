@@ -1,12 +1,9 @@
 import express from "express";
-import { createUser, test } from "../controllers/user.controller";
+import { test } from "../controllers/user.controller";
 
 const router = express.Router();
 
-router.post("/create", createUser);
-// router.post("/connect", connectUser);
 // router.post("/forgot-password", forgotPassword);
-// router.post("/deconnect", deconnectUser);
 // router.get("/get-infos/:id", getInfos);
 // router.post("/update-image", updateImage);
 // router.post("/add-to-favorite", addBookToFavrite);
