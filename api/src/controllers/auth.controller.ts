@@ -1,6 +1,11 @@
 import { Request, Response } from "express";
+
 import { User, IUser } from "../models/user.model";
+
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const tokenBlacklist = new Set<string>();
 
 export const createUser = async (req: Request, res: Response) => {
   try {
@@ -25,36 +30,48 @@ export const connectUser = async (req: Request, res: Response) => {
   try {
     const { password, email } = req.body;
 
-    const hashedPassword = (await User.findOne({ email })).password;
-    const compare = await bcrypt.compare(password, hashedPassword);
+    const user = await User.findOne({ email });
 
-    if (compare) {
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
     }
 
-    // const user = await User.login(email, password);
+    const compare = await bcrypt.compare(password, user.password);
 
-    // const userToConnect: IUser = new User({
-    //   password: hashedPassword,
-    //   email,
-    // });
+    if (compare) {
+      // Générer un JWT
+      const tokenPayload = {
+        id: user._id,
+        email: user.email,
+      };
 
-    return res.json(compare);
-    // res.status(201).json({ message: "User connected", user: userToConnect });
+      const secret = process.env.JWT_SECRET;
+      const options = { expiresIn: "1h" }; // Configurez la durée de validité du JWT selon vos préférences
+
+      const token = jwt.sign(tokenPayload, secret, options);
+
+      return res.json({ message: "User connected", token });
+    } else {
+      return res.status(400).json({ message: "Incorrect password or email" });
+    }
   } catch (error) {
     console.log(error);
-
-    return res.status(500).json({ message: "Error connected user", error });
+    return res.status(500).json({ message: "Error connecting user", error });
   }
 };
 
-export const disconnectUser = async (req: Request, res: Response) => {
-  try {
-    return res.json("disconnected");
-    // res.status(201).json({ message: "User connected", user: userToConnect });
-  } catch (error) {
-    console.log(error);
+export const disconnectUser = (req: Request, res: Response) => {
+  const authHeader = req.headers.authorization;
 
-    return res.status(500).json({ message: "Error disconnected user", error });
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    // Ajouter le token à la liste noire
+    tokenBlacklist.add(token);
+
+    res.status(200).json({ message: "User disconnected" });
+  } else {
+    res.status(400).json({ message: "No token provided" });
   }
 };
 

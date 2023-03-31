@@ -13,9 +13,20 @@ export interface IUser extends Document {
 }
 
 const UserSchema = new Schema({
-  pseudo: { type: String, required: true, unique: true },
+  pseudo: {
+    type: String,
+    required: true,
+    unique: true,
+    minlength: 3,
+    maxlength: 20,
+  },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: {
+    type: String,
+    required: true,
+    minlength: 8,
+    maxlength: 100,
+  },
   profileImgPath: { type: String, default: "../assets/default-img.png" },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },
