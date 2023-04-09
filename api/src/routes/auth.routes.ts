@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.post("/create", createUser);
+router.post("/register", createUser);
 router.post("/connect", connectUser);
 router.post("/disconnect", disconnectUser);
 

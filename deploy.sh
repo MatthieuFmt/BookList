@@ -1,5 +1,5 @@
 #!/bin/bash
-BOOKLIST_PATH="C:\Users\matt1\Desktop\BookList" 
+BOOKLIST_PATH=$(pwd)
 if [[ $1 = "prod" || $1 = "dev" ]] && [[ $2 = "down" || $2 = "up" ]]; then
   fileEnv="docker-compose.${1}.yml"
   downOrUp=$2

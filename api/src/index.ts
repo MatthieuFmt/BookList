@@ -8,6 +8,7 @@ import bookRoutes from "./routes/book.routes";
 import conversationRoutes from "./routes/conversation.route";
 
 import dotenv from "dotenv";
+import authMiddleware from "./middleware/auth.middleware";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 // Routes
 app.use("/auth", authRoutes);
+app.use(authMiddleware);
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
 app.use("/conversation", conversationRoutes);

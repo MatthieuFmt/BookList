@@ -11,6 +11,16 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const { pseudo, password, email } = req.body;
 
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Le mot de passe doit contenir au moins une minuscule, une majuscule, un caractère spécial, un chiffre et faire 8 caractères minimum",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser: IUser = new User({
@@ -20,9 +30,17 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: "User created", user: newUser });
+    return res.status(201).json({ message: "User created", user: newUser });
   } catch (error) {
-    res.status(500).json({ message: "Error creating user", error });
+    // peut etre supprimer error dans les réponses
+    if (error.code === 11000 && error.keyPattern.email) {
+      return res.status(400).json({ message: "Adresse email déjà enregistré" });
+    }
+    if (error.code === 11000 && error.keyPattern.pseudo) {
+      return res.status(400).json({ message: "Le pseudo est déjà utilisé" });
+    }
+
+    return res.status(500).json({ message: error });
   }
 };
 
@@ -46,17 +64,21 @@ export const connectUser = async (req: Request, res: Response) => {
       };
 
       const secret = process.env.JWT_SECRET;
-      const options = { expiresIn: "1h" }; // Configurez la durée de validité du JWT selon vos préférences
+      const options = { expiresIn: "1h" };
 
       const token = jwt.sign(tokenPayload, secret, options);
 
       return res.json({ message: "User connected", token });
     } else {
-      return res.status(400).json({ message: "Incorrect password or email" });
+      return res
+        .status(400)
+        .json({ message: "Mot de passe ou email incorrect" });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Error connecting user", error });
+    return res
+      .status(500)
+      .json({ message: "Erreur lors de la connexion", error });
   }
 };
 
@@ -64,10 +86,15 @@ export const disconnectUser = (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
-    const token = authHeader.split(" ")[1];
+    const token = authHeader;
 
     // Ajouter le token à la liste noire
     tokenBlacklist.add(token);
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    });
 
     res.status(200).json({ message: "User disconnected" });
   } else {
