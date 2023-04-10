@@ -5,6 +5,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   profileImgPath: string;
+  refreshToken: string;
   listContacts: Array<string>;
   listFavoritesBooks: Array<string>;
   listToReadBooks: Array<string>;
@@ -32,6 +33,7 @@ const UserSchema = new Schema({
     // maxlength: [3, "test"],
   },
   profileImgPath: { type: String, default: "../assets/default-img.png" },
+  refreshToken: { type: String, default: "" },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },
   listToReadBooks: { type: [String], default: [] },

@@ -18,12 +18,13 @@ const PORT = process.env.PORT || 8000;
 // Connect to MongoDB
 connectToDatabase();
 
-// Middleware
 app.use(express.json());
 
 // Routes
 app.use("/auth", authRoutes);
+
 app.use(authMiddleware);
+
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
 app.use("/conversation", conversationRoutes);

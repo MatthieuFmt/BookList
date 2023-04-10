@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 
 const tokenBlacklist = new Set<string>();
 
@@ -58,43 +58,65 @@ export const connectUser = async (req: Request, res: Response) => {
 
     if (compare) {
       // Générer un JWT
-      const tokenPayload = {
+      const refreshTokenPayload = {
+        id: user._id,
+        email: user.email,
+      };
+      const accessTokenPayload = {
         id: user._id,
         email: user.email,
       };
 
-      const secret = process.env.JWT_SECRET;
-      const options = { expiresIn: "1h" };
+      const refreshToken = jwt.sign(
+        refreshTokenPayload,
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+          expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+        }
+      );
 
-      const token = jwt.sign(tokenPayload, secret, options);
+      const accessToken = jwt.sign(
+        accessTokenPayload,
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+        }
+      );
 
-      return res.json({ message: "User connected", token });
+      user.refreshToken = refreshToken;
+      await user.save();
+
+      return res.json({
+        message: "User connected",
+        refresh: refreshToken,
+        access: accessToken,
+      });
     } else {
       return res
         .status(400)
         .json({ message: "Mot de passe ou email incorrect" });
     }
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ message: "Erreur lors de la connexion", error });
   }
 };
 
-export const disconnectUser = (req: Request, res: Response) => {
+export const disconnectUser = async (req: Request, res: Response) => {
+  const { email } = req.body;
   const authHeader = req.headers.authorization;
+
+  const user = await User.findOne({ email });
 
   if (authHeader) {
     const token = authHeader;
 
     // Ajouter le token à la liste noire
     tokenBlacklist.add(token);
-    res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-    });
+
+    user.refreshToken = "";
+    await user.save();
 
     res.status(200).json({ message: "User disconnected" });
   } else {
@@ -102,8 +124,57 @@ export const disconnectUser = (req: Request, res: Response) => {
   }
 };
 
-/////////////////////////////////////////////////////////////
+// à supprimer
 export const test = (req: Request, res: Response) => {
   res.status(201).json({ message: "route auth ok" });
 };
-/////////////////////////////////////////////////////////////
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const { refreshToken: tokenFromRequest } = req.body;
+
+    if (!tokenFromRequest) {
+      return res.status(400).json({ message: "No refresh token provided" });
+    }
+
+    jwt.verify(
+      tokenFromRequest,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (error: any, decodedPayload: any) => {
+        if (error) {
+          return res.status(401).json({ message: "Invalid refresh token" });
+        }
+
+        const userId = decodedPayload.id;
+        const user = await User.findById(userId);
+
+        if (!user || user.refreshToken !== tokenFromRequest) {
+          return res.status(401).json({ message: "Invalid refresh token" });
+        }
+
+        // Générer un nouvel access token
+        const accessTokenPayload = {
+          id: user._id,
+          email: user.email,
+        };
+
+        const newAccessToken = jwt.sign(
+          accessTokenPayload,
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+          }
+        );
+
+        res.json({
+          message: "Access token refreshed",
+          access: newAccessToken,
+        });
+      }
+    );
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error refreshing access token", error });
+  }
+};

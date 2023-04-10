@@ -1,29 +1,28 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { User, IUser } from "../models/user.model";
 
 interface CustomRequest extends Request {
   user?: {
     id: string;
     email: string;
+    newAccessToken: string | null;
   };
 }
 
-const authMiddleware = (
+const authMiddleware = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
+  const token = req.headers.authorization;
 
-  if (!authHeader) {
+  if (!token) {
     return res.status(401).json({ message: "Authorization header missing" });
   }
 
-  const token = authHeader;
-
   try {
-    // return res.json(authHeader);
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     if (typeof decodedToken === "string") {
       throw new Error("Invalid token");
@@ -31,11 +30,11 @@ const authMiddleware = (
 
     const { id, email } = decodedToken as JwtPayload;
 
-    req.user = { id, email };
+    req.user = { id, email, newAccessToken: null };
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Invalid token" + error });
+    return res.status(401).json({ message: "" + error });
   }
 };
 
