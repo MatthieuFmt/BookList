@@ -4,7 +4,7 @@ export interface IUser extends Document {
   pseudo: string;
   email: string;
   password: string;
-  profileImgPath: string;
+  profilePicturePath: string;
   refreshToken: string;
   listContacts: Array<string>;
   listFavoritesBooks: Array<string>;
@@ -32,7 +32,10 @@ const UserSchema = new Schema({
     // minlength: [1, "test"], // faut valider la longueur dans le controller car on récupère la valeur déjà hashé
     // maxlength: [3, "test"],
   },
-  profileImgPath: { type: String, default: "../assets/default-img.png" },
+  profilePicturePath: {
+    type: String,
+    default: "./src/uploads/default-picture.png",
+  },
   refreshToken: { type: String, default: "" },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },

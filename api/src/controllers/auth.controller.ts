@@ -44,6 +44,8 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// étape 1 on se connecte pour créer un refreshToken et un accessToken
+// le refreshToken est stocké en bdd et l'accessToken en local storage ou en cookie
 export const connectUser = async (req: Request, res: Response) => {
   try {
     const { password, email } = req.body;
@@ -88,6 +90,7 @@ export const connectUser = async (req: Request, res: Response) => {
 
       return res.json({
         message: "User connected",
+        user: user,
         refresh: refreshToken,
         access: accessToken,
       });
@@ -129,6 +132,9 @@ export const test = (req: Request, res: Response) => {
   res.status(201).json({ message: "route auth ok" });
 };
 
+// étape 3 si le front recois le code 401 au moment de l'étape 2 appel cette fonction
+// la fonction recois le refresh token stocké en bdd pour recréer un nouveau accessToken si nécessaire
+// si le refreshToken est lui aussi expiré alors le front redirige vers la page de connexion
 export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { refreshToken: tokenFromRequest } = req.body;

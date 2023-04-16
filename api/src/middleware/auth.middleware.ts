@@ -1,6 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { User, IUser } from "../models/user.model";
 
 interface CustomRequest extends Request {
   user?: {
@@ -9,7 +8,8 @@ interface CustomRequest extends Request {
     newAccessToken: string | null;
   };
 }
-
+// étape 2 on crée un middleware qui check si l'access token est encore valide à chaque appel api
+// si l'access token n'est pas valide, renvoi erreur 401 au front qui se charge d'appeler la fonction refresToken()
 const authMiddleware = async (
   req: CustomRequest,
   res: Response,
