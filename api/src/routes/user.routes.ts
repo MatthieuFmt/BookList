@@ -12,8 +12,8 @@ router.get("/get-user/:id", getUser);
 router.post("/upload-profile-picture/:id", updateProfilePicture);
 router.get("/delete-profile-picture/:id", deleteProfilePicture);
 
-// router.post("/add-to-favorite", addBookToFavrite);
-// router.delete("/delete-to-favorite", deleteBookToFavrite);
+// router.post("/add-to-favorite", addBookToFavorite);
+// router.delete("/delete-to-favorite", deleteBookFromFavorite);
 
 // router.post("/add-to-already-read-list", addBookToAlreadyReadList);
 // router.delete("/delete-from-already-read-list", deleteBookFomAlreadyReadList);
