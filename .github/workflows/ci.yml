@@ -1,7 +1,7 @@
 name: CI
 
 on:
-  merge:
+  push:
     branches:
       - dev
 
@@ -25,6 +25,7 @@ jobs:
         run: |
           cd api
           npm ci
+          npm outdated
           npm run lint
           npm run test
 
@@ -32,5 +33,6 @@ jobs:
         run: |
           cd client
           npm ci
+          npm outdated
           npm run lint
           npm test

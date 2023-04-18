@@ -8,8 +8,8 @@ export interface IUser extends Document {
   refreshToken: string;
   listContacts: Array<string>;
   listFavoritesBooks: Array<string>;
-  listToReadBooks: Array<string>;
-  listAlreadyReadBooks: Array<string>;
+  listBooksAlreadyRead: Array<string>;
+  listWishBooks: Array<string>;
   listConversations: Array<string>;
 }
 
@@ -39,8 +39,8 @@ const UserSchema = new Schema({
   refreshToken: { type: String, default: "" },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },
-  listToReadBooks: { type: [String], default: [] },
-  listAlreadyReadBooks: { type: [String], default: [] },
+  listBooksAlreadyRead: { type: [String], default: [] },
+  listWishBooks: { type: [String], default: [] },
   listConversations: { type: [String], default: [] },
 });
 
