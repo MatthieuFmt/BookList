@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const tokenBlacklist = new Set<string>();
 
@@ -12,7 +12,7 @@ export const createUser = async (req: Request, res: Response) => {
     const { pseudo, password, email } = req.body;
 
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
@@ -30,6 +30,7 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     await newUser.save();
+
     return res.status(201).json({ message: "User created", user: newUser });
   } catch (error) {
     // peut etre supprimer error dans les réponses

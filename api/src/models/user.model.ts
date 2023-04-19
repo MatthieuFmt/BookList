@@ -1,17 +1,29 @@
 import { Schema, model, Document } from "mongoose";
 
+export type BookListKey =
+  | "listFavoritesBooks"
+  | "listBooksAlreadyRead"
+  | "listWishBooks";
+
+type UserBookLists = {
+  [key in BookListKey]?: string[];
+};
+
 export interface IUser extends Document {
   pseudo: string;
   email: string;
   password: string;
   profilePicturePath: string;
   refreshToken: string;
+  listRequestContacts: Array<string>;
   listContacts: Array<string>;
   listFavoritesBooks: Array<string>;
-  listToReadBooks: Array<string>;
-  listAlreadyReadBooks: Array<string>;
+  listBooksAlreadyRead: Array<string>;
+  listWishBooks: Array<string>;
   listConversations: Array<string>;
 }
+
+export type UserWithBookLists = IUser & UserBookLists;
 
 const UserSchema = new Schema({
   pseudo: {
@@ -37,10 +49,11 @@ const UserSchema = new Schema({
     default: "./src/uploads/default-picture.png",
   },
   refreshToken: { type: String, default: "" },
+  listRequestContacts: { type: [String], default: [] },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },
-  listToReadBooks: { type: [String], default: [] },
-  listAlreadyReadBooks: { type: [String], default: [] },
+  listBooksAlreadyRead: { type: [String], default: [] },
+  listWishBooks: { type: [String], default: [] },
   listConversations: { type: [String], default: [] },
 });
 

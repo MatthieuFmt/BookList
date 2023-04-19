@@ -2,13 +2,21 @@ import { Request } from "express";
 import path from "path";
 import multer, { FileFilterCallback } from "multer";
 
+interface CustomRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    newAccessToken: string | null;
+  };
+}
+
 // Configuration de Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./src/uploads");
   },
-  filename: (req, file, cb) => {
-    cb(null, req.params.id + path.extname(file.originalname));
+  filename: (req: CustomRequest, file, cb) => {
+    cb(null, req.user.id + path.extname(file.originalname));
   },
 });
 

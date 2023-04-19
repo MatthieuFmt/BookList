@@ -1,30 +1,31 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import {
   test,
   getUser,
   updateProfilePicture,
   deleteProfilePicture,
+  deleteFromBooksLists,
+  addToBooksLists,
+  requestContact,
+  responseRequestContact,
 } from "../controllers/user.controller";
 
 const router = express.Router();
 
-router.get("/get-user/:id", getUser);
-router.post("/upload-profile-picture/:id", updateProfilePicture);
-router.get("/delete-profile-picture/:id", deleteProfilePicture);
+router.get("/get-user", getUser);
+router.post("/update-profile-picture", updateProfilePicture);
+router.delete("/delete-profile-picture", deleteProfilePicture);
 
-// router.post("/add-to-favorite", addBookToFavorite);
-// router.delete("/delete-to-favorite", deleteBookFromFavorite);
+router.post("/add-to-lists/:list", addToBooksLists);
+router.delete("/delete-from-lists/:list", deleteFromBooksLists);
 
-// router.post("/add-to-already-read-list", addBookToAlreadyReadList);
-// router.delete("/delete-from-already-read-list", deleteBookFomAlreadyReadList);
-
-// router.post("/add-to-read-list", addBookToReadList);
-// router.delete("/delete-to-read-list", deleteBookToReadList);
-
-// router.post("/add-contact", addContact);
+router.get("/request-contact/:idUserRequested", requestContact);
+router.post("/response-request-contact", responseRequestContact);
 // router.delete("/delete-contact", deleteContact);
 
 // router.post("/forgot-password", forgotPassword);
+
+// router.get("/get-proposition-users", getPropositionUsers);
 
 router.get("/", test);
 
