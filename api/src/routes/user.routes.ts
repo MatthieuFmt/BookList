@@ -4,12 +4,10 @@ import {
   getUser,
   updateProfilePicture,
   deleteProfilePicture,
-  addBookToFavoritesList,
-  deleteBookFromFavoritesList,
-  addBookToReadList,
-  deleteBookFomReadList,
-  addBookToWishList,
-  deleteBookToWishList,
+  deleteFromBooksLists,
+  addToBooksLists,
+  requestContact,
+  responseRequestContact,
 } from "../controllers/user.controller";
 
 const router = express.Router();
@@ -18,19 +16,16 @@ router.get("/get-user", getUser);
 router.post("/update-profile-picture", updateProfilePicture);
 router.delete("/delete-profile-picture", deleteProfilePicture);
 
-router.post("/add-to-favorites-list", addBookToFavoritesList);
-router.delete("/delete-from-favorites-list", deleteBookFromFavoritesList);
+router.post("/add-to-lists/:list", addToBooksLists);
+router.delete("/delete-from-lists/:list", deleteFromBooksLists);
 
-router.post("/add-to-already-read-list", addBookToReadList);
-router.delete("/delete-from-already-read-list", deleteBookFomReadList);
-
-router.post("/add-to-wish-list", addBookToWishList);
-router.delete("/delete-from-wish-list", deleteBookToWishList);
-
-// router.post("/add-contact", addContact);
+router.get("/request-contact/:idUserRequested", requestContact);
+router.post("/response-request-contact", responseRequestContact);
 // router.delete("/delete-contact", deleteContact);
 
 // router.post("/forgot-password", forgotPassword);
+
+// router.get("/get-proposition-users", getPropositionUsers);
 
 router.get("/", test);
 

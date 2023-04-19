@@ -1,10 +1,12 @@
-import { User } from "../models/user.model";
+import { BookListKey, User } from "../models/user.model";
 import { Request, Response } from "express";
 
 import multer from "multer";
 import fs from "fs";
 
 import { upload } from "../config/multer.config";
+
+import { UserWithBookLists } from "../models/user.model";
 
 interface CustomRequest extends Request {
   user: {
@@ -13,6 +15,92 @@ interface CustomRequest extends Request {
     newAccessToken: string | null;
   };
 }
+
+function isBookListKey(value: string): value is BookListKey {
+  const validKeys: BookListKey[] = [
+    "listFavoritesBooks",
+    "listBooksAlreadyRead",
+    "listWishBooks",
+  ];
+  return validKeys.includes(value as BookListKey);
+}
+
+export const deleteFromBooksLists = async (
+  req: CustomRequest,
+  res: Response
+) => {
+  try {
+    const listParam = req.params.list;
+
+    if (!isBookListKey(listParam)) {
+      return res.status(400).json({ message: "Invalid book list key" });
+    }
+
+    const list: BookListKey = listParam;
+
+    const bookId = req.body.bookId;
+    const id = req.user.id;
+    const user = (await User.findById(id)) as UserWithBookLists;
+
+    if (!user) {
+      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+    }
+
+    if (!user[list].includes(bookId)) {
+      return res.status(400).json({
+        message: "Le livre n'est pas présent dans la liste",
+      });
+    }
+
+    let newList = user[list].filter((id) => {
+      return id !== bookId;
+    });
+
+    user[list] = newList;
+
+    user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Le livre a bien été supprimé de la liste" });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+
+export const addToBooksLists = async (req: CustomRequest, res: Response) => {
+  try {
+    const listParam = req.params.list;
+
+    if (!isBookListKey(listParam)) {
+      return res.status(400).json({ message: "Invalid book list key" });
+    }
+
+    const list: BookListKey = listParam;
+
+    const bookId = req.body.bookId;
+    const id = req.user.id;
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+    }
+
+    if (user[list].includes(bookId)) {
+      return res
+        .status(400)
+        .json({ message: "Livre déjà présent dans la liste" });
+    }
+
+    user[list].push(bookId);
+
+    user.save();
+
+    return res.status(200).json({ message: "Livre ajouté à la liste" });
+  } catch (error) {
+    res.status(500).json({ message: "Une erreur s'est prosuite", error });
+  }
+};
 
 /**
  *
@@ -119,196 +207,70 @@ export const deleteProfilePicture = async (
   }
 };
 
-export const addBookToFavoritesList = async (
-  req: CustomRequest,
-  res: Response
-) => {
+export const requestContact = async (req: CustomRequest, res: Response) => {
   try {
-    const bookId = req.body.bookId;
     const id = req.user.id;
-    const user = await User.findById(id);
+    const idUserRequested = req.params.idUserRequested;
 
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
-
-    // vérifier si le livre est présent en bdd
-
-    if (user.listFavoritesBooks.includes(bookId)) {
-      return res
-        .status(400)
-        .json({ message: "Livre déjà présent dans la liste des favoris" });
-    }
-
-    user.listFavoritesBooks.push(bookId);
-
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre ajouté à la liste des favoris" });
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
-  }
-};
-
-export const deleteBookFromFavoritesList = async (
-  req: CustomRequest,
-  res: Response
-) => {
-  try {
-    const bookId = req.body.bookId;
-    const id = req.user.id;
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
-
-    if (!user.listFavoritesBooks.includes(bookId)) {
-      return res.status(400).json({
-        message: "Le livre n'est pas présent dans la liste des favoris",
-      });
-    }
-
-    let newFavoriteList = user.listFavoritesBooks.filter((id) => {
-      return id !== bookId;
+    const users = await User.find({
+      _id: {
+        $in: [id, idUserRequested],
+      },
     });
 
-    user.listFavoritesBooks = newFavoriteList;
+    const user = users.find((user) => user._id.toString() === id);
+    const userRequested = users.find(
+      (user) => user._id.toString() === idUserRequested
+    );
 
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre supprimé de la liste des favoris" });
+    // vérifier su "id" n'est pas déjà présent dans "userRequested.listRequestContacts"
+    if (userRequested.listRequestContacts.includes(id)) {
+      return res.json({
+        message: "Une demande de contact à déjà été envoyé à cet utilisateur",
+      });
+    }
+    userRequested.listRequestContacts.push(id);
+
+    userRequested.save();
+
+    return res.json(user);
   } catch (error) {
-    return res.status(500).json({ message: "Error retrieving user", error });
+    return res
+      .status(404)
+      .json({ message: "Un des deux utilisateurs n'existe pas" });
   }
 };
 
-export const addBookToReadList = async (req: CustomRequest, res: Response) => {
-  try {
-    const bookId = req.body.bookId;
-    const id = req.user.id;
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
-
-    if (user.listBooksAlreadyRead.includes(bookId)) {
-      return res
-        .status(400)
-        .json({
-          message: "Livre déjà présent dans la liste des livres à lire",
-        });
-    }
-
-    user.listBooksAlreadyRead.push(bookId);
-
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre ajouté à la liste des livres à lire" });
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
-  }
-};
-
-export const deleteBookFomReadList = async (
+export const responseRequestContact = async (
   req: CustomRequest,
   res: Response
 ) => {
-  try {
-    const bookId = req.body.bookId;
-    const id = req.user.id;
-    const user = await User.findById(id);
+  const id = req.user.id;
+  const user = await User.findById(id);
 
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
+  const response = req.body.response;
 
-    if (!user.listBooksAlreadyRead.includes(bookId)) {
-      return res.status(400).json({
-        message: "Le livre n'est pas présent dans la liste des livres à lire",
-      });
-    }
+  const idUserSentRequest: string = req.body.idUserSentRequest;
 
-    let newFavoriteList = user.listBooksAlreadyRead.filter((id) => {
-      return id !== bookId;
+  const newRequestContactList = user.listRequestContacts.filter((id) => {
+    return id !== idUserSentRequest;
+  });
+
+  if (user.listContacts.includes(idUserSentRequest)) {
+    return res.json({
+      message: "L'utilisateur est déjà présent da la liste des contacts",
     });
-
-    user.listBooksAlreadyRead = newFavoriteList;
-
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre supprimé de la liste des livres à lire" });
-  } catch (error) {
-    return res.status(500).json({ message: "Error retrieving user", error });
   }
-};
 
-export const addBookToWishList = async (req: CustomRequest, res: Response) => {
-  try {
-    const bookId = req.body.bookId;
-    const id = req.user.id;
-    const user = await User.findById(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
-
-    if (user.listWishBooks.includes(bookId)) {
-      return res
-        .status(400)
-        .json({
-          message: "Livre déjà présent dans la liste des livres voulus",
-        });
-    }
-
-    user.listWishBooks.push(bookId);
-
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre ajouté à la liste des livres voulus" });
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
+  if (response === "accept") {
+    user.listContacts.push(idUserSentRequest);
   }
-};
 
-export const deleteBookToWishList = async (
-  req: CustomRequest,
-  res: Response
-) => {
-  try {
-    const bookId = req.body.bookId;
-    const id = req.user.id;
-    const user = await User.findById(id);
+  user.listRequestContacts = newRequestContactList;
 
-    if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-    }
+  user.save();
 
-    if (!user.listWishBooks.includes(bookId)) {
-      return res.status(400).json({
-        message: "Le livre n'est pas présent dans la liste des livres voulus",
-      });
-    }
-
-    let newFavoriteList = user.listWishBooks.filter((id) => {
-      return id !== bookId;
-    });
-
-    user.listWishBooks = newFavoriteList;
-
-    user.save();
-    return res
-      .status(200)
-      .json({ message: "Livre supprimé de la liste des livres voulus" });
-  } catch (error) {
-    return res.status(500).json({ message: "Error retrieving user", error });
-  }
+  return res.status(200).json({ message: "La réponse a bien été envoyé" });
 };
 
 /////////////////////////////////////////////////////////////
