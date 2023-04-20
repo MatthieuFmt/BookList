@@ -20,9 +20,10 @@ export const createUser = async (req: Request, res: Response) => {
           "Le mot de passe doit contenir au moins une minuscule, une majuscule, un caractère spécial, un chiffre et faire 8 caractères minimum",
       });
     }
-    const saltRounds = 10;
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser: IUser = new User({
       pseudo,
