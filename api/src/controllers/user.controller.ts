@@ -232,7 +232,7 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     userRequested.save();
 
-    return res.json(user);
+    return res.json({ message: "La demande de contact a bien été envoyé" });
   } catch (error) {
     return res
       .status(404)
@@ -244,32 +244,36 @@ export const responseRequestContact = async (
   req: CustomRequest,
   res: Response
 ) => {
-  const id = req.user.id;
-  const user = await User.findById(id);
+  try {
+    const id = req.user.id;
+    const user = await User.findById(id);
 
-  const response = req.body.response;
+    const response = req.body.response;
 
-  const idUserSentRequest: string = req.body.idUserSentRequest;
+    const idUserSentRequest: string = req.body.idUserSentRequest;
 
-  const newRequestContactList = user.listRequestContacts.filter((id) => {
-    return id !== idUserSentRequest;
-  });
-
-  if (user.listContacts.includes(idUserSentRequest)) {
-    return res.json({
-      message: "L'utilisateur est déjà présent da la liste des contacts",
+    const newRequestContactList = user.listRequestContacts.filter((id) => {
+      return id !== idUserSentRequest;
     });
+
+    if (user.listContacts.includes(idUserSentRequest)) {
+      return res.json({
+        message: "L'utilisateur est déjà présent da la liste des contacts",
+      });
+    }
+
+    if (response === "accept") {
+      user.listContacts.push(idUserSentRequest);
+    }
+
+    user.listRequestContacts = newRequestContactList;
+
+    user.save();
+
+    return res.status(200).json({ message: "La réponse a bien été envoyé" });
+  } catch (error) {
+    return res.status(500).json({ message: "Une erreur s'est produite" });
   }
-
-  if (response === "accept") {
-    user.listContacts.push(idUserSentRequest);
-  }
-
-  user.listRequestContacts = newRequestContactList;
-
-  user.save();
-
-  return res.status(200).json({ message: "La réponse a bien été envoyé" });
 };
 
 /////////////////////////////////////////////////////////////
