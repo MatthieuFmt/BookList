@@ -1,5 +1,5 @@
 # /booklist/client/Dockerfile.prod
-FROM node:18 as build-stage
+FROM node:18-slim as build-stage
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:1.19.0-alpine as production-stage
+FROM nginx:1.24-alpine as production-stage
 
 COPY --from=build-stage /app/build /usr/share/nginx/html
 
