@@ -1,5 +1,5 @@
 # /booklist/api/Dockerfile.dev
-FROM node:18
+FROM node:18-slim
 
 WORKDIR /app
 
