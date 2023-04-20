@@ -21,6 +21,9 @@ export interface IUser extends Document {
   listBooksAlreadyRead: Array<string>;
   listWishBooks: Array<string>;
   listConversations: Array<string>;
+
+  passwordResetToken: String;
+  passwordResetExpires: Date;
 }
 
 export type UserWithBookLists = IUser & UserBookLists;
@@ -55,6 +58,9 @@ const UserSchema = new Schema({
   listBooksAlreadyRead: { type: [String], default: [] },
   listWishBooks: { type: [String], default: [] },
   listConversations: { type: [String], default: [] },
+
+  passwordResetToken: { type: String },
+  passwordResetExpires: { type: Date },
 });
 
 export const User = model<IUser>("User", UserSchema);

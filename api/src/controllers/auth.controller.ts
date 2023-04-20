@@ -1,4 +1,6 @@
 import { Request, Response } from "express";
+import crypto from "crypto";
+import { transport } from "../config/nodemailer.config";
 
 import { User, IUser } from "../models/user.model";
 
@@ -21,9 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
       });
     }
 
-    const salt = await bcrypt.genSalt(10);
-
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser: IUser = new User({
       pseudo,
@@ -185,5 +185,48 @@ export const refreshToken = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ message: "Error refreshing access token", error });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+
+    user.passwordResetToken = token;
+    user.passwordResetExpires = new Date(Date.now() + 3600000); // Token expires in 1 hour
+
+    await user.save();
+
+    const resetURL = `http://${req.headers.host}/reset-password/${token}`;
+
+    const mailOptions = {
+      to: user.email,
+      from: process.env.ADRESS_MAIL, // Remplacez par votre adresse e-mail
+      subject: "Password Reset",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
+      Please click on the following link, or paste this into your browser to complete the process:
+      ${resetURL}
+      If you did not request this, please ignore this email and your password will remain unchanged.`,
+    };
+
+    transport.sendMail(mailOptions, (err: any) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Failed to send email" });
+      }
+
+      res.json({ message: "Password reset email sent" });
+    });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing the request" });
   }
 };

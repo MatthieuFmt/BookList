@@ -52,7 +52,7 @@ export const deleteFromBooksLists = async (
       });
     }
 
-    let newList = user[list].filter((id) => {
+    const newList = user[list].filter((id) => {
       return id !== bookId;
     });
 
@@ -224,7 +224,7 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     // vérifier su "id" n'est pas déjà présent dans "userRequested.listRequestContacts"
     if (userRequested.listRequestContacts.includes(id)) {
-      return res.json({
+      return res.status(400).json({
         message: "Une demande de contact à déjà été envoyé à cet utilisateur",
       });
     }

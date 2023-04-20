@@ -23,8 +23,6 @@ router.get("/request-contact/:idUserRequested", requestContact);
 router.post("/response-request-contact", responseRequestContact);
 // router.delete("/delete-contact", deleteContact);
 
-// router.post("/forgot-password", forgotPassword);
-
 // router.get("/get-proposition-users", getPropositionUsers);
 
 router.get("/", test);
