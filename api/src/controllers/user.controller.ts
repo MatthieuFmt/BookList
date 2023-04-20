@@ -64,7 +64,7 @@ export const deleteFromBooksLists = async (
       .status(200)
       .json({ message: "Le livre a bien été supprimé de la liste" });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: "Une erreur s'est produite" });
   }
 };
 
@@ -98,7 +98,7 @@ export const addToBooksLists = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ message: "Livre ajouté à la liste" });
   } catch (error) {
-    res.status(500).json({ message: "Une erreur s'est prosuite", error });
+    res.status(500).json({ message: "Une erreur s'est prosuite" });
   }
 };
 
@@ -123,7 +123,7 @@ export const getUser = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ user });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
+    res.status(500).json({ message: "Une erreur s'est produite" });
   }
 };
 
@@ -144,9 +144,9 @@ export const updateProfilePicture = async (
   try {
     upload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
-        res.status(400).send({ message: err });
+        res.status(400).send({ message: "Une erreur s'est produite" });
       } else if (err) {
-        res.status(400).send({ message: err.message });
+        res.status(400).send({ message: "Une erreur s'est produite" });
       } else {
         if (!req.file) {
           res.status(400).send({ message: "Aucun fichier sélectionné." });
@@ -169,7 +169,7 @@ export const updateProfilePicture = async (
 
     user.save();
   } catch (error) {
-    res.status(500).send({ message: error });
+    res.status(500).send({ message: "Une erreur s'est produite" });
   }
 };
 
@@ -189,7 +189,6 @@ export const deleteProfilePicture = async (
 
     fs.unlink(filename, (err) => {
       if (err) {
-        console.error(err);
         return res
           .status(500)
           .json({ message: "Erreur lors de la suppression du fichier" });
@@ -203,7 +202,7 @@ export const deleteProfilePicture = async (
     user.save();
     return res.status(200).json({ message: "Photo de profil supprimé" });
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
+    res.status(500).json({ message: "Une erreur s'est produite" });
   }
 };
 

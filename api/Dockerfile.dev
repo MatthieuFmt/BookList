@@ -1,6 +1,5 @@
 # /booklist/api/Dockerfile.dev
-FROM node:18-slim
-
+FROM node:18.15
 WORKDIR /app
 
 COPY package*.json ./
