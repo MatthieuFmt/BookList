@@ -10,6 +10,7 @@ import bookRoutes from "./routes/book.routes";
 import conversationRoutes from "./routes/conversation.route";
 
 import authMiddleware from "./middleware/auth.middleware";
+import { limiter } from "./middleware/rate-limit.middleware";
 
 dotenv.config();
 
@@ -22,17 +23,17 @@ connectToDatabase();
 app.use(express.json());
 
 // Routes
+// limite le nombre de requêtes par adresse ip
+app.use(limiter);
+
 app.use("/auth", authRoutes);
 
+// donne l'accès aux routes suivantes seulement si l'utilisateur renvoie un token valide
 app.use(authMiddleware);
 
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
 app.use("/conversation", conversationRoutes);
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("BookList api");
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
