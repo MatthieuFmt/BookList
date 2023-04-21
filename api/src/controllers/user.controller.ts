@@ -252,8 +252,9 @@ export const responseRequestContact = async (
   const idUserSentRequest: string = req.body.idUserSentRequest;
   const userSentRequest = await User.findById(idUserSentRequest);
 
-  // erreur si les users n'existe pas
-
+  if (!user || !userSentRequest) {
+    return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+  }
   const newListRequestContact = user.listRequestContacts.filter((id) => {
     return id !== idUserSentRequest;
   });
@@ -278,7 +279,34 @@ export const responseRequestContact = async (
 };
 
 export const deleteContact = async (req: CustomRequest, res: Response) => {
-  return res.json(req.params.idUserToDelete);
+  const idUser = req.user.id;
+  const user = await User.findById(idUser);
+
+  const idUserToDelete = req.params.idUserToDelete;
+  const userToDelete = await User.findById(idUserToDelete);
+
+  if (!user || !userToDelete) {
+    return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+  }
+
+  const newListContactsUser = user.listContacts.filter((id) => {
+    return id !== idUserToDelete;
+  });
+  const newListContactsUserToDelete = userToDelete.listContacts.filter((id) => {
+    return id !== idUser;
+  });
+
+  try {
+    user.listContacts = newListContactsUser;
+    userToDelete.listContacts = newListContactsUserToDelete;
+
+    user.save();
+    userToDelete.save();
+
+    return res.json({ message: "Le contact a bien été supprimé" });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
 };
 
 /////////////////////////////////////////////////////////////
