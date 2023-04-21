@@ -205,7 +205,6 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     await user.save();
 
-    return res.json(token);
     const resetURL = `http://${req.headers.host}/auth/reset-password/${token}`;
 
     const mailOptions = {
