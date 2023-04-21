@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   test,
   getUser,
@@ -9,6 +10,7 @@ import {
   requestContact,
   responseRequestContact,
   deleteContact,
+  getPropositionContacts,
 } from "../controllers/user.controller";
 
 const router = express.Router();
@@ -24,7 +26,7 @@ router.get("/request-contact/:idUserRequested", requestContact);
 router.post("/response-request-contact", responseRequestContact);
 router.delete("/delete-contact/:idUserToDelete", deleteContact);
 
-// router.get("/get-proposition-users", getPropositionUsers);
+router.get("/get-proposition-contacts", getPropositionContacts);
 
 router.get("/", test);
 

@@ -1,12 +1,10 @@
-import { BookListKey, User } from "../models/user.model";
 import { Request, Response } from "express";
+
+import { BookListKey, User, UserWithBookLists } from "../models/user.model";
+import { upload } from "../config/multer.config";
 
 import multer from "multer";
 import fs from "fs";
-
-import { upload } from "../config/multer.config";
-
-import { UserWithBookLists } from "../models/user.model";
 
 interface CustomRequest extends Request {
   user: {
@@ -25,21 +23,29 @@ function isBookListKey(value: string): value is BookListKey {
   return validKeys.includes(value as BookListKey);
 }
 
+/**
+ * Supprime un livre de la liste de lecture sélectionné dans "listparam" pour l'utilisateur connecté.
+ *
+ * @param {CustomRequest} req - La requête, contenant la clé de la liste de lecture et l'ID du livre à supprimer.
+ * @param {Response} res - La réponse, renvoyant un message de succès ou d'erreur.
+ * @returns {Promise<Response>} Une réponse avec un message indiquant si le livre a été supprimé de la liste ou non.
+ */
 export const deleteFromBooksLists = async (
   req: CustomRequest,
   res: Response
 ) => {
+  const listParam = req.params.list;
+
+  if (!isBookListKey(listParam)) {
+    return res.status(400).json({ message: "Invalid book list key" });
+  }
+
+  const list: BookListKey = listParam;
+
+  const bookId = req.body.bookId;
+  const id = req.user.id;
+
   try {
-    const listParam = req.params.list;
-
-    if (!isBookListKey(listParam)) {
-      return res.status(400).json({ message: "Invalid book list key" });
-    }
-
-    const list: BookListKey = listParam;
-
-    const bookId = req.body.bookId;
-    const id = req.user.id;
     const user = (await User.findById(id)) as UserWithBookLists;
 
     if (!user) {
@@ -68,18 +74,26 @@ export const deleteFromBooksLists = async (
   }
 };
 
+/**
+ * Ajoute un livre à la liste de lecture sélectionné dans "listparam" pour l'utilisateur connecté.
+ *
+ * @param {CustomRequest} req - La requête, contenant la clé de la liste de lecture et l'ID du livre à ajouter.
+ * @param {Response} res - La réponse, renvoyant un message de succès ou d'erreur.
+ * @returns {Promise<Response>} Une réponse avec un message indiquant si le livre a été ajouté à la liste.
+ */
 export const addToBooksLists = async (req: CustomRequest, res: Response) => {
+  const listParam = req.params.list;
+
+  if (!isBookListKey(listParam)) {
+    return res.status(400).json({ message: "Invalid book list key" });
+  }
+
+  const list: BookListKey = listParam;
+
+  const bookId = req.body.bookId;
+  const id = req.user.id;
+
   try {
-    const listParam = req.params.list;
-
-    if (!isBookListKey(listParam)) {
-      return res.status(400).json({ message: "Invalid book list key" });
-    }
-
-    const list: BookListKey = listParam;
-
-    const bookId = req.body.bookId;
-    const id = req.user.id;
     const user = await User.findById(id);
 
     if (!user) {
@@ -173,6 +187,14 @@ export const updateProfilePicture = async (
   }
 };
 
+/**
+ * Supprime la photo de profil d'un utilisateur et change la route vers l'image par défaut.
+ *
+ * @param {CustomRequest} req - La requête HTTP contenant l'ID de l'utilisateur.
+ * @param {Response} res - La réponse HTTP à renvoyer.
+ * @returns {Promise<Response>} Une réponse HTTP avec un message indiquant si la photo de profil a été supprimée ou non.
+ * @throws {Error} Si une erreur se produit lors de la suppression de la photo de profil.
+ */
 export const deleteProfilePicture = async (
   req: CustomRequest,
   res: Response
@@ -200,29 +222,29 @@ export const deleteProfilePicture = async (
     user.profilePicturePath = "./src/uploads/default-picture.png";
 
     user.save();
-    return res.status(200).json({ message: "Photo de profil supprimé" });
+
+    return res
+      .status(200)
+      .json({ message: "La photo de profil a bien été supprimé" });
   } catch (error) {
     res.status(500).json({ message: "Une erreur s'est produite" });
   }
 };
 
+/**
+ * Envoie une demande de contact à un autre utilisateur.
+ *
+ * @param {CustomRequest} req - La requête, contenant l'ID de l'utilisateur connecté et l'ID de l'utilisateur à qui envoyer la demande.
+ * @param {Response} res - La réponse, renvoyant un message de succès ou d'erreur.
+ * @returns {Promise<Response>} Une réponse avec un message indiquant si la demande de contact a été envoyée.
+ */
 export const requestContact = async (req: CustomRequest, res: Response) => {
   try {
     const id = req.user.id;
     const idUserRequested = req.params.idUserRequested;
 
-    const users = await User.find({
-      _id: {
-        $in: [id, idUserRequested],
-      },
-    });
+    const userRequested = await User.findById(idUserRequested);
 
-    const user = users.find((user) => user._id.toString() === id);
-    const userRequested = users.find(
-      (user) => user._id.toString() === idUserRequested
-    );
-
-    // vérifier su "id" n'est pas déjà présent dans "userRequested.listRequestContacts"
     if (userRequested.listRequestContacts.includes(id)) {
       return res.status(400).json({
         message: "Une demande de contact à déjà été envoyé à cet utilisateur",
@@ -232,7 +254,7 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     userRequested.save();
 
-    return res.json({ message: "La demande de contact a bien été envoyé" });
+    return res.json({ message: "La demande de contact a bien été envoyée" });
   } catch (error) {
     return res
       .status(404)
@@ -240,44 +262,67 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
   }
 };
 
+/**
+ * Traite la réponse à une demande de contact.
+ *
+ * @param {CustomRequest} req - La requête contenant l'ID de l'utilisateur qui répond à la demande,
+ * l'ID de l'utilisateur qui a envoyé la demande et la réponse ('accept' ou 'decline').
+ * @param {Response} res - La réponse, renvoyant un message de succès ou d'erreur.
+ * @returns {Promise<Response>} Une réponse avec un message indiquant que la réponse a bien été renvoyé.
+ */
 export const responseRequestContact = async (
   req: CustomRequest,
   res: Response
 ) => {
-  const id = req.user.id;
-  const user = await User.findById(id);
+  try {
+    const id = req.user.id;
+    const user = await User.findById(id);
 
-  const response = req.body.response;
+    const response = req.body.response;
 
-  const idUserSentRequest: string = req.body.idUserSentRequest;
-  const userSentRequest = await User.findById(idUserSentRequest);
+    const idUserSentRequest: string = req.body.idUserSentRequest;
+    const userSentRequest = await User.findById(idUserSentRequest);
 
-  if (!user || !userSentRequest) {
-    return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-  }
-  const newListRequestContact = user.listRequestContacts.filter((id) => {
-    return id !== idUserSentRequest;
-  });
+    if (!user || !userSentRequest) {
+      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+    }
+    const newListRequestContact = user.listRequestContacts.filter((id) => {
+      return id !== idUserSentRequest;
+    });
 
-  if (user.listContacts.includes(idUserSentRequest)) {
-    return res.status(400).json({
-      message: "L'utilisateur est déjà présent da la liste des contacts",
+    if (user.listContacts.includes(idUserSentRequest)) {
+      return res.status(400).json({
+        message: "L'utilisateur est déjà présent da la liste des contacts",
+      });
+    }
+
+    if (response === "accept") {
+      user.listContacts.push(idUserSentRequest);
+      userSentRequest.listContacts.push(id);
+    }
+
+    user.listRequestContacts = newListRequestContact;
+
+    user.save();
+    userSentRequest.save();
+
+    return res.status(200).json({ message: "La réponse a bien été envoyé" });
+  } catch (error) {
+    return res.status(500).json({
+      message:
+        "Une erreur s'est produite lors de la réponse à la demande de contact",
     });
   }
-
-  if (response === "accept") {
-    user.listContacts.push(idUserSentRequest);
-    userSentRequest.listContacts.push(id);
-  }
-
-  user.listRequestContacts = newListRequestContact;
-
-  user.save();
-  userSentRequest.save();
-
-  return res.status(200).json({ message: "La réponse a bien été envoyé" });
 };
 
+/**
+ * Supprime de la liste des contacts de deux utilisateurs.
+ *
+ * @param {CustomRequest} req - La requête HTTP contenant l'ID de l'utilisateur et l'ID du contact à supprimer.
+ * @param {Response} res - La réponse HTTP à renvoyer.
+ * @returns {Promise<Response>} Une réponse HTTP avec un message indiquant que le contact a été supprimé.
+ * @throws {Error} Si une erreur se produit lors de la suppression du contact.
+ */
 export const deleteContact = async (req: CustomRequest, res: Response) => {
   const idUser = req.user.id;
   const user = await User.findById(idUser);
@@ -290,10 +335,10 @@ export const deleteContact = async (req: CustomRequest, res: Response) => {
   }
 
   const newListContactsUser = user.listContacts.filter((id) => {
-    return id !== idUserToDelete;
+    return id.toString() !== idUserToDelete;
   });
   const newListContactsUserToDelete = userToDelete.listContacts.filter((id) => {
-    return id !== idUser;
+    return id.toString() !== idUser;
   });
 
   try {
@@ -303,9 +348,37 @@ export const deleteContact = async (req: CustomRequest, res: Response) => {
     user.save();
     userToDelete.save();
 
-    return res.json({ message: "Le contact a bien été supprimé" });
+    return res.status(200).json({ message: "Le contact a bien été supprimé" });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    console.error("Erreur lors de la suppression du contact :", error);
+    return res
+      .status(500)
+      .json({ message: "Erreur lors de la suppression du contact" });
+  }
+};
+
+/**
+ * Récupère les 10 premiers utilisateurs de la collection 'users'
+ * en incluant uniquement les champs 'pseudo' et 'profilePicturePath'.
+ *
+ * @returns {Promise<Array<Object>>} Un tableau contenant les 10 premiers utilisateurs
+ * @throws {Error} Si une erreur se produit lors de la récupération des utilisateurs
+ */
+export const getPropositionContacts = async (
+  req: CustomRequest,
+  res: Response
+): Promise<Response> => {
+  try {
+    const users = await User.find()
+      .select("pseudo profilePicturePath")
+      .limit(10)
+      .exec();
+
+    return res.status(200).json(users);
+  } catch (error) {
+    return res
+      .status(500)
+      .json("Erreur lors de la récupération des utilisateurs");
   }
 };
 
