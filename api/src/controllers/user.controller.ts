@@ -232,7 +232,7 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     userRequested.save();
 
-    return res.json(user);
+    return res.json({ message: "La demande de contact a bien été envoyé" });
   } catch (error) {
     return res
       .status(404)
@@ -250,26 +250,35 @@ export const responseRequestContact = async (
   const response = req.body.response;
 
   const idUserSentRequest: string = req.body.idUserSentRequest;
+  const userSentRequest = await User.findById(idUserSentRequest);
 
-  const newRequestContactList = user.listRequestContacts.filter((id) => {
+  // erreur si les users n'existe pas
+
+  const newListRequestContact = user.listRequestContacts.filter((id) => {
     return id !== idUserSentRequest;
   });
 
   if (user.listContacts.includes(idUserSentRequest)) {
-    return res.json({
+    return res.status(400).json({
       message: "L'utilisateur est déjà présent da la liste des contacts",
     });
   }
 
   if (response === "accept") {
     user.listContacts.push(idUserSentRequest);
+    userSentRequest.listContacts.push(id);
   }
 
-  user.listRequestContacts = newRequestContactList;
+  user.listRequestContacts = newListRequestContact;
 
   user.save();
+  userSentRequest.save();
 
   return res.status(200).json({ message: "La réponse a bien été envoyé" });
+};
+
+export const deleteContact = async (req: CustomRequest, res: Response) => {
+  return res.json(req.params.idUserToDelete);
 };
 
 /////////////////////////////////////////////////////////////

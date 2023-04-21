@@ -8,6 +8,7 @@ import {
   addToBooksLists,
   requestContact,
   responseRequestContact,
+  deleteContact,
 } from "../controllers/user.controller";
 
 const router = express.Router();
@@ -21,7 +22,7 @@ router.delete("/delete-from-lists/:list", deleteFromBooksLists);
 
 router.get("/request-contact/:idUserRequested", requestContact);
 router.post("/response-request-contact", responseRequestContact);
-// router.delete("/delete-contact", deleteContact);
+router.delete("/delete-contact/:idUserToDelete", deleteContact);
 
 // router.get("/get-proposition-users", getPropositionUsers);
 

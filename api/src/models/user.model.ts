@@ -31,19 +31,19 @@ export type UserWithBookLists = IUser & UserBookLists;
 const UserSchema = new Schema({
   pseudo: {
     type: String,
-    // required: [true, "Veuillez entrer un pseudo"],
+    required: [true, "Veuillez entrer un pseudo"],
     unique: true,
     minlength: 3,
     maxlength: 20,
   },
   email: {
     type: String,
-    // required: [true, "Veuillez entrer un email"],
+    required: [true, "Veuillez entrer un email"],
     unique: true,
   },
   password: {
     type: String,
-    // required: true,
+    required: true,
     // minlength: [1, "test"], // faut valider la longueur dans le controller car on récupère la valeur déjà hashé
     // maxlength: [3, "test"],
   },

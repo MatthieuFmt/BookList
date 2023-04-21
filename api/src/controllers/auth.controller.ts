@@ -130,11 +130,6 @@ export const disconnectUser = async (req: Request, res: Response) => {
   }
 };
 
-// à supprimer
-export const test = (req: Request, res: Response) => {
-  res.status(201).json({ message: "route auth ok" });
-};
-
 // étape 3 si le front recois le code 401 au moment de l'étape 2 appel cette fonction
 // la fonction recois le refresh token stocké en bdd pour recréer un nouveau accessToken si nécessaire
 // si le refreshToken est lui aussi expiré alors le front redirige vers la page de connexion
@@ -201,7 +196,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const timestampInOneHour = new Date().getTime() + 600000;
 
     user.passwordResetToken = token;
-    user.passwordResetExpires = timestampInOneHour; // Token expires in 1 hour
+    user.passwordResetExpires = timestampInOneHour; // le token expire dans 10 minutes
 
     await user.save();
 
@@ -209,7 +204,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const mailOptions = {
       to: user.email,
-      from: process.env.ADRESS_MAIL, // Remplacez par votre adresse e-mail
+      from: process.env.ADRESS_MAIL,
       subject: "Password Reset",
       text: `Vous recevez ce message parce que vous (ou quelqu'un d'autre) avez demandé la réinitialisation du mot de passe pour votre compte.
       Veuillez cliquer sur le lien suivant ou copiez-le dans votre navigateur pour terminer le processus :
@@ -281,4 +276,9 @@ export const resetPassword = async (req: Request, res: Response) => {
       message: "Erreur lors de l'enregistrement de l'utilisateur",
     });
   }
+};
+
+// à supprimer
+export const test = (req: Request, res: Response) => {
+  res.status(201).json({ message: "route auth ok" });
 };
