@@ -198,21 +198,24 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const token = crypto.randomBytes(32).toString("hex");
 
+    const timestampInOneHour = new Date().getTime() + 600000;
+
     user.passwordResetToken = token;
-    user.passwordResetExpires = new Date(Date.now() + 3600000); // Token expires in 1 hour
+    user.passwordResetExpires = timestampInOneHour; // Token expires in 1 hour
 
     await user.save();
 
-    const resetURL = `http://${req.headers.host}/reset-password/${token}`;
+    return res.json(token);
+    const resetURL = `http://${req.headers.host}/auth/reset-password/${token}`;
 
     const mailOptions = {
       to: user.email,
       from: process.env.ADRESS_MAIL, // Remplacez par votre adresse e-mail
       subject: "Password Reset",
-      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
-      Please click on the following link, or paste this into your browser to complete the process:
+      text: `Vous recevez ce message parce que vous (ou quelqu'un d'autre) avez demandé la réinitialisation du mot de passe pour votre compte.
+      Veuillez cliquer sur le lien suivant ou copiez-le dans votre navigateur pour terminer le processus :
       ${resetURL}
-      If you did not request this, please ignore this email and your password will remain unchanged.`,
+      Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail et votre mot de passe restera inchangé.`,
     };
 
     transport.sendMail(mailOptions, (err: any) => {
@@ -228,5 +231,55 @@ export const forgotPassword = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: "An error occurred while processing the request" });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { password, confirmPassword } = req.body;
+
+    const token = req.params.token;
+
+    const user = await User.findOne({ passwordResetToken: token });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const dateExpireToken = user.passwordResetExpires;
+    const dateNow = new Date().getTime();
+
+    if (password !== confirmPassword) {
+      return res
+        .status(403)
+        .json({ message: "Les mots de passe ne correspondent pas" });
+    }
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Le mot de passe doit contenir au moins une minuscule, une majuscule, un caractère spécial, un chiffre et faire 8 caractères minimum",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.passwordResetExpires = 0;
+    user.passwordResetToken = "";
+    user.password = hashedPassword;
+
+    await user.save();
+
+    if (dateExpireToken < dateNow) {
+      return res.status(403).json({ message: "Le token a expiré" });
+    }
+
+    return res.json({ message: "Le mot de passe a été modifié" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Erreur lors de l'enregistrement de l'utilisateur",
+    });
   }
 };
