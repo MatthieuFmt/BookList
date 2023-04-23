@@ -1,12 +1,21 @@
 import express from "express";
-import { test } from "../controllers/book.controller";
+import {
+  test,
+  addBooks,
+  getBook,
+  addComment,
+  addRating,
+  getRating,
+} from "../controllers/book.controller";
 
 const router = express.Router();
 
-// router.post("/create", create);
-// router.get("/get-infos/:id", getInfos);
-// router.post("/add-message", addMessage);
-// router.post("/add-opinion", addOpinion);
+router.post("/add-books", addBooks);
+router.get("/get-book/:id", getBook);
+router.post("/add-comment/:id", addComment);
+router.post("/add-rating/:id", addRating);
+router.post("/get-rating/:id", getRating);
+
 router.get("/", test);
 
 export default router;
