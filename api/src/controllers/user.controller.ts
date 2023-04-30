@@ -277,11 +277,7 @@ export const responseRequestContact = async (
   try {
     const id = req.user.id;
     const user = await User.findById(id);
-  try {
-    const id = req.user.id;
-    const user = await User.findById(id);
 
-    const response = req.body.response;
     const response = req.body.response;
 
     const idUserSentRequest: string = req.body.idUserSentRequest;
