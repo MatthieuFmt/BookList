@@ -120,6 +120,12 @@ export const addComment = async (req: CustomRequest, res: Response) => {
   }
 };
 
+/**
+ * Ajoute une note à un livre pour l'utilisateur connecté.
+ * @param req - La requête, contenant l'ID du livre en tant que paramètre d'URL, l'ID de l'utilisateur dans req.user.id et la note dans req.body.rating.
+ * @param res - La réponse, indiquant si la note a été ajoutée avec succès ou si une erreur s'est produite.
+ * @return {Response} - Une réponse JSON indiquant si la note a été ajoutée avec succès, si l'utilisateur a déjà noté ce livre, si le livre n'est pas présent en base de données, ou si une erreur s'est produite.
+ */
 export const addRating = async (req: CustomRequest, res: Response) => {
   try {
     const book = await Book.findOne({ idApi: req.params.id });
@@ -130,10 +136,14 @@ export const addRating = async (req: CustomRequest, res: Response) => {
         .json({ message: "Le livre n'est pas présent en base de données" });
     }
 
-    book.listRatings.map((item) => {
-      if (item.userId === req.user.id)
-        return res.status(400).json("L'utilisateur a déjà noté ce livre");
-    });
+    // si j'ai le temps, donner la possibilitée de modifier la note
+    const alreadyRated = book.listRatings.find(
+      (item) => item.userId === req.user.id
+    );
+
+    if (alreadyRated) {
+      return res.status(400).json("L'utilisateur a déjà noté ce livre");
+    }
 
     book.listRatings.push({
       userId: req.user.id,
@@ -148,33 +158,40 @@ export const addRating = async (req: CustomRequest, res: Response) => {
   }
 };
 
+/**
+ * Récupère la note moyenne d'un livre en fonction de son idApi.
+ * @param req - La requête, contenant l'ID du livre en tant que paramètre d'URL.
+ * @param res - La réponse, contenant la note moyenne du livre.
+ * @return {Response} - Une réponse JSON contenant la note moyenne du livre, ou un message d'erreur si le livre n'est pas trouvé ou si une erreur s'est produite.
+ */
 export const getRating = async (req: CustomRequest, res: Response) => {
-  // interface RatingObj {
-  //   rating: number;
-  //   id: string;
-  // }
-  // try {
-  //   const book = await Book.findOne({ idApi: req.params.id });
-  //   if (!book) {
-  //     return res
-  //       .status(404)
-  //       .json({ message: "Le livre n'est pas présent en base de données" });
-  //   }
-  //   const ratings = book.listRatings;
-  //   const totalRatings = ratings.length;
-  //   if (totalRatings === 0) {
-  //     return res.status(200).json({ rating: 0 });
-  //   }
-  //   let sum: Number = 0;
-  //   for (const ratingObj of ratings) {
-  //     sum += ratingObj.rating;
-  //   }
-  //   const average = sum / totalRatings;
-  //   return average;
-  //   return res.status(200).json(rating);
-  // } catch (error) {
-  //   return res.status(500).json({ message: "Une erreur s'est produite" });
-  // }
+  try {
+    const book = await Book.findOne({ idApi: req.params.id });
+    if (!book) {
+      return res
+        .status(404)
+        .json({ message: "Le livre n'est pas présent en base de données" });
+    }
+
+    const ratings = book.listRatings;
+    const arrayRatingsLength = ratings.length;
+
+    if (arrayRatingsLength === 0) {
+      // ne pas afficher que le livre est noté 0 mais plutôt qu'il n'a pas encore de note
+      return res.status(200).json({ average: 0 });
+    }
+
+    let sum: number = 0;
+    for (const item of ratings) {
+      sum += Number(item.rating);
+    }
+
+    const average = (sum / arrayRatingsLength).toFixed(1);
+
+    return res.status(200).json({ average: Number(average) });
+  } catch (error) {
+    return res.status(500).json({ message: "Une erreur s'est produite" });
+  }
 };
 
 export const test = (req: Request, res: Response) => {

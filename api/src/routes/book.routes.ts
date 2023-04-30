@@ -14,7 +14,7 @@ router.post("/add-books", addBooks);
 router.get("/get-book/:id", getBook);
 router.post("/add-comment/:id", addComment);
 router.post("/add-rating/:id", addRating);
-router.post("/get-rating/:id", getRating);
+router.get("/get-rating/:id", getRating);
 
 router.get("/", test);
 
