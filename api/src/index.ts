@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+// import { Server } from "socket.io";
 
 import dotenv from "dotenv";
 
@@ -11,21 +13,22 @@ import conversationRoutes from "./routes/conversation.route";
 
 import authMiddleware from "./middleware/auth.middleware";
 import { limiter } from "./middleware/rate-limit.middleware";
+import { chatSocket } from "./config/socketio.config";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Connect to MongoDB
+// connection à la base de données MongoDB
 connectToDatabase();
 
 app.use(express.json());
 
-// Routes
 // limite le nombre de requêtes par adresse ip
 app.use(limiter);
 
+// routes
 app.use("/auth", authRoutes);
 
 // donne l'accès aux routes suivantes seulement si l'utilisateur renvoie un token valide
@@ -34,6 +37,13 @@ app.use(authMiddleware);
 app.use("/user", userRoutes);
 app.use("/book", bookRoutes);
 app.use("/conversation", conversationRoutes);
+
+// Set up HTTP server and Socket.IO server
+// const server = http.createServer(app);
+// const io = new Server(server);
+
+// Configure Socket.IO for chat
+// chatSocket(io);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
