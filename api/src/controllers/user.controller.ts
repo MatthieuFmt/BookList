@@ -5,6 +5,7 @@ import { upload } from "../config/multer.config";
 
 import multer from "multer";
 import fs from "fs";
+import { deleteConversation } from "./conversation.controller";
 
 interface CustomRequest extends Request {
   user: {
@@ -317,6 +318,7 @@ export const responseRequestContact = async (
 
 /**
  * Supprime de la liste des contacts de deux utilisateurs.
+ * Supprime également la conversation entre les deux utilisateurs.
  *
  * @param {CustomRequest} req - La requête HTTP contenant l'ID de l'utilisateur et l'ID du contact à supprimer.
  * @param {Response} res - La réponse HTTP à renvoyer.
@@ -324,29 +326,39 @@ export const responseRequestContact = async (
  * @throws {Error} Si une erreur se produit lors de la suppression du contact.
  */
 export const deleteContact = async (req: CustomRequest, res: Response) => {
-  const idUser = req.user.id;
-  const user = await User.findById(idUser);
-
-  const idUserToDelete = req.params.idUserToDelete;
-  const userToDelete = await User.findById(idUserToDelete);
-
-  if (!user || !userToDelete) {
-    return res.status(404).json({ message: "L'utilisateur n'existe pas" });
-  }
-
-  const newListContactsUser = user.listContacts.filter((id) => {
-    return id.toString() !== idUserToDelete;
-  });
-  const newListContactsUserToDelete = userToDelete.listContacts.filter((id) => {
-    return id.toString() !== idUser;
-  });
-
   try {
-    user.listContacts = newListContactsUser;
+    const idUserConnected = req.user.id;
+    const userConnected = await User.findById(idUserConnected);
+
+    const idUserToDelete = req.params.idUserToDelete;
+    const userToDelete = await User.findById(idUserToDelete);
+
+    if (!userConnected || !userToDelete) {
+      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+    }
+
+    if (!userConnected.listContacts.includes(idUserToDelete)) {
+      return res.status(404).json({
+        message: "L'utilisateur n'est pas dans la liste des contacts",
+      });
+    }
+
+    const newListContactsUser = userConnected.listContacts.filter((id) => {
+      return id.toString() !== idUserToDelete;
+    });
+    const newListContactsUserToDelete = userToDelete.listContacts.filter(
+      (id) => {
+        return id.toString() !== idUserConnected;
+      }
+    );
+
+    userConnected.listContacts = newListContactsUser;
     userToDelete.listContacts = newListContactsUserToDelete;
 
-    user.save();
+    userConnected.save();
     userToDelete.save();
+
+    deleteConversation(req, res, idUserConnected, idUserToDelete);
 
     return res.status(200).json({ message: "Le contact a bien été supprimé" });
   } catch (error) {

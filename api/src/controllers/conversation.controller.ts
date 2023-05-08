@@ -11,6 +11,16 @@ interface CustomRequest extends Request {
   };
 }
 
+/**
+ * Crée une nouvelle conversation entre l'utilisateur connecté et un autre utilisateur
+ *
+ * @param req - Requête HTTP personnalisée contenant l'ID de l'utilisateur connecté et
+ *              l'ID de l'utilisateur à ajouter à la conversation dans le corps de la requête.
+ * @param res - Réponse HTTP qui renvoie un message indiquant le résultat de la création
+ *              de la conversation.
+ * @returns Renvoie une réponse HTTP avec un code d'état approprié et un message indiquant
+ *          si la conversation a été créée avec succès ou si une erreur s'est produite.
+ */
 export const createConversation = async (req: CustomRequest, res: Response) => {
   try {
     const userToAdd = await User.findById(req.body.idUserToAdd).select("_id");
@@ -70,6 +80,14 @@ export const createConversation = async (req: CustomRequest, res: Response) => {
   }
 };
 
+/**
+ * Récupère toutes les conversations de l'utilisateur connecté.
+ *
+ * @param req - Requête HTTP personnalisée contenant l'ID de l'utilisateur connecté.
+ * @param res - Réponse HTTP qui renvoie la liste des conversations de l'utilisateur connecté.
+ * @returns Renvoie une réponse HTTP avec un code d'état approprié et la liste des conversations
+ *          de l'utilisateur connecté, ou une erreur si une erreur s'est produite.
+ */
 export const getAllConversations = async (
   req: CustomRequest,
   res: Response
@@ -91,22 +109,29 @@ export const getAllConversations = async (
   }
 };
 
+/**
+ * Ajoute un message à une conversation existante à laquelle l'utilisateur connecté
+ * participe.
+ *
+ * @param req - Requête HTTP personnalisée contenant l'ID de l'utilisateur connecté,
+ *              l'ID de la conversation et le message à ajouter dans le corps de la requête.
+ * @param res - Réponse HTTP qui renvoie un message indiquant le résultat de l'ajout du message
+ *              à la conversation.
+ * @returns Renvoie une réponse HTTP avec un code d'état approprié et un message indiquant
+ *          si le message a été ajouté avec succès à la conversation ou si une erreur
+ *          s'est produite.
+ */
 export const addMessage = async (req: CustomRequest, res: Response) => {
   try {
     const { conversationId, message } = req.body;
     const userId = req.user.id;
 
-    // Rechercher la conversation par son ID
     const conversation = await Conversation.findById(conversationId);
 
-    // Vérifier si la conversation existe
     if (!conversation) {
-      return res
-        .status(404)
-        .json({ message: "La conversation est introuvable" });
+      return res.status(404).json({ message: "La conversation n'existe pas" });
     }
 
-    // Vérifier si l'utilisateur fait partie de la conversation
     if (!conversation.idUsers.includes(userId)) {
       return res
         .status(403)
@@ -120,20 +145,46 @@ export const addMessage = async (req: CustomRequest, res: Response) => {
       date: new Date(),
     };
 
-    // Ajouter le message à la liste des messages de la conversation
     conversation.listMessages.push(newMessage);
 
-    // Sauvegarder la conversation mise à jour
     await conversation.save();
 
-    // Réponse avec le message ajouté
     res.status(200).json({ message: "Le message a été envoyé" });
   } catch (error) {
     res.status(500).json("Une erreur s'est produite");
   }
 };
 
-// faire une fonction deleteConversation qui ne passe pas par une route mais directement appelé quand on supprime un utilisateur de sa liste de contact
+/**
+ * Supprime une conversation entre l'utilisateur connecté et un autre utilisateur.
+ * Cette fonction est appelée par 'deleteContact' dans le contrôleur 'user.controller'.
+ *
+ * @param req - Requête HTTP personnalisée contenant l'ID de l'utilisateur connecté.
+ * @param res - Réponse HTTP qui renvoie un message indiquant le résultat de la suppression
+ *              de la conversation.
+ * @param userConnected - L'ID de l'utilisateur connecté sous forme de chaîne de caractères.
+ * @param userToDelete - L'ID de l'utilisateur avec lequel supprimer la conversation
+ *                        sous forme de chaîne de caractères.
+ * @returns Renvoie une réponse HTTP avec un code d'état approprié et un message indiquant
+ *          si la conversation a été supprimée avec succès ou si une erreur s'est produite.
+ */ export const deleteConversation = async (
+  req: CustomRequest,
+  res: Response,
+  userConnected: string,
+  userToDelete: string
+) => {
+  const conversationToDelete = await Conversation.findOne({
+    idUsers: {
+      $all: [userConnected, userToDelete],
+    },
+  });
+
+  if (!conversationToDelete) {
+    return res.status(404).json({ message: "Conversation not found" });
+  }
+
+  await Conversation.deleteOne({ _id: conversationToDelete._id });
+};
 
 export const test = (req: Request, res: Response) => {
   return res.status(201).json({ message: "route conversation ok" });
