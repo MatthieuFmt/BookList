@@ -1,0 +1,80 @@
+.layout {
+  position: absolute;
+  inset: 0;
+  background-color: rgba($color: #000000, $alpha: 0.8);
+}
+
+.popup {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: auto;
+  inset: 0;
+  background: #ffffff;
+  border-radius: 3px;
+  height: 50vh;
+
+  &__title {
+    text-align: center;
+    margin: $space-3 0;
+    font-size: $font-size-4;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 300px;
+    height: fit-content;
+  }
+
+  &__input-container {
+    position: relative;
+    display: flex;
+    width: 50%;
+
+    margin: 0 auto $space-4 auto;
+    label,
+    input {
+      height: 2rem;
+      width: 100%;
+      padding: $space-1;
+    }
+
+    label {
+      position: absolute;
+      top: 0;
+      transition: all 0.5s;
+      display: flex;
+      align-items: center;
+      cursor: text;
+    }
+
+    input {
+      outline: none;
+      border: none;
+      border-bottom: 2px solid $second-color;
+    }
+
+    .filled {
+      top: -2rem;
+    }
+    input:focus + label {
+      top: -2rem;
+    }
+  }
+
+  &__btn {
+    width: 10rem;
+    margin: auto;
+    background-color: $second-color;
+    color: $main-color;
+    font-size: $font-size-3;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #434343;
+    }
+  }
+}

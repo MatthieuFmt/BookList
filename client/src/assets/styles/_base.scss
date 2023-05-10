@@ -1,4 +1,17 @@
-/* Réinitialisation des styles du navigateur */
+@font-face {
+  font-family: "fanwood";
+  src: url("./assets/fonts/Fanwoodtext-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "poppins";
+  src: url("./assets/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -6,19 +19,26 @@
 }
 
 html {
-  font-size: clamp(12px, 1vw, 30px);
+  font-size: clamp(12px, 1vw, 20px);
 }
 
-body {
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+body,
+button {
+  font-family: "poppins", sans-serif;
+  background-color: #fdfdfd;
+  color: $second-color;
 }
 
 p {
-  font-size: $font-size-3;
+  font-size: $font-size-2;
 }
 
 h1 {
   font-size: $font-size-5;
+}
+
+h3 {
+  font-size: $font-size-3;
 }
 
 h1,
@@ -27,7 +47,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Arial", sans-serif;
+  font-family: "fanwood", sans-serif;
 }
 
 a {
@@ -39,5 +59,10 @@ ul {
 }
 
 button {
+  transition: all 0.2s;
+  cursor: pointer;
+  font-weight: bold;
   border: none;
+  border-radius: 3px;
+  padding: $space-1 $space-2;
 }
