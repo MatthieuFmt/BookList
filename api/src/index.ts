@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 // import { Server } from "socket.io";
+import cors from "cors";
 
 import dotenv from "dotenv";
 
@@ -18,11 +19,13 @@ import { chatSocket } from "./config/socketio.config";
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 8000;
 
 // connection à la base de données MongoDB
 connectToDatabase();
 
+app.use(cors());
 app.use(express.json());
 
 // limite le nombre de requêtes par adresse ip

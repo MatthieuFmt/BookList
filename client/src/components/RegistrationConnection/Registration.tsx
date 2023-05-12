@@ -1,18 +1,48 @@
-import { useState } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { fetchApi } from "../../utils/api";
 
-const Registration = () => {
+type UserRegistrationData = {
+  pseudo: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+interface RegistrationProps {
+  setTogglePopupRegistration: Dispatch<SetStateAction<boolean>>;
+}
+
+const Registration: React.FC<RegistrationProps> = ({
+  setTogglePopupRegistration,
+}) => {
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const register = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const userData: UserRegistrationData = {
+      pseudo,
+      email,
+      password,
+      confirmPassword,
+    };
+
+    fetchApi("auth/register", "POST", userData);
+  };
+
   return (
     <>
-      <div className="layout"></div>
+      <div
+        className="layout"
+        onClick={() => setTogglePopupRegistration(false)}
+      ></div>
       <section className="popup">
         <h3 className="popup__title">Inscription</h3>
 
-        <form className="popup__form">
+        <form className="popup__form" onSubmit={(e) => register(e)}>
           <div className="popup__input-container">
             <input
               type="text"
@@ -64,7 +94,9 @@ const Registration = () => {
             </label>
           </div>
 
-          <button className="popup__btn">S'inscrire</button>
+          <button className="popup__btn" type="submit">
+            S'inscrire
+          </button>
         </form>
       </section>
     </>

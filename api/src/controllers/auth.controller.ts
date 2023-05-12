@@ -11,7 +11,13 @@ const tokenBlacklist = new Set<string>();
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { pseudo, password, email } = req.body;
+    const { pseudo, password, confirmPassword, email } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        message: "Les mots de passe ne sont pas identique",
+      });
+    }
 
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -62,7 +68,7 @@ export const connectUser = async (req: Request, res: Response) => {
     const compare = await bcrypt.compare(password, user.password);
 
     if (compare) {
-      // Générer un JWT
+      // génère un token
       const refreshTokenPayload = {
         id: user._id,
         email: user.email,
@@ -84,7 +90,8 @@ export const connectUser = async (req: Request, res: Response) => {
         accessTokenPayload,
         process.env.ACCESS_TOKEN_SECRET,
         {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+          expiresIn: "10s",
+          // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
         }
       );
 
@@ -135,47 +142,39 @@ export const disconnectUser = async (req: Request, res: Response) => {
 // si le refreshToken est lui aussi expiré alors le front redirige vers la page de connexion
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    const { refreshToken: tokenFromRequest } = req.body;
+    const idUser = req.body.idUser;
 
-    if (!tokenFromRequest) {
+    const user = await User.findById(idUser);
+
+    // return res.json(user.refreshToken);
+
+    if (!user.refreshToken) {
       return res.status(400).json({ message: "No refresh token provided" });
     }
 
-    jwt.verify(
-      tokenFromRequest,
-      process.env.REFRESH_TOKEN_SECRET,
-      async (error: any, decodedPayload: any) => {
-        if (error) {
-          return res.status(401).json({ message: "Invalid refresh token" });
-        }
+    const decoded = jwt.verify(
+      user.refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
 
-        const userId = decodedPayload.id;
-        const user = await User.findById(userId);
+    // Générer un nouvel access token
+    const accessTokenPayload = {
+      id: user._id,
+      email: user.email,
+    };
 
-        if (!user || user.refreshToken !== tokenFromRequest) {
-          return res.status(401).json({ message: "Invalid refresh token" });
-        }
-
-        // Générer un nouvel access token
-        const accessTokenPayload = {
-          id: user._id,
-          email: user.email,
-        };
-
-        const newAccessToken = jwt.sign(
-          accessTokenPayload,
-          process.env.ACCESS_TOKEN_SECRET,
-          {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-          }
-        );
-
-        res.json({
-          message: "Access token refreshed",
-          access: newAccessToken,
-        });
+    const newAccessToken = jwt.sign(
+      accessTokenPayload,
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "10s",
+        // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
       }
     );
+
+    return res.json({
+      access: newAccessToken,
+    });
   } catch (error) {
     return res
       .status(500)

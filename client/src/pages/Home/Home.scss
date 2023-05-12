@@ -4,12 +4,15 @@
   flex-direction: column;
   justify-content: center;
   min-width: 300px;
-  width: 50%;
-  margin: $space-5 auto;
+  color: white;
+
+  &__content {
+    width: 50%;
+  }
 
   &__title {
     text-align: center;
-    margin-bottom: $space-5;
+    margin-bottom: $space-6;
   }
 
   &__subtitle {
@@ -17,7 +20,7 @@
   }
 
   &__img {
-    background-color: #dddddd;
+    background-color: #525252;
     width: 20rem;
     height: 10rem;
   }

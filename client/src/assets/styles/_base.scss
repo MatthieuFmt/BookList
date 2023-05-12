@@ -1,13 +1,13 @@
 @font-face {
   font-family: "fanwood";
-  src: url("./assets/fonts/Fanwoodtext-Regular.ttf") format("truetype");
+  src: src("../assets/fonts/Fanwoodtext-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "poppins";
-  src: url("./assets/fonts/Poppins-Regular.ttf") format("truetype");
+  src: src("../assets/fonts/Poppins-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -19,14 +19,12 @@
 }
 
 html {
-  font-size: clamp(12px, 1vw, 20px);
+  font-size: clamp(12px, 0.8vw, 200px);
 }
 
 body,
 button {
   font-family: "poppins", sans-serif;
-  background-color: #fdfdfd;
-  color: $second-color;
 }
 
 p {
@@ -63,6 +61,23 @@ button {
   cursor: pointer;
   font-weight: bold;
   border: none;
-  border-radius: 3px;
+  border-radius: 2px;
   padding: $space-1 $space-2;
+}
+
+.container {
+  background-color: $foreground-color;
+  min-height: 100vh;
+}
+
+input:-webkit-autofill {
+  animation-name: autofill;
+  animation-fill-mode: both;
+}
+
+@keyframes autofill {
+  to {
+    background: white;
+    color: #44218a;
+  }
 }

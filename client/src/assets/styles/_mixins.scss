@@ -1,0 +1,32 @@
+@mixin box-shadow($position: initial, $color: $grey-5) {
+  box-shadow: $position 1px 1px 5px $color;
+}
+
+@mixin transition($property: all, $duration: 0.2s, $timing: linear) {
+  transition: $property $duration $timing;
+}
+
+@mixin respond-to($media) {
+  @if $media == "small" {
+    @media only screen and (max-width: 500px) {
+      @content;
+    }
+  }
+
+  @if $media == "medium" {
+    @media only screen and (min-width: 501px) and (max-width: 1200px) {
+      @content;
+    }
+  }
+
+  @if $media == "large" {
+    @media only screen and (min-width: 1201px) {
+      @content;
+    }
+  }
+}
+
+@mixin linear-gradient($direction, $color-start, $color-end) {
+  background: $color-start;
+  background: linear-gradient($direction, $color-start, $color-end);
+}
