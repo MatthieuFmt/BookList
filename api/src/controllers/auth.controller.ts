@@ -199,7 +199,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     await user.save();
 
-    const resetURL = `http://${req.headers.host}/auth/reset-password/${token}`;
+    const resetURL = `http://${process.env.APP_URL}/reset-password/${token}`;
+    // l'url que doit appeler le front avec dans le body : email, password
+    // const resetURL = `http://${req.headers.host}/auth/reset-password/${token}`;
 
     const mailOptions = {
       to: user.email,
@@ -214,10 +216,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
     transport.sendMail(mailOptions, (err: any) => {
       if (err) {
         console.error(err);
-        return res.status(500).json({ error: "Failed to send email" });
+        return res.status(500).json({ err });
       }
 
-      res.json({ message: "Password reset email sent" });
+      return res.status(200).json({ message: "Email envoyé" });
     });
   } catch (err) {
     console.error(err);
@@ -240,6 +242,10 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     const dateExpireToken = user.passwordResetExpires;
     const dateNow = new Date().getTime();
+
+    if (dateExpireToken < dateNow) {
+      return res.status(403).json({ message: "Le token a expiré" });
+    }
 
     if (password !== confirmPassword) {
       return res
@@ -264,10 +270,6 @@ export const resetPassword = async (req: Request, res: Response) => {
     user.password = hashedPassword;
 
     await user.save();
-
-    if (dateExpireToken < dateNow) {
-      return res.status(403).json({ message: "Le token a expiré" });
-    }
 
     return res.json({ message: "Le mot de passe a été modifié" });
   } catch (error) {

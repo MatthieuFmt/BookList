@@ -5,24 +5,24 @@ import Registration from "../../components/RegistrationConnection/Registration";
 import Connection from "../../components/RegistrationConnection/Connection";
 
 const Home = () => {
-  const [togglePopupRegistration, setTogglePopupRegistration] = useState(false);
-  const [togglePopupConnection, setTogglePopupConnection] = useState(false);
+  const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
+  const [toggleModalConnection, setToggleModalConnection] = useState(false);
 
   return (
     <>
       <NavbarConnection
-        togglePopupRegistration={togglePopupRegistration}
-        setTogglePopupRegistration={setTogglePopupRegistration}
-        togglePopupConnection={togglePopupConnection}
-        setTogglePopupConnection={setTogglePopupConnection}
+        toggleModalRegistration={toggleModalRegistration}
+        setToggleModalRegistration={setToggleModalRegistration}
+        toggleModalConnection={toggleModalConnection}
+        setToggleModalConnection={setToggleModalConnection}
       />
 
-      {togglePopupRegistration && (
-        <Registration setTogglePopupRegistration={setTogglePopupRegistration} />
+      {toggleModalRegistration && (
+        <Registration setToggleModalRegistration={setToggleModalRegistration} />
       )}
 
-      {togglePopupConnection && (
-        <Connection setTogglePopupConnection={setTogglePopupConnection} />
+      {toggleModalConnection && (
+        <Connection setToggleModalConnection={setToggleModalConnection} />
       )}
 
       <main className="container home">

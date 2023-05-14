@@ -9,11 +9,11 @@ type UserRegistrationData = {
 };
 
 interface RegistrationProps {
-  setTogglePopupRegistration: Dispatch<SetStateAction<boolean>>;
+  setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
 }
 
 const Registration: React.FC<RegistrationProps> = ({
-  setTogglePopupRegistration,
+  setToggleModalRegistration,
 }) => {
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
@@ -37,13 +37,13 @@ const Registration: React.FC<RegistrationProps> = ({
     <>
       <div
         className="layout"
-        onClick={() => setTogglePopupRegistration(false)}
+        onClick={() => setToggleModalRegistration(false)}
       ></div>
-      <section className="popup">
-        <h3 className="popup__title">Inscription</h3>
+      <section className="modal">
+        <h3 className="modal__title">Inscription</h3>
 
-        <form className="popup__form" onSubmit={(e) => register(e)}>
-          <div className="popup__input-container">
+        <form className="modal__form" onSubmit={(e) => register(e)}>
+          <div className="modal__input-container">
             <input
               type="text"
               id="pseudo"
@@ -55,7 +55,7 @@ const Registration: React.FC<RegistrationProps> = ({
             </label>
           </div>
 
-          <div className="popup__input-container">
+          <div className="modal__input-container">
             <input
               type="email"
               id="email"
@@ -67,7 +67,7 @@ const Registration: React.FC<RegistrationProps> = ({
             </label>
           </div>
 
-          <div className="popup__input-container">
+          <div className="modal__input-container">
             <input
               type="password"
               id="password"
@@ -79,7 +79,7 @@ const Registration: React.FC<RegistrationProps> = ({
             </label>
           </div>
 
-          <div className="popup__input-container">
+          <div className="modal__input-container">
             <input
               type="password"
               id="confirm-password"
@@ -94,7 +94,7 @@ const Registration: React.FC<RegistrationProps> = ({
             </label>
           </div>
 
-          <button className="popup__btn" type="submit">
+          <button className="modal__btn" type="submit">
             S'inscrire
           </button>
         </form>

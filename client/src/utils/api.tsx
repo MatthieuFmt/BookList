@@ -27,7 +27,10 @@ const parseJwt = (token: string) => {
 export const fetchApi = async (url: string, method: string, body?: any) => {
   let token = localStorage.getItem("access-token") || "";
 
-  token = JSON.parse(token);
+  // évite une erreur si le token est vide
+  if (token) {
+    token = JSON.parse(token);
+  }
 
   if (parseJwt(token)) {
     const timestampInSeconds = Math.floor(Date.now() / 1000);
@@ -66,12 +69,17 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
     options.body = JSON.stringify(body);
   }
 
-  fetch(`${import.meta.env.VITE_API_BASE_URL}/${url}`, options)
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/${url}`,
+    options
+  )
     .then((res) => res.json())
     .then((data) => {
       return data;
     })
     .catch((error) => {
-      console.error(error);
+      return console.error(error);
     });
+
+  return response;
 };

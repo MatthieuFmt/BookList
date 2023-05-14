@@ -2,17 +2,17 @@ import React, { useState, Dispatch, SetStateAction } from "react";
 import Registration from "../RegistrationConnection/Registration";
 
 interface RegistrationProps {
-  togglePopupRegistration: boolean;
-  setTogglePopupRegistration: Dispatch<SetStateAction<boolean>>;
-  togglePopupConnection: boolean;
-  setTogglePopupConnection: Dispatch<SetStateAction<boolean>>;
+  toggleModalRegistration: boolean;
+  setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
+  toggleModalConnection: boolean;
+  setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
 }
 
 const Navbar: React.FC<RegistrationProps> = ({
-  togglePopupRegistration,
-  setTogglePopupRegistration,
-  togglePopupConnection,
-  setTogglePopupConnection,
+  toggleModalRegistration,
+  setToggleModalRegistration,
+  toggleModalConnection,
+  setToggleModalConnection,
 }) => {
   return (
     <nav className="navbar-connection">
@@ -20,14 +20,14 @@ const Navbar: React.FC<RegistrationProps> = ({
       <div className="navbar-connection__btns-group">
         <button
           className="navbar-connection__btn"
-          onClick={() => setTogglePopupConnection(true)}
+          onClick={() => setToggleModalConnection(true)}
         >
           Connexion
         </button>
 
         <button
           className="navbar-connection__btn"
-          onClick={() => setTogglePopupRegistration(true)}
+          onClick={() => setToggleModalRegistration(true)}
         >
           Inscription
         </button>
