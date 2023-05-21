@@ -5,8 +5,10 @@
 @import "base";
 
 // Components
-@import "../../components/NavbarConnection/NavbarConnection";
+@import "../../components/Navbar/Navbar";
 @import "../../components/RegistrationConnection/RegistrationConnection";
+@import "../../components/Carousel/Carousel";
 
 // Pages
 @import "../../pages/Home/Home.scss";
+// @import "../../pages/BookListPage/BookListPage.scss";

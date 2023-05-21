@@ -68,6 +68,7 @@ button {
 .container {
   background-color: $foreground-color;
   min-height: 100vh;
+  padding-top: 4rem;
 }
 
 input:-webkit-autofill {

@@ -1,22 +1,22 @@
-import NavbarConnection from "../../components/NavbarConnection/NavbarConnection";
-
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Registration from "../../components/RegistrationConnection/Registration";
 import Connection from "../../components/RegistrationConnection/Connection";
 
-const Home = () => {
-  const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
-  const [toggleModalConnection, setToggleModalConnection] = useState(false);
+interface HomeProps {
+  toggleModalRegistration: boolean;
+  setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
+  toggleModalConnection: boolean;
+  setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
+}
 
+const Home: React.FC<HomeProps> = ({
+  toggleModalRegistration,
+  setToggleModalRegistration,
+  toggleModalConnection,
+  setToggleModalConnection,
+}) => {
   return (
     <>
-      <NavbarConnection
-        toggleModalRegistration={toggleModalRegistration}
-        setToggleModalRegistration={setToggleModalRegistration}
-        toggleModalConnection={toggleModalConnection}
-        setToggleModalConnection={setToggleModalConnection}
-      />
-
       {toggleModalRegistration && (
         <Registration setToggleModalRegistration={setToggleModalRegistration} />
       )}
