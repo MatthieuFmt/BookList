@@ -244,7 +244,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     const dateNow = new Date().getTime();
 
     if (dateExpireToken < dateNow) {
-      return res.status(403).json({ message: "Le token a expiré" });
+      return res.status(401).json({ message: "Le token a expiré" });
     }
 
     if (password !== confirmPassword) {

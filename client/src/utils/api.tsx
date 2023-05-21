@@ -50,10 +50,11 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
           localStorage.setItem("access-token", JSON.stringify(data.access));
           token = data.access;
 
+          // à faire
           // il faut recevoir un code particulier si le refreshToken est lui aussi expiré et faire une redirection vers la page d'accueil
         })
         .catch((error) => {
-          console.error(error);
+          return error;
         });
     }
   }
