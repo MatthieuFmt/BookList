@@ -1,2 +1,17 @@
 .carousel {
+  width: 100%;
+  height: 20rem;
+  background-color: $foreground-color;
+  padding: 0 20%;
+
+  &__block-images {
+    display: flex;
+    height: 100%;
+
+    img {
+      width: 12vw;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
 }

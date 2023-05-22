@@ -8,7 +8,8 @@
 @import "../../components/Navbar/Navbar";
 @import "../../components/RegistrationConnection/RegistrationConnection";
 @import "../../components/Carousel/Carousel";
+@import "../../components/BookCard/BookCard";
 
 // Pages
-@import "../../pages/Home/Home.scss";
-// @import "../../pages/BookListPage/BookListPage.scss";
+@import "../../pages/Home/Home";
+@import "../../pages/BookList/BookList";

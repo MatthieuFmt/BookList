@@ -48,6 +48,12 @@ h6 {
   font-family: "fanwood", sans-serif;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
 a {
   text-decoration: none;
 }
@@ -71,14 +77,42 @@ button {
   padding-top: 4rem;
 }
 
+// coriger le bug à l'auto-complétion
 input:-webkit-autofill {
   animation-name: autofill;
   animation-fill-mode: both;
+} ////////////////////////////////////////////
+
+label,
+input {
+  height: 2rem;
+  padding: $space-1;
+  font-size: $font-size-2;
 }
 
-@keyframes autofill {
-  to {
-    background: white;
-    color: #44218a;
+label {
+  display: flex;
+  align-items: center;
+  cursor: text;
+  color: $grey-2;
+}
+
+input {
+  font-weight: bold;
+  background-color: $background-color;
+  color: $first-color;
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  @include transition();
+
+  &:focus {
+    @include box-shadow(inset);
   }
+}
+
+// corrige le backgroud blanc à l'auto-complétion
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 999999s 0s, color 999999s 0s;
 }

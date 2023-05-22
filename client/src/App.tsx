@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 import ResetPassword from "./components/RegistrationConnection/ResetPassword";
-import Booklist from "./pages/BookList/BooklistPage";
+import Booklist from "./pages/BookList/Booklist";
 import Navbar from "./components/Navbar/Navbar";
 
 function App() {

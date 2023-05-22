@@ -54,35 +54,13 @@
 
     label,
     input {
-      height: 2rem;
       width: 100%;
-      padding: $space-1;
-      font-size: $font-size-2;
-      padding-left: 10px;
     }
 
     label {
       position: absolute;
       top: 0;
       @include transition();
-      display: flex;
-      align-items: center;
-      cursor: text;
-      color: $grey-2;
-    }
-
-    input {
-      font-weight: bold;
-      background-color: $background-color;
-      color: $first-color;
-      outline: none;
-      border: none;
-      border-radius: 15px;
-      @include transition();
-
-      &:focus {
-        @include box-shadow(inset);
-      }
     }
 
     .filled {

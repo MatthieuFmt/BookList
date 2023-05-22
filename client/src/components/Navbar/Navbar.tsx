@@ -12,8 +12,6 @@ const NavbarConnection: React.FC<NavbarProps> = ({
 }) => {
   const location = useLocation();
 
-  console.log(location);
-
   return (
     <nav className="navbar">
       <div className="navbar__logo">LOGO</div>
@@ -34,7 +32,7 @@ const NavbarConnection: React.FC<NavbarProps> = ({
             Inscription
           </button>
           <NavLink to="/liste" className="link">
-            debug
+            test
           </NavLink>
         </div>
       ) : (
@@ -49,10 +47,10 @@ const NavbarConnection: React.FC<NavbarProps> = ({
             Mon compte
           </NavLink>
           <button
-            className="navbar__btn"
+            className="navbar__btn navbar__btn--log-out"
             onClick={() => setToggleModalRegistration(true)}
           >
-            Déconnexion
+            Se déconnecter
           </button>
         </div>
       )}
