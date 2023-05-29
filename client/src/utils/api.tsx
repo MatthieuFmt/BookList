@@ -37,6 +37,8 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
     const tokenExpireTimestamp = parseJwt(token).exp;
 
     // si l'access token a expiré, appelle la fonction qui utilise le refresh token de l'utilisateur pour mettre à jour l'access token
+    // TODO : modifier l'emplacement du refresh token pour le placer dans les cookies sécurisés (access token aussi)
+    // TODO : quand l'access token expire, renvoie le refresh token au back pour mettre à jour l'access token
     if (timestampInSeconds >= tokenExpireTimestamp) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`, {
         method: "POST",
@@ -49,11 +51,9 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
         .then((data) => {
           localStorage.setItem("access-token", JSON.stringify(data.access));
           token = data.access;
-
-          // à faire
-          // il faut recevoir un code particulier si le refreshToken est lui aussi expiré et faire une redirection vers la page d'accueil
         })
         .catch((error) => {
+          // TODO : il faut recevoir un code particulier si le refreshToken est lui aussi expiré et faire une redirection vers la page d'accueil
           return error;
         });
     }

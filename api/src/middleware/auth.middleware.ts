@@ -19,14 +19,16 @@ const authMiddleware = async (
   const token = req.headers.authorization;
 
   if (!token) {
-    return res.status(401).json({ message: "Authorization header missing" });
+    return res
+      .status(401)
+      .json({ message: "Le champ Authorization du header est manquant" });
   }
 
   try {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     if (typeof decodedToken === "string") {
-      throw new Error("Invalid token");
+      throw new Error("Token invalide");
     }
 
     const { id, email } = decodedToken as JwtPayload;

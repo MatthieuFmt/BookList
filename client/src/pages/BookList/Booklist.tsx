@@ -26,7 +26,6 @@ export interface BookInterface {
 }
 
 const Booklist = () => {
-  // const [arrayBooks, setArrayBooks] = useState<Book[]>([]);
   const [arrayBooks, setArrayBooks] = useState<BookInterface[]>(test);
 
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,7 +45,6 @@ const Booklist = () => {
 
     // setArrayBooks(newArray);
   };
-  console.log(arrayBooks);
 
   return (
     <div className="container book-list">
@@ -62,7 +60,9 @@ const Booklist = () => {
 
       <section className="book-list__cards">
         {arrayBooks.map((book, index) => {
-          return <BookCard volumeInfo={book.volumeInfo} id={index} />;
+          return (
+            <BookCard key={index} volumeInfo={book.volumeInfo} id={index} />
+          );
         })}
       </section>
     </div>

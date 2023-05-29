@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { NavLink, useLocation, useParams } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 interface NavbarProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;

@@ -21,27 +21,19 @@
     }
   }
 }
+
 .book-list {
   &__cards {
     display: grid;
     justify-items: center;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     @include respond-to("large") {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @include respond-to("medium") {
       grid-template-columns: repeat(2, 1fr);
     }
+
     @include respond-to("small") {
       grid-template-columns: repeat(1, 1fr);
     }
-    // grid-template-rows: repeat(3, 1fr);
     gap: $space-5;
-    // display: flex;
-    // align-items: center;
-    // justify-content: space-between;
-    // margin: $space-6 0;
-    // flex-wrap: wrap;
   }
 }
