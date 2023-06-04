@@ -1,8 +1,12 @@
 .book-list {
-  &__section-search {
+  &__search {
+    padding-bottom: 4rem;
+  }
+
+  &__form-search {
     display: flex;
     justify-content: center;
-    margin: $space-5 0 $space-6;
+    margin: $space-4 0 $space-3;
 
     input {
       margin-left: $space-2;
@@ -20,13 +24,17 @@
       }
     }
   }
-}
 
-.book-list {
   &__cards {
-    display: grid;
-    justify-items: center;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow: overlay;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     @include respond-to("large") {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -34,6 +42,5 @@
     @include respond-to("small") {
       grid-template-columns: repeat(1, 1fr);
     }
-    gap: $space-5;
   }
 }

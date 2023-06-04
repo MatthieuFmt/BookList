@@ -34,21 +34,20 @@ services:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
 
-  mongo:
-    image: mongo:4.4
-    container_name: booklist-mongo
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin_password
-      - MONGO_INITDB_DATABASE=booklist
-    volumes:
-      - booklist-mongo-data:/data/db
-    networks:
-      - booklist-network
+  # mongo:
+  #   image: mongo:4.4
+  #   container_name: booklist-mongo
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=admin
+  #     - MONGO_INITDB_ROOT_PASSWORD=admin_password
+  #     - MONGO_INITDB_DATABASE=booklist
+  #   volumes:
+  #     - booklist-mongo-data:/data/db
+  #   networks:
+  #     - booklist-network
 
 networks:
   booklist-network:
     driver: bridge
-
-volumes:
-  booklist-mongo-data:
+# volumes:
+#   booklist-mongo-data:

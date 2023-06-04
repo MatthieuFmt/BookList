@@ -10,7 +10,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  min-width: 300px;
+  min-width: 350px;
   width: 40%;
   margin: auto;
   padding: $space-6;
@@ -60,6 +60,7 @@
     label {
       position: absolute;
       top: 0;
+      left: 5px;
       @include transition();
     }
 

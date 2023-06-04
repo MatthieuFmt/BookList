@@ -49,22 +49,24 @@ const Booklist = () => {
   return (
     <div className="container book-list">
       {/* <Carrousel /> */}
-      <form
-        className="book-list__section-search"
-        onSubmit={(e) => searchBook(e)}
-      >
-        <label htmlFor="book">Rechercher un livre</label>
-        <input type="text" />
-        <button type="submit">Valider</button>
-      </form>
+      <div className="book-list__search">
+        <form
+          className="book-list__form-search"
+          onSubmit={(e) => searchBook(e)}
+        >
+          <label htmlFor="book">Rechercher un livre</label>
+          <input type="text" />
+          <button type="submit">Valider</button>
+        </form>
 
-      <section className="book-list__cards">
-        {arrayBooks.map((book, index) => {
-          return (
-            <BookCard key={index} volumeInfo={book.volumeInfo} id={index} />
-          );
-        })}
-      </section>
+        <section className="book-list__cards">
+          {arrayBooks.map((book, index) => {
+            return (
+              <BookCard key={index} volumeInfo={book.volumeInfo} id={index} />
+            );
+          })}
+        </section>
+      </div>
     </div>
   );
 };
