@@ -1,5 +1,7 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction, useContext } from "react";
 import { fetchApi } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
+import UserContext from "../../context/UserContext";
 
 interface ConnectionProps {
   setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
@@ -23,15 +25,32 @@ const Connection: React.FC<ConnectionProps> = ({
   const [showInputForgotPassword, setShowInputForgotPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
-  const register = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { user, setUser } = useContext(UserContext);
 
-    const userData: UserConnectionData = {
-      email,
-      password,
-    };
+  console.log(user);
 
-    await fetchApi("auth/connect", "POST", userData);
+  const navigate = useNavigate();
+
+  const login = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const userData: UserConnectionData = {
+        email,
+        password,
+      };
+
+      const infoUser = await fetchApi("auth/connect", "POST", userData);
+
+      setUser(infoUser.user);
+
+      localStorage.setItem("accessToken", infoUser.accessToken);
+      localStorage.setItem("refreshToken", infoUser.refreshToken);
+      // localStorage.setItem();
+    } catch (err) {
+      console.error(err);
+    }
+    return navigate("/mes-listes");
   };
 
   const forgottenPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -96,7 +115,7 @@ const Connection: React.FC<ConnectionProps> = ({
           <>
             <h3 className="modal__title">Connexion</h3>
 
-            <form className="modal__form" onSubmit={register}>
+            <form className="modal__form" onSubmit={login}>
               <div className="modal__input-container">
                 <input
                   type="email"

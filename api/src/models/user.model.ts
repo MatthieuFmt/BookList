@@ -31,21 +31,19 @@ export type UserWithBookLists = IUser & UserBookLists;
 const UserSchema = new Schema({
   pseudo: {
     type: String,
-    required: [true, "Veuillez entrer un pseudo"],
+    required: [true, "Pseudo manquant"],
     unique: true,
     minlength: 3,
     maxlength: 20,
   },
   email: {
     type: String,
-    required: [true, "Veuillez entrer un email"],
+    required: [true, "Email manquant"],
     unique: true,
   },
   password: {
     type: String,
     required: true,
-    // minlength: [1, "test"], // faut valider la longueur dans le controller car on récupère la valeur déjà hashé
-    // maxlength: [3, "test"],
   },
   profilePicturePath: {
     type: String,
@@ -62,5 +60,11 @@ const UserSchema = new Schema({
   passwordResetToken: { type: String, default: null },
   passwordResetExpires: { type: Number, default: null },
 });
+
+UserSchema.methods.toJSON = function () {
+  let obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
 export const User = model<IUser>("User", UserSchema);

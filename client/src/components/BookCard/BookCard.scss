@@ -14,8 +14,13 @@
 
   &__container-img {
     position: relative;
-    min-width: 9.5rem;
-    max-width: 9.5rem;
+    min-width: 9rem;
+    max-width: 9rem;
+
+    img {
+      width: 100%;
+      object-fit: cover;
+    }
   }
 
   &__layout {

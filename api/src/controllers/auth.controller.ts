@@ -6,6 +6,7 @@ import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { log } from "console";
 
 const tokenBlacklist = new Set<string>();
 
@@ -95,14 +96,14 @@ export const connectUser = async (req: Request, res: Response) => {
         }
       );
 
-      user.refreshToken = refreshToken;
+      // supprimer le refresh token de la bdd et lajouter au cookies
+      // user.refreshToken = refreshToken;
       await user.save();
 
       return res.json({
-        message: "User connected",
         user: user,
-        refresh: refreshToken,
-        access: accessToken,
+        refreshToken: refreshToken,
+        accessToken: accessToken,
       });
     } else {
       return res

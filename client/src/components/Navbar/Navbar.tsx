@@ -1,22 +1,36 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { parseJwt } from "../../utils/api";
 
 interface NavbarProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
   setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
 }
 
-const NavbarConnection: React.FC<NavbarProps> = ({
+const Navbar: React.FC<NavbarProps> = ({
   setToggleModalRegistration,
   setToggleModalConnection,
 }) => {
-  const location = useLocation();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("accessToken");
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (token === null) {
+      navigate("/");
+    }
+  }, [token, navigate]);
 
   return (
     <nav className="navbar">
       <div className="navbar__logo">LOGO</div>
 
-      {location.pathname === "/" ? (
+      {!token ? (
         <div>
           <button
             className="navbar__btn"
@@ -31,25 +45,42 @@ const NavbarConnection: React.FC<NavbarProps> = ({
           >
             Inscription
           </button>
-          <NavLink to="/liste" className="link">
+          <NavLink
+            to="/mes-listes"
+            className={({ isActive }) => (isActive ? "link active" : "link")}
+          >
             test
           </NavLink>
         </div>
       ) : (
-        <div>
-          <NavLink to="/liste" className="link">
-            Mes livres
+        <div className="navbar__links">
+          <form
+            className="navbar__form-search"
+            // onSubmit={(e) => searchBook(e)}
+          >
+            <input type="text" placeholder="Rechercher un livre" />
+            <button type="submit">P</button>
+          </form>
+          <NavLink
+            to="/mes-listes"
+            className={({ isActive }) => (isActive ? "link active" : "link")}
+          >
+            Bibliothèque
           </NavLink>
-          <NavLink to="/messagerie" className="link">
+
+          <NavLink
+            to="/messagerie"
+            className={({ isActive }) => (isActive ? "link active" : "link")}
+          >
             Messagerie
           </NavLink>
-          <NavLink to="/mon-compte" className="link">
+          <NavLink
+            to="/mon-compte"
+            className={({ isActive }) => (isActive ? "link active" : "link")}
+          >
             Mon compte
           </NavLink>
-          <button
-            className="navbar__btn navbar__btn--log-out"
-            onClick={() => setToggleModalRegistration(true)}
-          >
+          <button className="navbar__btn navbar__btn--log-out" onClick={logout}>
             Se déconnecter
           </button>
         </div>
@@ -58,4 +89,4 @@ const NavbarConnection: React.FC<NavbarProps> = ({
   );
 };
 
-export default NavbarConnection;
+export default Navbar;

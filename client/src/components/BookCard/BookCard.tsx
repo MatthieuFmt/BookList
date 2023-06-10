@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { BookInterface } from "../../pages/BookList/Booklist";
+import { BookInterface } from "../SearchList/SearchList";
 import { useState } from "react";
 
 interface BookCardProps extends BookInterface {

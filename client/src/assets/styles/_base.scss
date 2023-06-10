@@ -74,10 +74,9 @@ button {
 .container {
   background-color: $foreground-color;
   min-height: 100vh;
-  padding-top: 4rem;
+  padding-top: 8vh;
 }
 
-// coriger le bug à l'auto-complétion
 input:-webkit-autofill {
   animation-name: autofill;
   animation-fill-mode: both;
@@ -98,7 +97,7 @@ label {
 }
 
 input {
-  font-weight: bold;
+  // font-weight: bold;
   background-color: $background-color;
   color: $first-color;
   outline: none;
@@ -107,7 +106,7 @@ input {
   @include transition();
 
   &:focus {
-    @include box-shadow(inset);
+    // @include box-shadow(inset);
   }
 }
 

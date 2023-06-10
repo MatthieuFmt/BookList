@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Carrousel from "../../components/Carousel/Carousel";
+import Carrousel from "../Carousel/Carousel";
 import { fetchApi } from "../../utils/api";
 import test from "./test-api.json";
-import BookCard from "../../components/BookCard/BookCard";
+import BookCard from "../BookCard/BookCard";
 
 export interface BookInterface {
   volumeInfo: {
@@ -50,15 +50,6 @@ const Booklist = () => {
     <div className="container book-list">
       {/* <Carrousel /> */}
       <div className="book-list__search">
-        <form
-          className="book-list__form-search"
-          onSubmit={(e) => searchBook(e)}
-        >
-          <label htmlFor="book">Rechercher un livre</label>
-          <input type="text" />
-          <button type="submit">Valider</button>
-        </form>
-
         <section className="book-list__cards">
           {arrayBooks.map((book, index) => {
             return (

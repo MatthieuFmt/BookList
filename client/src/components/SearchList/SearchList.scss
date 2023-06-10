@@ -1,0 +1,20 @@
+.book-list {
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    max-height: 92vh;
+    overflow: overlay;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include respond-to("large") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include respond-to("small") {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}

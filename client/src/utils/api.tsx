@@ -5,7 +5,7 @@ interface IOptions {
 }
 
 // récupère les infos de token (userID, email, date d'expiration)
-const parseJwt = (token: string) => {
+export const parseJwt = (token: string) => {
   if (!token) {
     return null;
   }

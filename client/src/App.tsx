@@ -4,8 +4,9 @@ import { Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
 import ResetPassword from "./components/RegistrationConnection/ResetPassword";
-import Booklist from "./pages/BookList/Booklist";
+import SearchList from "./components/SearchList/SearchList";
 import Navbar from "./components/Navbar/Navbar";
+import MyLists from "./pages/MyLists/MyLists";
 
 function App() {
   const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
@@ -31,7 +32,7 @@ function App() {
           }
         />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/liste" element={<Booklist />} />
+        <Route path="/mes-listes" element={<MyLists />} />
       </Routes>
     </div>
   );

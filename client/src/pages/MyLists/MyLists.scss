@@ -1,0 +1,37 @@
+.my-lists {
+  max-height: 100vh;
+  overflow: overlay;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 5px 0 $grey-5;
+    @include box-shadow(bottom, $grey-5);
+  }
+
+  &__title-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $grey-2;
+    height: 5rem;
+    width: 10rem;
+    background-color: $background-color;
+    @include box-shadow(inset, $grey-5);
+    cursor: pointer;
+    @include transition(all, 0.2s);
+
+    &:hover {
+      color: $first-color;
+      background-color: $second-color;
+      @include box-shadow(inset, $grey-5);
+    }
+
+    &.active {
+      color: $first-color;
+      background-color: $second-color;
+      @include box-shadow(inset, $grey-5);
+    }
+  }
+}
