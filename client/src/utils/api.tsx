@@ -25,7 +25,7 @@ export const parseJwt = (token: string) => {
 };
 
 export const fetchApi = async (url: string, method: string, body?: any) => {
-  let token = localStorage.getItem("access-token") || "";
+  let token = localStorage.getItem("accessToken") || "";
 
   // évite une erreur si le token est vide
   if (token) {
@@ -49,7 +49,7 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          localStorage.setItem("access-token", JSON.stringify(data.access));
+          localStorage.setItem("accessToken", JSON.stringify(data.access));
           token = data.access;
         })
         .catch((error) => {

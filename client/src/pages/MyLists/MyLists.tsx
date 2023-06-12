@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../../context/UserContext";
+import BookCard from "../../components/BookCard/BookCard";
+import { fetchApi } from "../../utils/api";
 
 const MyLists = () => {
   const [activeList, setActiveList] = useState({
@@ -6,10 +9,28 @@ const MyLists = () => {
     toRead: true,
     favorite: false,
   });
+  const [bookIdList, setBookIdList] = useState<string[]>([]);
+  // créer un bookInterface à la place de string
+  const [showedBookList, setShowedBookList] = useState<string[]>([]);
+  const { user, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    if (activeList.toRead && user?.listWishBooks)
+      setBookIdList(user.listWishBooks);
+
+    if (activeList.read && user?.listBooksAlreadyRead)
+      setBookIdList(user.listBooksAlreadyRead);
+
+    if (activeList.favorite && user?.listFavoritesBooks)
+      setBookIdList(user.listFavoritesBooks);
+
+    // créer une fonction getBooksByIds qui prend en paramètre bookIdList et qui renvoie un tableau de livres pour boucler dessus
+    // fetchApi("book/get-book-list", "POST", bookIdList).then((data) => setShowedBookList(data));
+  }, [activeList]);
 
   return (
     <main className="container my-lists">
-      <header className="my-lists__header">
+      <aside className="my-lists__sidebar">
         <div
           className={
             activeList.toRead
@@ -20,7 +41,8 @@ const MyLists = () => {
             setActiveList({ read: false, toRead: true, favorite: false })
           }
         >
-          A lire
+          <div>A lire</div>
+          <div>({user?.listWishBooks.length})</div>
         </div>
         <div
           className={
@@ -32,7 +54,8 @@ const MyLists = () => {
             setActiveList({ read: true, toRead: false, favorite: false })
           }
         >
-          Déjà lu
+          <div>Déjà lu</div>
+          <div>({user?.listBooksAlreadyRead.length})</div>
         </div>
         <div
           className={
@@ -44,16 +67,17 @@ const MyLists = () => {
             setActiveList({ read: false, toRead: false, favorite: true })
           }
         >
-          Favoris
+          <div>Favoris</div>
+          <div>({user?.listFavoritesBooks.length})</div>
         </div>
-      </header>
+      </aside>
 
       <section>
-        {
-          // {activeList.toRead && user.listWishBook.map((book,index) => {return <BookCard key={index} volumeInfo={book.volumeInfo} id={index} />})
-          // {activeList.read && <div>read</div>}
-          // {activeList.favorite && <div>favorite</div>}
-        }
+        {/* book est un string = 111 (id du livre) dans la bdd pour l'instant ce qui crée une erreur, 
+        il faut maintenant ajouter les livres en bdd et boucler dessus */}
+        {/* {showedBookList.map((book) => {
+            return <BookCard volumeInfo={book} />;
+          })} */}
       </section>
     </main>
   );

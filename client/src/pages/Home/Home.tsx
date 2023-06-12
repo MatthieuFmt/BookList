@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useContext } from "react";
-import Registration from "../../components/RegistrationConnection/Registration";
-import Connection from "../../components/RegistrationConnection/Connection";
+import Registration from "../../components/Auth/Registration";
+import Connection from "../../components/Auth/Connection";
 import UserContext from "../../context/UserContext";
 
 interface HomeProps {
@@ -16,8 +16,9 @@ const Home: React.FC<HomeProps> = ({
   toggleModalConnection,
   setToggleModalConnection,
 }) => {
-  // const { user, setUser } = useContext(UserContext);
-  console.log(toggleModalConnection);
+  const { user, setUser } = useContext(UserContext);
+  // setUser(null);
+  console.log(user);
 
   return (
     <>

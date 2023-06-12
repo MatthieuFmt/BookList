@@ -1,25 +1,9 @@
 import React from "react";
-
-interface User {
-  _id: string;
-  pseudo: string;
-  email: string;
-  profilePicturePath: string;
-  refreshToken: string;
-  listRequestContacts: string[];
-  listContacts: string[];
-  listFavoritesBooks: string[];
-  listBooksAlreadyRead: string[];
-  listWishBooks: string[];
-  listConversations: string[];
-  passwordResetToken: string;
-  passwordResetExpires: number;
-  __v: number;
-}
+import { User } from "../interfaces/interfaces";
 
 interface UserContextType {
   user: User | null;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void; // setUser peut maintenant accepter null
 }
 
 // Création du contexte avec une valeur par défaut

@@ -46,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({
             Inscription
           </button>
           <NavLink
-            to="/mes-listes"
+            to="/bibliotheque"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             test
@@ -62,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({
             <button type="submit">P</button>
           </form>
           <NavLink
-            to="/mes-listes"
+            to="/bibliotheque"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             Bibliothèque

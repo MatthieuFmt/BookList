@@ -27,8 +27,6 @@ const Connection: React.FC<ConnectionProps> = ({
 
   const { user, setUser } = useContext(UserContext);
 
-  console.log(user);
-
   const navigate = useNavigate();
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,15 +40,34 @@ const Connection: React.FC<ConnectionProps> = ({
 
       const infoUser = await fetchApi("auth/connect", "POST", userData);
 
+      // setUser({
+      //   _id: "60b9b3b9b3b9b3b9b3b9b3b9",
+      //   pseudo: "test",
+      //   email: "tst@mail.com",
+      //   profilePicturePath: "test",
+      //   refreshToken: "test",
+      //   listRequestContacts: ["test"],
+      //   listContacts: ["test"],
+      //   listFavoritesBooks: ["test"],
+      //   listBooksAlreadyRead: ["test"],
+      //   listWishBooks: ["test"],
+      //   listConversations: ["test"],
+      //   passwordResetToken: "test",
+      //   passwordResetExpires: 0,
+      //   __v: 0,
+      // });
+
       setUser(infoUser.user);
 
       localStorage.setItem("accessToken", infoUser.accessToken);
       localStorage.setItem("refreshToken", infoUser.refreshToken);
-      // localStorage.setItem();
+
+      setToggleModalConnection(false);
     } catch (err) {
       console.error(err);
     }
-    return navigate("/mes-listes");
+
+    navigate("/bibliotheque");
   };
 
   const forgottenPassword = async (e: React.FormEvent<HTMLFormElement>) => {

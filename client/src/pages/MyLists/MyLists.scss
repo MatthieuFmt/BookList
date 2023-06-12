@@ -1,17 +1,19 @@
 .my-lists {
+  display: flex;
+  height: 100vh;
   max-height: 100vh;
   overflow: overlay;
 
-  &__header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  &__sidebar {
+    height: 100%;
     box-shadow: 0 0 5px 0 $grey-5;
     @include box-shadow(bottom, $grey-5);
+    background-color: $background-color;
   }
 
   &__title-list {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: $grey-2;
