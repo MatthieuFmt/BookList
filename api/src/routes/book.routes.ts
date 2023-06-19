@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  test,
   addBooks,
   getBook,
   addComment,
@@ -15,7 +14,5 @@ router.get("/get-book/:id", getBook);
 router.post("/add-comment/:id", addComment);
 router.post("/add-rating/:id", addRating);
 router.get("/get-rating/:id", getRating);
-
-router.get("/", test);
 
 export default router;

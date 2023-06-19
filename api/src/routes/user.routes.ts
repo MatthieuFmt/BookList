@@ -1,7 +1,6 @@
 import express from "express";
 
 import {
-  test,
   getUser,
   updateProfilePicture,
   deleteProfilePicture,
@@ -27,7 +26,5 @@ router.post("/response-request-contact", responseRequestContact);
 router.delete("/delete-contact/:idUserToDelete", deleteContact);
 
 router.get("/get-proposition-contacts", getPropositionContacts);
-
-router.get("/", test);
 
 export default router;

@@ -31,7 +31,7 @@ export const createConversation = async (req: CustomRequest, res: Response) => {
     if (!userToAdd || !userConnected) {
       return res
         .status(404)
-        .json({ message: "Un des deux utilisateurs n'existe pas" });
+        .json({ erreur: "Un des utilisateurs n'existe pas" });
     }
 
     if (
@@ -40,7 +40,7 @@ export const createConversation = async (req: CustomRequest, res: Response) => {
       )
     ) {
       return res.status(400).json({
-        message:
+        erreur:
           "Impossible de créer une conversation avec un utilisateur qui n'a pas accepté de demande de contact",
       });
     }
@@ -53,7 +53,7 @@ export const createConversation = async (req: CustomRequest, res: Response) => {
 
     if (existingConversation) {
       return res.status(400).json({
-        message: "Une conversation entre ces utilisateurs existe déjà",
+        erreur: "Une conversation entre ces utilisateurs existe déjà",
       });
     }
 
@@ -76,7 +76,9 @@ export const createConversation = async (req: CustomRequest, res: Response) => {
       idNewConversation: newConversation._id,
     });
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(error);
+
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -105,7 +107,9 @@ export const getAllConversations = async (
 
     return res.status(200).json(list);
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(error);
+
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -129,13 +133,11 @@ export const addMessage = async (req: CustomRequest, res: Response) => {
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
-      return res.status(404).json({ message: "La conversation n'existe pas" });
+      return res.status(404).json({ erreur: "La conversation n'existe pas" });
     }
 
     if (!conversation.idUsers.includes(userId)) {
-      return res
-        .status(403)
-        .json({ message: "Vous ne faites pas partie de cette conversation" });
+      return res.status(403).json({ erreur: "Accès interdit" });
     }
 
     // Créer le nouvel objet message
@@ -151,7 +153,9 @@ export const addMessage = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json({ message: "Le message a été envoyé" });
   } catch (error) {
-    res.status(500).json("Une erreur s'est produite");
+    console.log(error);
+
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -180,12 +184,8 @@ export const addMessage = async (req: CustomRequest, res: Response) => {
   });
 
   if (!conversationToDelete) {
-    return res.status(404).json({ message: "Conversation not found" });
+    return res.status(404).json({ erreur: "Conversation not found" });
   }
 
   await Conversation.deleteOne({ _id: conversationToDelete._id });
-};
-
-export const test = (req: Request, res: Response) => {
-  return res.status(201).json({ message: "route conversation ok" });
 };

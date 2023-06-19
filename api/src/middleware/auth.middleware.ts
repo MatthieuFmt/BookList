@@ -17,15 +17,16 @@ const authMiddleware = async (
   next: NextFunction
 ) => {
   const token = req.headers.authorization;
+  console.log("token: " + token);
 
   if (!token) {
     return res
       .status(401)
-      .json({ message: "Le champ Authorization du header est manquant" });
+      .json({ erreur: "Le champ Authorization du header est manquant" });
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
     if (typeof decodedToken === "string") {
       throw new Error("Token invalide");
@@ -37,7 +38,9 @@ const authMiddleware = async (
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: error });
+    console.log(error);
+
+    return res.status(401).json({ erreur: "Une erreur s'est produite" });
   }
 };
 

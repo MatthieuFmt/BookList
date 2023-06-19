@@ -3,7 +3,6 @@ import {
   createUser,
   connectUser,
   disconnectUser,
-  test,
   refreshToken,
   forgotPassword,
   resetPassword,
@@ -18,7 +17,5 @@ router.post("/refresh-token", refreshToken);
 
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
-
-router.get("/", test);
 
 export default router;

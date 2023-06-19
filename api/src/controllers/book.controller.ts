@@ -55,7 +55,7 @@ export const addBooks = async (req: Request, res: Response) => {
       });
     }
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -75,10 +75,10 @@ export const getBook = async (req: Request, res: Response) => {
     } else {
       return res
         .status(404)
-        .json({ message: "Le livre n'est pas présent en base de données" });
+        .json({ erreur: "Le livre n'est pas présent en base de données" });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur s'est produite" });
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -97,12 +97,12 @@ export const addComment = async (req: CustomRequest, res: Response) => {
     const book = await Book.findOne({ idApi: req.params.id });
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
     if (!book) {
       return res
         .status(404)
-        .json({ message: "Le livre n'est pas présent en base de données" });
+        .json({ erreur: "Le livre n'est pas présent en base de données" });
     }
 
     book.listComments.push({
@@ -116,7 +116,7 @@ export const addComment = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json("Le commentaire a bien été ajouté");
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur s'est produite" });
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -133,7 +133,7 @@ export const addRating = async (req: CustomRequest, res: Response) => {
     if (!book) {
       return res
         .status(404)
-        .json({ message: "Le livre n'est pas présent en base de données" });
+        .json({ erreur: "Le livre n'est pas présent en base de données" });
     }
 
     // si j'ai le temps, donner la possibilitée de modifier la note
@@ -142,7 +142,9 @@ export const addRating = async (req: CustomRequest, res: Response) => {
     );
 
     if (alreadyRated) {
-      return res.status(400).json("L'utilisateur a déjà noté ce livre");
+      return res
+        .status(400)
+        .json({ erreur: "L'utilisateur a déjà noté ce livre" });
     }
 
     book.listRatings.push({
@@ -154,7 +156,7 @@ export const addRating = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json("La note a bien été ajouté");
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur s'est produite" });
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -170,7 +172,7 @@ export const getRating = async (req: CustomRequest, res: Response) => {
     if (!book) {
       return res
         .status(404)
-        .json({ message: "Le livre n'est pas présent en base de données" });
+        .json({ erreur: "Le livre n'est pas présent en base de données" });
     }
 
     const ratings = book.listRatings;
@@ -190,10 +192,6 @@ export const getRating = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ average: Number(average) });
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur s'est produite" });
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
-};
-
-export const test = (req: Request, res: Response) => {
-  return res.status(201).json({ message: "route livre ok" });
 };

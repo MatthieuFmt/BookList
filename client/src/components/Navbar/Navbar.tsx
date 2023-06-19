@@ -54,13 +54,6 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
       ) : (
         <div className="navbar__links">
-          <form
-            className="navbar__form-search"
-            // onSubmit={(e) => searchBook(e)}
-          >
-            <input type="text" placeholder="Rechercher un livre" />
-            <button type="submit">P</button>
-          </form>
           <NavLink
             to="/bibliotheque"
             className={({ isActive }) => (isActive ? "link active" : "link")}

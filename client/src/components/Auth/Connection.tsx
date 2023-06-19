@@ -40,35 +40,25 @@ const Connection: React.FC<ConnectionProps> = ({
 
       const infoUser = await fetchApi("auth/connect", "POST", userData);
 
-      // setUser({
-      //   _id: "60b9b3b9b3b9b3b9b3b9b3b9",
-      //   pseudo: "test",
-      //   email: "tst@mail.com",
-      //   profilePicturePath: "test",
-      //   refreshToken: "test",
-      //   listRequestContacts: ["test"],
-      //   listContacts: ["test"],
-      //   listFavoritesBooks: ["test"],
-      //   listBooksAlreadyRead: ["test"],
-      //   listWishBooks: ["test"],
-      //   listConversations: ["test"],
-      //   passwordResetToken: "test",
-      //   passwordResetExpires: 0,
-      //   __v: 0,
-      // });
+      if (!infoUser) {
+        return alert("Erreur lors de la connexion");
+      }
 
       setUser(infoUser.user);
 
       localStorage.setItem("accessToken", infoUser.accessToken);
       localStorage.setItem("refreshToken", infoUser.refreshToken);
+      localStorage.setItem("userId", infoUser.user._id);
+      console.log(infoUser.id);
 
       setToggleModalConnection(false);
     } catch (err) {
-      console.error(err);
+      return console.error(err);
     }
 
     navigate("/bibliotheque");
   };
+  console.log(user?._id);
 
   const forgottenPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

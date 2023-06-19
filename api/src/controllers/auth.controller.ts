@@ -6,7 +6,6 @@ import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { log } from "console";
 
 const tokenBlacklist = new Set<string>();
 
@@ -16,7 +15,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     if (password !== confirmPassword) {
       return res.status(400).json({
-        message: "Les mots de passe ne sont pas identique",
+        erreur: "Les mots de passe ne sont pas identique",
       });
     }
 
@@ -25,7 +24,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
-        message:
+        erreur:
           "Le mot de passe doit contenir au moins une minuscule, une majuscule, un caractère spécial, un chiffre et faire 8 caractères minimum",
       });
     }
@@ -44,13 +43,13 @@ export const createUser = async (req: Request, res: Response) => {
   } catch (error) {
     // peut etre supprimer error dans les réponses
     if (error.code === 11000 && error.keyPattern.email) {
-      return res.status(400).json({ message: "Adresse email déjà enregistré" });
+      return res.status(400).json({ erreur: "Adresse email déjà enregistré" });
     }
     if (error.code === 11000 && error.keyPattern.pseudo) {
-      return res.status(400).json({ message: "Le pseudo est déjà utilisé" });
+      return res.status(400).json({ erreur: "Le pseudo est déjà utilisé" });
     }
 
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ erreur: error });
   }
 };
 
@@ -63,7 +62,7 @@ export const connectUser = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ erreur: "User not found" });
     }
 
     const compare = await bcrypt.compare(password, user.password);
@@ -81,7 +80,7 @@ export const connectUser = async (req: Request, res: Response) => {
 
       const refreshToken = jwt.sign(
         refreshTokenPayload,
-        process.env.REFRESH_TOKEN_SECRET,
+        process.env.TOKEN_SECRET,
         {
           expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
         }
@@ -89,7 +88,7 @@ export const connectUser = async (req: Request, res: Response) => {
 
       const accessToken = jwt.sign(
         accessTokenPayload,
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.TOKEN_SECRET,
         {
           expiresIn: "10s",
           // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
@@ -108,12 +107,12 @@ export const connectUser = async (req: Request, res: Response) => {
     } else {
       return res
         .status(400)
-        .json({ message: "Mot de passe ou email incorrect" });
+        .json({ erreur: "Mot de passe ou email incorrect" });
     }
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Erreur lors de la connexion", error });
+      .json({ erreur: "Erreur lors de la connexion", error });
   }
 };
 
@@ -134,7 +133,7 @@ export const disconnectUser = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: "User disconnected" });
   } else {
-    res.status(400).json({ message: "No token provided" });
+    res.status(400).json({ erreur: "No token provided" });
   }
 };
 
@@ -143,30 +142,27 @@ export const disconnectUser = async (req: Request, res: Response) => {
 // si le refreshToken est lui aussi expiré alors le front redirige vers la page de connexion
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    const idUser = req.body.idUser;
+    const refreshToken = req.body.refreshToken;
+    const userId = req.body.userId;
 
-    const user = await User.findById(idUser);
-
-    // return res.json(user.refreshToken);
-
-    if (!user.refreshToken) {
-      return res.status(400).json({ message: "No refresh token provided" });
+    if (!refreshToken) {
+      throw new Error();
+      return res.status(400).json({ erreur: "No refresh token provided" });
     }
 
-    const decoded = jwt.verify(
-      user.refreshToken,
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    const decoded = jwt.verify(refreshToken, process.env.TOKEN_SECRET);
 
+    if (!decoded) {
+      return res.status(401).json({ erreur: "Refresh token invalide" });
+    }
     // Générer un nouvel access token
     const accessTokenPayload = {
-      id: user._id,
-      email: user.email,
+      id: userId,
     };
 
     const newAccessToken = jwt.sign(
       accessTokenPayload,
-      process.env.ACCESS_TOKEN_SECRET,
+      process.env.TOKEN_SECRET,
       {
         expiresIn: "10s",
         // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
@@ -174,12 +170,12 @@ export const refreshToken = async (req: Request, res: Response) => {
     );
 
     return res.json({
-      access: newAccessToken,
+      accessToken: newAccessToken,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error refreshing access token", error });
+    console.log(error);
+
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };
 
@@ -188,7 +184,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ erreur: "User not found" });
     }
 
     const token = crypto.randomBytes(32).toString("hex");
@@ -214,19 +210,18 @@ export const forgotPassword = async (req: Request, res: Response) => {
       Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail et votre mot de passe restera inchangé.`,
     };
 
-    transport.sendMail(mailOptions, (err: any) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ err });
+    transport.sendMail(mailOptions, (erreur: any) => {
+      if (erreur) {
+        return res.status(500).json({ erreur: erreur });
       }
 
       return res.status(200).json({ message: "Email envoyé" });
     });
-  } catch (err) {
-    console.error(err);
+  } catch (erreur) {
+    console.error(erreur);
     res
       .status(500)
-      .json({ error: "An error occurred while processing the request" });
+      .json({ erreur: "An error occurred while processing the request" });
   }
 };
 
@@ -238,20 +233,20 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ passwordResetToken: token });
     if (!user) {
-      return res.status(400).json({ message: "User not found" });
+      return res.status(400).json({ erreur: "User not found" });
     }
 
     const dateExpireToken = user.passwordResetExpires;
     const dateNow = new Date().getTime();
 
     if (dateExpireToken < dateNow) {
-      return res.status(401).json({ message: "Le token a expiré" });
+      return res.status(401).json({ erreur: "Le token a expiré" });
     }
 
     if (password !== confirmPassword) {
       return res
         .status(403)
-        .json({ message: "Les mots de passe ne correspondent pas" });
+        .json({ erreur: "Les mots de passe ne correspondent pas" });
     }
 
     const passwordRegex =
@@ -259,7 +254,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     if (!passwordRegex.test(password)) {
       return res.status(400).json({
-        message:
+        erreur:
           "Le mot de passe doit contenir au moins une minuscule, une majuscule, un caractère spécial, un chiffre et faire 8 caractères minimum",
       });
     }
@@ -275,12 +270,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     return res.json({ message: "Le mot de passe a été modifié" });
   } catch (error) {
     return res.status(500).json({
-      message: "Erreur lors de l'enregistrement de l'utilisateur",
+      erreur: "Erreur lors de l'enregistrement de l'utilisateur",
     });
   }
-};
-
-// à supprimer
-export const test = (req: Request, res: Response) => {
-  res.status(201).json({ message: "route auth ok" });
 };

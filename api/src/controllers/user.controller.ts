@@ -38,7 +38,7 @@ export const deleteFromBooksLists = async (
   const listParam = req.params.list;
 
   if (!isBookListKey(listParam)) {
-    return res.status(400).json({ message: "Invalid book list key" });
+    return res.status(400).json({ erreur: "Invalid book list key" });
   }
 
   const list: BookListKey = listParam;
@@ -50,12 +50,12 @@ export const deleteFromBooksLists = async (
     const user = (await User.findById(id)) as UserWithBookLists;
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     if (!user[list].includes(bookId)) {
       return res.status(400).json({
-        message: "Le livre n'est pas présent dans la liste",
+        erreur: "Le livre n'est pas présent dans la liste",
       });
     }
 
@@ -71,7 +71,9 @@ export const deleteFromBooksLists = async (
       .status(200)
       .json({ message: "Le livre a bien été supprimé de la liste" });
   } catch (error) {
-    return res.status(500).json({ message: "Une erreur s'est produite" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -86,7 +88,7 @@ export const addToBooksLists = async (req: CustomRequest, res: Response) => {
   const listParam = req.params.list;
 
   if (!isBookListKey(listParam)) {
-    return res.status(400).json({ message: "Invalid book list key" });
+    return res.status(400).json({ erreur: "Liste invalide" });
   }
 
   const list: BookListKey = listParam;
@@ -98,13 +100,13 @@ export const addToBooksLists = async (req: CustomRequest, res: Response) => {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     if (user[list].includes(bookId)) {
       return res
         .status(400)
-        .json({ message: "Livre déjà présent dans la liste" });
+        .json({ erreur: "Livre déjà présent dans la liste" });
     }
 
     user[list].push(bookId);
@@ -113,7 +115,9 @@ export const addToBooksLists = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ message: "Livre ajouté à la liste" });
   } catch (error) {
-    res.status(500).json({ message: "Une erreur s'est prosuite" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -133,12 +137,14 @@ export const getUser = async (req: CustomRequest, res: Response) => {
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     return res.status(200).json({ user });
   } catch (error) {
-    res.status(500).json({ message: "Une erreur s'est produite" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -159,12 +165,12 @@ export const updateProfilePicture = async (
   try {
     upload(req, res, (err: any) => {
       if (err instanceof multer.MulterError) {
-        res.status(400).send({ message: "Une erreur s'est produite" });
+        res.status(400).send({ erreur: "Une erreur s'est produite" });
       } else if (err) {
-        res.status(400).send({ message: "Une erreur s'est produite" });
+        res.status(400).send({ erreur: "Une erreur s'est produite" });
       } else {
         if (!req.file) {
-          res.status(400).send({ message: "Aucun fichier sélectionné." });
+          res.status(400).send({ erreur: "Aucun fichier sélectionné." });
         } else {
           res.status(200).send({
             message: "Photo de profil téléchargée avec succès.",
@@ -177,14 +183,16 @@ export const updateProfilePicture = async (
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     user.profilePicturePath = `./src/uploads/${req.file.filename}`;
 
     user.save();
   } catch (error) {
-    res.status(500).send({ message: "Une erreur s'est produite" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -205,7 +213,7 @@ export const deleteProfilePicture = async (
     const user = await User.findById(id);
 
     if (!user) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     const filename = user.profilePicturePath;
@@ -214,7 +222,7 @@ export const deleteProfilePicture = async (
       if (err) {
         return res
           .status(500)
-          .json({ message: "Erreur lors de la suppression du fichier" });
+          .json({ erreur: "Erreur lors de la suppression du fichier" });
       }
 
       res.status(200).json({ message: "Fichier supprimé avec succès" });
@@ -228,7 +236,9 @@ export const deleteProfilePicture = async (
       .status(200)
       .json({ message: "La photo de profil a bien été supprimé" });
   } catch (error) {
-    res.status(500).json({ message: "Une erreur s'est produite" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -248,7 +258,7 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     if (userRequested.listRequestContacts.includes(id)) {
       return res.status(400).json({
-        message: "Une demande de contact à déjà été envoyé à cet utilisateur",
+        erreur: "Une demande de contact à déjà été envoyé à cet utilisateur",
       });
     }
     userRequested.listRequestContacts.push(id);
@@ -257,9 +267,9 @@ export const requestContact = async (req: CustomRequest, res: Response) => {
 
     return res.json({ message: "La demande de contact a bien été envoyée" });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ message: "Un des deux utilisateurs n'existe pas" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -285,7 +295,7 @@ export const responseRequestContact = async (
     const userSentRequest = await User.findById(idUserSentRequest);
 
     if (!user || !userSentRequest) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
     const newListRequestContact = user.listRequestContacts.filter((id) => {
       return id !== idUserSentRequest;
@@ -293,7 +303,7 @@ export const responseRequestContact = async (
 
     if (user.listContacts.includes(idUserSentRequest)) {
       return res.status(400).json({
-        message: "L'utilisateur est déjà présent da la liste des contacts",
+        erreur: "L'utilisateur est déjà présent da la liste des contacts",
       });
     }
 
@@ -309,10 +319,9 @@ export const responseRequestContact = async (
 
     return res.status(200).json({ message: "La réponse a bien été envoyé" });
   } catch (error) {
-    return res.status(500).json({
-      message:
-        "Une erreur s'est produite lors de la réponse à la demande de contact",
-    });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -334,12 +343,12 @@ export const deleteContact = async (req: CustomRequest, res: Response) => {
     const userToDelete = await User.findById(idUserToDelete);
 
     if (!userConnected || !userToDelete) {
-      return res.status(404).json({ message: "L'utilisateur n'existe pas" });
+      return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     if (!userConnected.listContacts.includes(idUserToDelete)) {
       return res.status(404).json({
-        message: "L'utilisateur n'est pas dans la liste des contacts",
+        erreur: "L'utilisateur n'est pas dans la liste des contacts",
       });
     }
 
@@ -362,10 +371,9 @@ export const deleteContact = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ message: "Le contact a bien été supprimé" });
   } catch (error) {
-    console.error("Erreur lors de la suppression du contact :", error);
-    return res
-      .status(500)
-      .json({ message: "Erreur lors de la suppression du contact" });
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
 
@@ -388,14 +396,8 @@ export const getPropositionContacts = async (
 
     return res.status(200).json(users);
   } catch (error) {
-    return res
-      .status(500)
-      .json("Erreur lors de la récupération des utilisateurs");
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
   }
 };
-
-/////////////////////////////////////////////////////////////
-export const test = (req: Request, res: Response) => {
-  res.status(201).json({ message: "route utilisateur ok" });
-};
-/////////////////////////////////////////////////////////////

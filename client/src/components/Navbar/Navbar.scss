@@ -16,29 +16,6 @@
     align-items: center;
   }
 
-  &__form-search {
-    display: flex;
-    justify-content: center;
-
-    input {
-      border-radius: 15px 0 0 15px;
-      background-color: $foreground-color;
-      width: 12rem;
-      height: 1.5rem;
-    }
-
-    button {
-      background-color: $first-color;
-      color: $second-color;
-      border-radius: 0 15px 15px 0;
-
-      &:hover {
-        background-color: $second-color;
-        color: $first-color;
-      }
-    }
-  }
-
   &__btn {
     margin-left: $space-2;
     padding: $space-2;
