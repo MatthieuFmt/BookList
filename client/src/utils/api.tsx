@@ -27,22 +27,11 @@ export const parseJwt = (token: string) => {
 export const fetchApi = async (url: string, method: string, body?: any) => {
   let token = localStorage.getItem("accessToken") || "";
 
-  // évite une erreur si le token est vide
-  // if (token) {
-  //   try {
-  //     token = JSON.parse(token);
-  //   } catch (error) {
-  //     console.error("Erreur lors de l'analyse du token JSON :", error);
-  //   }
-  // }
-
   if (parseJwt(token)) {
     const timestampInSeconds = Math.floor(Date.now() / 1000);
     const tokenExpireTimestamp = parseJwt(token).exp;
 
     // si l'access token a expiré, appelle la fonction qui utilise le refresh token de l'utilisateur pour mettre à jour l'access token
-    console.log("test");
-
     if (timestampInSeconds >= tokenExpireTimestamp) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`, {
         method: "POST",
@@ -59,13 +48,18 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
           if (data.erreur) {
             throw new Error(data.erreur);
           }
-          console.log(data);
-          // ici
-          localStorage.setItem("accessToken", JSON.stringify(data.accessToken));
-          token = JSON.stringify(data.accessToken);
+
+          localStorage.setItem("accessToken", data.accessToken);
+          token = data.accessToken;
         })
         .catch((error) => {
-          // TODO : il faut recevoir un code particulier si le refreshToken est lui aussi expiré et faire une redirection vers la page d'accueil
+          // supprime les tokens et recharge la page si le refresh token a expiré
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("userId");
+
+          window.location.reload();
+
           return error;
         });
     }

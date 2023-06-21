@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Book, IBook } from "../models/book.model";
 import { User } from "../models/user.model";
+// import fetch from "node-fetch";
 
 interface CustomRequest extends Request {
   user: {
@@ -192,6 +193,71 @@ export const getRating = async (req: CustomRequest, res: Response) => {
 
     return res.status(200).json({ average: Number(average) });
   } catch (error) {
+    return res.status(500).json({ erreur: "Une erreur s'est produite" });
+  }
+};
+
+export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=intitle:harry+potter&key=AIzaSyAVYpytKjjHfklW7B-z4IbV2P9xY3fahM4`
+    );
+
+    const allBooks = await Book.find({}, { idApi: 1, _id: 0 });
+
+    const idApiValues = allBooks ? allBooks.map((book) => book.idApi) : [];
+
+    const listApiBooks = await response.json();
+
+    const newArray = listApiBooks?.items.map((book: any) => {
+      book.idApi = book.id;
+      book.author = book.volumeInfo.authors[0];
+      book.summary = book.volumeInfo.description;
+      book.category = book.volumeInfo.categories
+        ? book.volumeInfo.categories[0]
+        : "";
+
+      if (book.volumeInfo.imageLinks) {
+        if (book.volumeInfo.imageLinks.thumbnail) {
+          book.imageLinks = book.volumeInfo.imageLinks.thumbnail;
+        } else if (book.volumeInfo.imageLinks.smallThumbnail) {
+          book.imageLinks = book.volumeInfo.imageLinks.smallThumbnail;
+        } else {
+          book.imageLinks = "";
+        }
+      } else {
+        book.imageLinks = "";
+      }
+
+      book.title = book.volumeInfo.title;
+      book.publishedDate = book.volumeInfo.publishedDate;
+      book.publisher = book.volumeInfo.publisher;
+      book.isbn = book.volumeInfo.industryIdentifiers[1]
+        ? book.volumeInfo.industryIdentifiers[1].identifier
+        : book.volumeInfo.industryIdentifiers[0].identifier;
+
+      delete book.id;
+      delete book.kind;
+      delete book.accessInfo;
+      delete book.etag;
+      delete book.saleInfo;
+      delete book.searchInfo;
+      delete book.selfLink;
+      delete book.volumeInfo;
+
+      if (!idApiValues.includes(book.idApi)) {
+        (async () => {
+          await Book.create(book);
+        })();
+      }
+
+      return book;
+    });
+
+    return res.status(200).json({ newArray });
+  } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
 };

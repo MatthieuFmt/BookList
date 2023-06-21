@@ -31,13 +31,14 @@ const MyLists = () => {
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const test = await fetchApi("book/get-book/1213", "GET");
-    // const test = fetchApi(
-    //   `https://www.googleapis.com/books/v1/volumes?q=Harry+Potter&${
-    //     import.meta.env.VITE_GOOGLE_API_KEY
-    //   }`,
-    //   "GET"
-    // );
+    // const userData: UserConnectionData = {
+    //   email,
+    //   password,
+    // };
+
+    const test = await fetchApi("book/fetch-googlebook", "POST", {
+      query: "Potter",
+    });
 
     console.log(test);
   };

@@ -90,13 +90,10 @@ export const connectUser = async (req: Request, res: Response) => {
         accessTokenPayload,
         process.env.TOKEN_SECRET,
         {
-          expiresIn: "10s",
-          // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
         }
       );
 
-      // supprimer le refresh token de la bdd et lajouter au cookies
-      // user.refreshToken = refreshToken;
       await user.save();
 
       return res.json({
@@ -147,7 +144,6 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     if (!refreshToken) {
       throw new Error();
-      return res.status(400).json({ erreur: "No refresh token provided" });
     }
 
     const decoded = jwt.verify(refreshToken, process.env.TOKEN_SECRET);
@@ -164,8 +160,7 @@ export const refreshToken = async (req: Request, res: Response) => {
       accessTokenPayload,
       process.env.TOKEN_SECRET,
       {
-        expiresIn: "10s",
-        // expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
       }
     );
 

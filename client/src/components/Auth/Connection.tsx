@@ -19,8 +19,8 @@ type ForgottenPasswordData = {
 const Connection: React.FC<ConnectionProps> = ({
   setToggleModalConnection,
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("matt136@hotmail.fr");
+  const [password, setPassword] = useState("azERTY123$");
 
   const [showInputForgotPassword, setShowInputForgotPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
@@ -49,7 +49,6 @@ const Connection: React.FC<ConnectionProps> = ({
       localStorage.setItem("accessToken", infoUser.accessToken);
       localStorage.setItem("refreshToken", infoUser.refreshToken);
       localStorage.setItem("userId", infoUser.user._id);
-      console.log(infoUser.id);
 
       setToggleModalConnection(false);
     } catch (err) {
@@ -58,7 +57,6 @@ const Connection: React.FC<ConnectionProps> = ({
 
     navigate("/bibliotheque");
   };
-  console.log(user?._id);
 
   const forgottenPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

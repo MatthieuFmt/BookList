@@ -14,22 +14,28 @@ interface IComments {
 
 export interface IBook extends Document {
   idApi: string;
-  coverPicture: string;
-  title: string;
   author: string;
-  date: Date;
   summary: string;
+  category: string;
+  imageLinks: string;
+  title: string;
+  publishedDate: Date;
+  publisher: string;
+  isbn: string;
   listComments: Array<IComments>;
   listRatings: Array<IRatings>;
 }
 
 const BookSchema = new Schema({
   idApi: { type: String, required: true },
-  coverPicture: { type: String },
-  title: { type: String, required: true },
   author: { type: String, required: true },
-  date: { type: Date },
   summary: { type: String },
+  category: { type: String },
+  imageLinks: { type: String },
+  title: { type: String, required: true },
+  publishedDate: { type: Date },
+  publisher: { type: String },
+  isbn: { type: String },
   listComments: {
     type: [
       {
