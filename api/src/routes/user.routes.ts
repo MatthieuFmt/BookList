@@ -2,6 +2,7 @@ import express from "express";
 
 import {
   getUser,
+  getList,
   updateProfilePicture,
   deleteProfilePicture,
   deleteFromBooksLists,
@@ -15,6 +16,9 @@ import {
 const router = express.Router();
 
 router.get("/get-user", getUser);
+
+router.get("/get-list/:list", getList);
+
 router.post("/update-profile-picture", updateProfilePicture);
 router.delete("/delete-profile-picture", deleteProfilePicture);
 

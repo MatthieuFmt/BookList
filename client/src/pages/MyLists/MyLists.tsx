@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/UserContext";
 import BookCard from "../../components/BookCard/BookCard";
 import { fetchApi } from "../../utils/api";
+import { BookInterface } from "../../interfaces/interfaces";
+import loupe from "../../assets/images/loupe.svg";
 
 const MyLists = () => {
   const [activeList, setActiveList] = useState({
@@ -10,38 +12,37 @@ const MyLists = () => {
     toRead: false,
     favorite: false,
   });
-  const [bookIdList, setBookIdList] = useState<string[]>([]);
+  const [inputSearch, setInputSearch] = useState<string>("");
   // créer un bookInterface à la place de string
-  const [bookListDisplay, setBookListDisplay] = useState<string[]>([]);
+  const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
   const { user, setUser } = useContext(UserContext);
 
-  useEffect(() => {
-    if (activeList.toRead && user?.listWishBooks)
-      setBookIdList(user.listWishBooks);
-
-    if (activeList.read && user?.listBooksAlreadyRead)
-      setBookIdList(user.listBooksAlreadyRead);
-
-    if (activeList.favorite && user?.listFavoritesBooks)
-      setBookIdList(user.listFavoritesBooks);
-
-    // créer une fonction getBooksByIds qui prend en paramètre bookIdList et qui renvoie un tableau de livres pour boucler dessus
-    // fetchApi("book/get-book-list", "POST", bookIdList).then((data) => setBookListDisplay(data));
-  }, [activeList]);
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // const userData: UserConnectionData = {
-    //   email,
-    //   password,
-    // };
+    if (!inputSearch) return;
 
-    const test = await fetchApi("book/fetch-googlebook", "POST", {
-      query: "Potter",
+    const searchedBooks = await fetchApi("book/fetch-googlebook", "POST", {
+      query: inputSearch,
     });
 
-    console.log(test);
+    setBookListDisplay(searchedBooks);
   };
+
+  useEffect(() => {
+    let list = "";
+    if (activeList.toRead) list = "listWishBooks";
+    if (activeList.read) list = "listBooksAlreadyRead";
+    if (activeList.favorite) list = "listFavoritesBooks";
+    if (activeList.search) setBookListDisplay([]);
+
+    if (list !== "") {
+      (async () => {
+        const data = await fetchApi(`user/get-list/${list}`, "GET");
+        setBookListDisplay(data);
+      })();
+    }
+  }, [activeList]);
 
   return (
     <main className="container my-lists">
@@ -125,15 +126,48 @@ const MyLists = () => {
             className="my-lists__form-search"
             onSubmit={(e) => searchBook(e)}
           >
-            <input type="text" placeholder="Rechercher un livre" />
-            <button type="submit">P</button>
+            <input
+              type="text"
+              placeholder="Rechercher un livre"
+              onChange={(e) =>
+                setInputSearch(e.target.value.replace(/ /g, "+"))
+              }
+            />
+            <button type="submit">
+              <img src={loupe} alt="loupe" className="icon" />
+            </button>
           </form>
         )}
         {/* book est un string = 111 (id du livre) dans la bdd pour l'instant ce qui crée une erreur, 
         il faut maintenant ajouter les livres en bdd et boucler dessus */}
-        {/* {bookListDisplay.map((book) => {
-            return <BookCard volumeInfo={book} />;
-          })} */}
+        {bookListDisplay?.map((book: BookInterface) => {
+          return (
+            <BookCard
+              bookInfos={book}
+              key={book.idApi}
+              setBookListDisplay={setBookListDisplay}
+              bookListDisplay={bookListDisplay}
+            />
+          );
+        })}
+
+        {bookListDisplay.length === 0 && !activeList.search && (
+          <div className="my-lists__search-link">
+            La liste est vide.
+            <span
+              onClick={() =>
+                setActiveList({
+                  search: true,
+                  read: false,
+                  toRead: false,
+                  favorite: false,
+                })
+              }
+            >
+              Recherche des livres
+            </span>
+          </div>
+        )}
       </section>
     </main>
   );

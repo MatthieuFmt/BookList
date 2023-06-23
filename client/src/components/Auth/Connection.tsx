@@ -46,9 +46,9 @@ const Connection: React.FC<ConnectionProps> = ({
 
       setUser(infoUser.user);
 
-      localStorage.setItem("accessToken", infoUser.accessToken);
-      localStorage.setItem("refreshToken", infoUser.refreshToken);
-      localStorage.setItem("userId", infoUser.user._id);
+      sessionStorage.setItem("accessToken", infoUser.accessToken);
+      sessionStorage.setItem("refreshToken", infoUser.refreshToken);
+      sessionStorage.setItem("userId", infoUser.user._id);
 
       setToggleModalConnection(false);
     } catch (err) {

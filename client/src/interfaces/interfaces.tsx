@@ -1,4 +1,4 @@
-export interface User {
+export interface UserInterface {
   _id: string;
   pseudo: string;
   email: string;
@@ -13,4 +13,17 @@ export interface User {
   passwordResetToken: string;
   passwordResetExpires: number;
   __v: number;
+  [key: string]: any;
+}
+
+export interface BookInterface {
+  idApi: string;
+  author: string;
+  summary: string;
+  category: string;
+  imageLinks: string;
+  title: string;
+  publishedDate: string;
+  publisher: string;
+  isbn: string;
 }

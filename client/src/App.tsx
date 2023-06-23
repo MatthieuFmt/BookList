@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Route, Routes } from "react-router-dom";
 
-import { User } from "./interfaces/interfaces";
+import { UserInterface } from "./interfaces/interfaces";
 
 import Home from "./pages/Home/Home";
 import ResetPassword from "./components/Auth/ResetPassword";
@@ -10,12 +10,27 @@ import SearchList from "./components/SearchList/SearchList";
 import Navbar from "./components/Navbar/Navbar";
 import MyLists from "./pages/MyLists/MyLists";
 import UserContext from "./context/UserContext";
+import { fetchApi } from "./utils/api";
 
 function App() {
   const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
   const [toggleModalConnection, setToggleModalConnection] = useState(false);
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserInterface | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const userConnected = await fetchApi("user/get-user", "GET");
+      setUser(userConnected);
+    })();
+  }, []);
+
+  // let url;
+  // if (process.env.NODE_ENV === "development") {
+  //   url = "http://localhost:8000";
+  // } else {
+  //   url = "/";
+  // }
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

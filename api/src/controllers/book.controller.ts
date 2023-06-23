@@ -199,8 +199,10 @@ export const getRating = async (req: CustomRequest, res: Response) => {
 
 export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
   try {
+    const query = req.body.query;
+
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=intitle:harry+potter&key=AIzaSyAVYpytKjjHfklW7B-z4IbV2P9xY3fahM4`
+      `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&key=AIzaSyAVYpytKjjHfklW7B-z4IbV2P9xY3fahM4`
     );
 
     const allBooks = await Book.find({}, { idApi: 1, _id: 0 });
@@ -254,7 +256,7 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
       return book;
     });
 
-    return res.status(200).json({ newArray });
+    return res.status(200).json(newArray);
   } catch (error) {
     console.log(error);
 

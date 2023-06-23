@@ -42,7 +42,22 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin-top: $space-5;
+    margin-top: 2rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      position: absolute;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
   }
 
   &__form-search {
@@ -53,7 +68,7 @@
     input {
       border-radius: 15px 0 0 15px;
       background-color: $background-color;
-      width: 12rem;
+      width: 20rem;
       height: 2rem;
     }
 
@@ -66,6 +81,18 @@
         background-color: $second-color;
         color: $first-color;
       }
+    }
+  }
+
+  &__search-link {
+    margin-top: $space-6;
+    color: $grey-2;
+
+    span {
+      color: $first-color;
+      margin-left: $space-1;
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 }

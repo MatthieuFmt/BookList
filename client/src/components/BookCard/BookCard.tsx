@@ -1,27 +1,60 @@
-import { BookInterface } from "../SearchList/SearchList";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { BookInterface, UserInterface } from "../../interfaces/interfaces";
+import { formatDate } from "../../utils/helpers";
+import { fetchApi } from "../../utils/api";
+import UserContext from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
-interface BookCardProps extends BookInterface {
-  id: number;
+interface BookCardProps {
+  bookInfos: BookInterface;
+  setBookListDisplay: React.Dispatch<React.SetStateAction<BookInterface[]>>;
+  bookListDisplay: BookInterface[];
 }
 
 const BookCard: React.FC<BookCardProps> = ({
-  id,
-  volumeInfo: {
-    title,
-    authors,
-    publisher,
-    publishedDate,
-    description,
-    industryIdentifiers,
-    categories,
-    averageRating,
-    imageLinks,
-    previewLink,
-  },
+  bookInfos,
+  setBookListDisplay,
+  bookListDisplay,
 }) => {
+  const navigate = useNavigate();
+
+  const { user, setUser } = useContext(UserContext);
+
   const [showAddList, setShowAddList] = useState(false);
   const [showLayout, setShowLayout] = useState(false);
+
+  const addToList = (bookId: string, list: string) => {
+    fetchApi(`user/add-to-lists/${list}`, "POST", { bookId });
+
+    if (!user[list].includes(bookId)) {
+      setUser((prevUser: UserInterface) =>
+        Object.assign({}, prevUser, {
+          [list]: [...prevUser[list], bookId],
+        })
+      );
+    }
+  };
+
+  const removeFromList = (bookId: string, list: string) => {
+    fetchApi(`user/delete-from-lists/${list}`, "DELETE", { bookId });
+
+    if (user[list].includes(bookId)) {
+      setUser((prevUser: UserInterface) => {
+        const updatedList = prevUser[list].filter(
+          (id: string) => id !== bookId
+        );
+        return { ...prevUser, [list]: updatedList };
+      });
+
+      setBookListDisplay([
+        ...bookListDisplay.filter((book) => book.idApi !== bookId),
+      ]);
+    }
+  };
+
+  const showBookPage = (bookId: string) => {
+    navigate(`/book/${bookId}}`);
+  };
 
   return (
     <article className="book-card">
@@ -29,15 +62,16 @@ const BookCard: React.FC<BookCardProps> = ({
         className="book-card__container-img"
         onMouseEnter={() => setShowLayout(true)}
         onMouseLeave={() => setShowLayout(false)}
+        onClick={() => showBookPage(bookInfos.idApi)}
       >
-        <img src={imageLinks.thumbnail} alt="image de couverture" />
+        <img src={bookInfos.imageLinks} alt="image de couverture" />
         {showLayout && (
           <div className="book-card__layout">Voir la page du livre</div>
         )}
       </div>
       <div className="book-card__content">
         <div className="book-card__header">
-          <h3 className="book-card__title">{title}</h3>
+          <h3 className="book-card__title">{bookInfos.title}</h3>
 
           <div
             className="book-card__add-list-container"
@@ -47,24 +81,97 @@ const BookCard: React.FC<BookCardProps> = ({
             <button className="book-card__add-list-button">+</button>
             {showAddList && (
               <ul className="book-card__modal">
-                <li>+ à lire</li>
-                <li>+ déjà lu</li>
-                <li>+ favoris</li>
+                {!user?.listWishBooks.includes(bookInfos.idApi) ? (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() => addToList(bookInfos.idApi, "listWishBooks")}
+                  >
+                    + à lire
+                  </li>
+                ) : (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() =>
+                      removeFromList(bookInfos.idApi, "listWishBooks")
+                    }
+                  >
+                    - à lire
+                  </li>
+                )}
+
+                {!user?.listBooksAlreadyRead.includes(bookInfos.idApi) ? (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() =>
+                      addToList(bookInfos.idApi, "listBooksAlreadyRead")
+                    }
+                  >
+                    + déjà lu
+                  </li>
+                ) : (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() =>
+                      removeFromList(bookInfos.idApi, "listBooksAlreadyRead")
+                    }
+                  >
+                    - déjà lu
+                  </li>
+                )}
+
+                {!user?.listFavoritesBooks.includes(bookInfos.idApi) ? (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() =>
+                      addToList(bookInfos.idApi, "listFavoritesBooks")
+                    }
+                  >
+                    + favoris
+                  </li>
+                ) : (
+                  <li
+                    className="book-card__btn-add-list"
+                    onClick={() =>
+                      removeFromList(bookInfos.idApi, "listFavoritesBooks")
+                    }
+                  >
+                    - favoris
+                  </li>
+                )}
               </ul>
             )}
           </div>
         </div>
-        <p>
-          <span>Auteur</span> {authors}
-        </p>
-        <p>
-          <span>Editeur</span> {publisher}
-        </p>
-        <p>
-          <span>Date de sortie</span> {publishedDate}
-        </p>
-        <span>Résumé</span>
-        <p>{description}</p>
+
+        {bookInfos.author && (
+          <p>
+            <span>Auteur</span> {bookInfos.author}
+          </p>
+        )}
+
+        {bookInfos.publisher && (
+          <p>
+            <span>Editeur</span> {bookInfos.publisher}
+          </p>
+        )}
+
+        {bookInfos.publishedDate && (
+          <p>
+            <span>Date de sortie</span> {formatDate(bookInfos.publishedDate)}
+          </p>
+        )}
+
+        {bookInfos.isbn && (
+          <p>
+            <span>ISBN</span> {bookInfos.isbn}
+          </p>
+        )}
+
+        {bookInfos.category && (
+          <p>
+            <span>Catégorie</span> {bookInfos.category}
+          </p>
+        )}
       </div>
     </article>
   );

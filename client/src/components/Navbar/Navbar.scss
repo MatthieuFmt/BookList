@@ -11,6 +11,10 @@
   height: 8vh;
   padding: 0 $space-5;
 
+  &__logo .logo {
+    width: 15rem;
+  }
+
   &__links {
     display: flex;
     align-items: center;
@@ -39,10 +43,16 @@
   }
 
   .link {
+    display: flex;
     position: relative;
     margin: 0 $space-3;
     color: $white;
     padding: $space-2 0;
+
+    .icon {
+      width: 1.5rem;
+      margin-right: $space-1;
+    }
 
     &:hover {
       color: $first-color;

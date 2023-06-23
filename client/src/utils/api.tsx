@@ -25,7 +25,7 @@ export const parseJwt = (token: string) => {
 };
 
 export const fetchApi = async (url: string, method: string, body?: any) => {
-  let token = localStorage.getItem("accessToken") || "";
+  let token = sessionStorage.getItem("accessToken") || "";
 
   if (parseJwt(token)) {
     const timestampInSeconds = Math.floor(Date.now() / 1000);
@@ -39,8 +39,8 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          refreshToken: localStorage.getItem("refreshToken"),
-          userId: localStorage.getItem("userId"),
+          refreshToken: sessionStorage.getItem("refreshToken"),
+          userId: sessionStorage.getItem("userId"),
         }),
       })
         .then((res) => res.json())
@@ -49,14 +49,14 @@ export const fetchApi = async (url: string, method: string, body?: any) => {
             throw new Error(data.erreur);
           }
 
-          localStorage.setItem("accessToken", data.accessToken);
+          sessionStorage.setItem("accessToken", data.accessToken);
           token = data.accessToken;
         })
         .catch((error) => {
           // supprime les tokens et recharge la page si le refresh token a expiré
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("userId");
+          sessionStorage.removeItem("accessToken");
+          sessionStorage.removeItem("refreshToken");
+          sessionStorage.removeItem("userId");
 
           window.location.reload();
 

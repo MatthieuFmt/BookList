@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { BookListKey, User, UserWithBookLists } from "../models/user.model";
+import { Book } from "../models/book.model";
 import { upload } from "../config/multer.config";
 
 import multer from "multer";
@@ -77,6 +78,32 @@ export const deleteFromBooksLists = async (
   }
 };
 
+export const getList = async (req: CustomRequest, res: Response) => {
+  try {
+    let list = req.params.list;
+
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    let listItems = [];
+
+    if (user && list) {
+      listItems = user.get(list);
+    } else {
+      throw new Error("Utilisateur ou liste invalide");
+    }
+
+    const listBooks = await Book.find({ idApi: listItems });
+
+    return res.status(200).json(listBooks);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
+  }
+};
+
 /**
  * Ajoute un livre à la liste de lecture sélectionné dans "listparam" pour l'utilisateur connecté.
  *
@@ -140,7 +167,7 @@ export const getUser = async (req: CustomRequest, res: Response) => {
       return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
-    return res.status(200).json({ user });
+    return res.status(200).json(user);
   } catch (error) {
     console.error(error);
 

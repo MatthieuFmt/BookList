@@ -5,28 +5,19 @@ import test from "./test-api.json";
 import BookCard from "../BookCard/BookCard";
 
 export interface BookInterface {
-  volumeInfo: {
-    title: string;
-    authors: string[];
-    publisher: string;
-    publishedDate: string;
-    description: string;
-    industryIdentifiers: {
-      type: string;
-      identifier: string;
-    }[];
-    categories: string[];
-    averageRating: number;
-    imageLinks: {
-      smallThumbnail: string;
-      thumbnail: string;
-    };
-    previewLink: string;
-  };
+  idApi: { type: String; required: true };
+  author: { type: String; required: true };
+  summary: { type: String };
+  category: { type: String };
+  imageLinks: { type: String };
+  title: { type: String; required: true };
+  publishedDate: { type: Date };
+  publisher: { type: String };
+  isbn: { type: String };
 }
 
 const Booklist = () => {
-  const [arrayBooks, setArrayBooks] = useState<BookInterface[]>(test);
+  const [arrayBooks, setArrayBooks] = useState<BookInterface[]>();
 
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

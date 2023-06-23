@@ -1,6 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { parseJwt } from "../../utils/api";
+import { NavLink, useNavigate } from "react-router-dom";
+
+import books from "../../assets/images/books.svg";
+import message from "../../assets/images/message.svg";
+import exit from "../../assets/images/logout.svg";
+import logo from "../../assets/images/logo.svg";
 
 interface NavbarProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
@@ -12,11 +16,12 @@ const Navbar: React.FC<NavbarProps> = ({
   setToggleModalConnection,
 }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
 
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("userId");
     navigate("/");
   };
 
@@ -28,7 +33,9 @@ const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <nav className="navbar">
-      <div className="navbar__logo">LOGO</div>
+      <div className="navbar__logo">
+        <img src={logo} alt="logo" className="logo" />
+      </div>
 
       {!token ? (
         <div>
@@ -45,12 +52,6 @@ const Navbar: React.FC<NavbarProps> = ({
           >
             Inscription
           </button>
-          <NavLink
-            to="/bibliotheque"
-            className={({ isActive }) => (isActive ? "link active" : "link")}
-          >
-            test
-          </NavLink>
         </div>
       ) : (
         <div className="navbar__links">
@@ -58,6 +59,7 @@ const Navbar: React.FC<NavbarProps> = ({
             to="/bibliotheque"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
+            <img src={books} alt="livres" className="icon" />
             Bibliothèque
           </NavLink>
 
@@ -65,6 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({
             to="/messagerie"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
+            <img src={message} alt="livres" className="icon" />
             Messagerie
           </NavLink>
           <NavLink
@@ -73,8 +76,12 @@ const Navbar: React.FC<NavbarProps> = ({
           >
             Mon compte
           </NavLink>
-          <button className="navbar__btn navbar__btn--log-out" onClick={logout}>
-            Se déconnecter
+          <button
+            title="Se déconnecter"
+            className="navbar__btn navbar__btn--log-out"
+            onClick={logout}
+          >
+            <img src={exit} alt="déconnexion" className="icon" />
           </button>
         </div>
       )}
