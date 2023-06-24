@@ -1,0 +1,49 @@
+.book-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__card {
+    display: flex;
+    margin: $space-6 0;
+    height: 20rem;
+    width: 80%;
+    background-color: $background-color;
+    color: $grey-2;
+
+    img {
+      height: 100%;
+    }
+
+    span {
+      color: $white;
+    }
+  }
+  &__infos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    padding: $space-3 $space-2;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__title {
+    color: $first-color;
+  }
+
+  &__other-infos {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  &__summary {
+    overflow: auto;
+  }
+}

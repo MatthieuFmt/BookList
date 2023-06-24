@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar/Navbar";
 import MyLists from "./pages/MyLists/MyLists";
 import UserContext from "./context/UserContext";
 import { fetchApi } from "./utils/api";
+import Book from "./pages/Book/Book";
 
 function App() {
   const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
@@ -54,6 +55,7 @@ function App() {
           />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/bibliotheque" element={<MyLists />} />
+          <Route path="/livre" element={<Book />} />
         </Routes>
       </div>
     </UserContext.Provider>

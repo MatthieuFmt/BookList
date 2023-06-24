@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Registration from "../../components/Auth/Registration";
 import Connection from "../../components/Auth/Connection";
-import UserContext from "../../context/UserContext";
 
 interface HomeProps {
   toggleModalRegistration: boolean;
@@ -16,8 +15,6 @@ const Home: React.FC<HomeProps> = ({
   toggleModalConnection,
   setToggleModalConnection,
 }) => {
-  const { user, setUser } = useContext(UserContext);
-
   return (
     <>
       {toggleModalRegistration && (
