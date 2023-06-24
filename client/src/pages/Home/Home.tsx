@@ -17,8 +17,6 @@ const Home: React.FC<HomeProps> = ({
   setToggleModalConnection,
 }) => {
   const { user, setUser } = useContext(UserContext);
-  // setUser(null);
-  console.log(user);
 
   return (
     <>

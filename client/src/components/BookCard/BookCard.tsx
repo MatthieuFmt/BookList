@@ -52,8 +52,8 @@ const BookCard: React.FC<BookCardProps> = ({
     }
   };
 
-  const showBookPage = (bookId: string) => {
-    navigate(`/book/${bookId}}`);
+  const showBookPage = (bookInfos: BookInterface) => {
+    navigate("/book", { state: { email: "hello, I'm an email" } });
   };
 
   return (
@@ -62,11 +62,16 @@ const BookCard: React.FC<BookCardProps> = ({
         className="book-card__container-img"
         onMouseEnter={() => setShowLayout(true)}
         onMouseLeave={() => setShowLayout(false)}
-        onClick={() => showBookPage(bookInfos.idApi)}
+        onClick={() => showBookPage(bookInfos)}
       >
         <img src={bookInfos.imageLinks} alt="image de couverture" />
         {showLayout && (
-          <div className="book-card__layout">Voir la page du livre</div>
+          <div
+            className="book-card__layout"
+            onClick={() => showBookPage(bookInfos)}
+          >
+            Voir la page du livre
+          </div>
         )}
       </div>
       <div className="book-card__content">

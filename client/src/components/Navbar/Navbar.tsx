@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction, useEffect } from "react";
+import React, { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import books from "../../assets/images/books.svg";
 import message from "../../assets/images/message.svg";
 import exit from "../../assets/images/logout.svg";
 import logo from "../../assets/images/logo.svg";
+import UserContext from "../../context/UserContext";
 
 interface NavbarProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
@@ -16,6 +17,9 @@ const Navbar: React.FC<NavbarProps> = ({
   setToggleModalConnection,
 }) => {
   const navigate = useNavigate();
+
+  const { user } = useContext(UserContext);
+
   const token = sessionStorage.getItem("accessToken");
 
   const logout = () => {
@@ -37,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <img src={logo} alt="logo" className="logo" />
       </div>
 
-      {!token ? (
+      {!token && !user ? (
         <div>
           <button
             className="navbar__btn"
