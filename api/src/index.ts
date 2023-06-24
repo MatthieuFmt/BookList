@@ -19,6 +19,7 @@ import { chatSocket } from "./config/socketio.config";
 dotenv.config();
 
 const app = express();
+app.use("/uploads", express.static("/api/src/uploads"));
 
 const PORT = process.env.PORT || 8000;
 

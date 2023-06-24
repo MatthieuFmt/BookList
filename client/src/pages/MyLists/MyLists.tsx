@@ -17,6 +17,8 @@ const MyLists = () => {
   const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
   const { user, setUser } = useContext(UserContext);
 
+  console.log(bookListDisplay);
+
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -138,8 +140,7 @@ const MyLists = () => {
             </button>
           </form>
         )}
-        {/* book est un string = 111 (id du livre) dans la bdd pour l'instant ce qui crée une erreur, 
-        il faut maintenant ajouter les livres en bdd et boucler dessus */}
+
         {bookListDisplay?.map((book: BookInterface) => {
           return (
             <BookCard

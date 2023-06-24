@@ -26,4 +26,14 @@ export interface BookInterface {
   publishedDate: string;
   publisher: string;
   isbn: string;
+  listComments: CommentInterface[];
+  listRating: [];
+}
+
+export interface CommentInterface {
+  userPseudo: string;
+  userPicture: string;
+  message: string;
+  date: string;
+  _id: string;
 }

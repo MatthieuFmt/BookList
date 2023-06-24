@@ -4,6 +4,7 @@ import { formatDate } from "../../utils/helpers";
 import { useContext, useState } from "react";
 import { fetchApi } from "../../utils/api";
 import UserContext from "../../context/UserContext";
+import { CommentInterface } from "../../interfaces/interfaces";
 
 const Book = () => {
   const location = useLocation();
@@ -13,15 +14,27 @@ const Book = () => {
 
   const [comment, setComment] = useState("");
 
-  const sendComment = (e: React.FormEvent<HTMLFormElement>) => {
+  const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    fetchApi(`book/add-comment/${bookInfos.idApi}`, "POST", {
-      userPseudo: user.pseudo,
-      userPicture: user.profilePicturePath,
-      message: comment,
-      date: new Date(),
-    });
+    try {
+      const newCommentList = await fetchApi(
+        `book/add-comment/${bookInfos.idApi}`,
+        "POST",
+        {
+          userPseudo: user.pseudo,
+          userPicture: user.profilePicturePath,
+          message: comment,
+          date: new Date(),
+        }
+      );
+
+      bookInfos.listComments = newCommentList;
+    } catch (err) {
+      return;
+    }
+
+    setComment("");
   };
 
   return (
@@ -86,6 +99,24 @@ const Book = () => {
           ></textarea>
           <button type="submit">Envoyer</button>
         </form>
+
+        <div className="book-page__comments-list">
+          {bookInfos.listComments.map((comment: CommentInterface) => (
+            <div className="book-page__comment" key={comment._id}>
+              <div className="book-page__comment-header">
+                <img
+                  src="/api/src/uploads/default-user.png"
+                  alt="photo de profil"
+                />
+                <p>{comment.userPseudo}</p>
+              </div>
+              <p className="book-page__comment-message">{comment.message}</p>
+              <p className="book-page__comment-date">
+                {formatDate(comment.date)}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
     </main>
   );

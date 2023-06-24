@@ -115,7 +115,7 @@ export const addComment = async (req: CustomRequest, res: Response) => {
 
     await book.save();
 
-    return res.status(200).json("Le commentaire a bien été ajouté");
+    return res.status(200).json(book.listComments);
   } catch (error) {
     return res.status(500).json({ erreur: "Une erreur s'est produite" });
   }
@@ -255,6 +255,8 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
       book.isbn = book.volumeInfo.industryIdentifiers[1]
         ? book.volumeInfo.industryIdentifiers[1].identifier
         : book.volumeInfo.industryIdentifiers[0].identifier;
+      book.listComments = [];
+      book.listRatings = [];
 
       delete book.id;
       delete book.kind;

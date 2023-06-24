@@ -255,7 +255,7 @@ export const deleteProfilePicture = async (
       res.status(200).json({ message: "Fichier supprimé avec succès" });
     });
 
-    user.profilePicturePath = "./src/uploads/default-picture.png";
+    user.profilePicturePath = "./src/uploads/default-user.png";
 
     user.save();
 

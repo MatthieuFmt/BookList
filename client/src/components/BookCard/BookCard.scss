@@ -75,49 +75,6 @@
     margin-bottom: $space-2;
   }
 
-  &__add-list-container {
-    position: relative;
-  }
-
-  &__add-list-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 2rem;
-    height: 2rem;
-    background-color: $second-color;
-    color: $first-color;
-
-    &:hover {
-      background-color: $first-color;
-      color: $second-color;
-    }
-  }
-
-  &__modal {
-    position: absolute;
-    right: 0;
-    width: 10rem;
-    background-color: $first-color;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-
-  &__btn-add-list {
-    display: flex;
-    color: $white;
-    font-weight: bold;
-    padding: $space-1 $space-2;
-    border-bottom: solid 1px;
-    transition: all 0.2s;
-    cursor: pointer;
-    background-color: $second-color;
-
-    &:hover {
-      background-color: $blue;
-    }
-  }
-
   &__title {
     color: $first-color;
   }

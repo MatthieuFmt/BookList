@@ -39,23 +39,23 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
 
   return (
     <div
-      className="book-card__add-list-container"
+      className="button-update__add-list-container"
       onMouseEnter={() => setShowAddList(true)}
       onMouseLeave={() => setShowAddList(false)}
     >
-      <button className="book-card__add-list-button">+</button>
+      <button className="button-update__add-list-button">+</button>
       {showAddList && (
-        <ul className="book-card__modal">
+        <ul className="button-update__modal">
           {!user?.listWishBooks.includes(bookInfos.idApi) ? (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() => addToList(bookInfos.idApi, "listWishBooks")}
             >
               + à lire
             </li>
           ) : (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() => removeFromList(bookInfos.idApi, "listWishBooks")}
             >
               - à lire
@@ -64,14 +64,14 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
 
           {!user?.listBooksAlreadyRead.includes(bookInfos.idApi) ? (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() => addToList(bookInfos.idApi, "listBooksAlreadyRead")}
             >
               + déjà lu
             </li>
           ) : (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() =>
                 removeFromList(bookInfos.idApi, "listBooksAlreadyRead")
               }
@@ -82,14 +82,14 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
 
           {!user?.listFavoritesBooks.includes(bookInfos.idApi) ? (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() => addToList(bookInfos.idApi, "listFavoritesBooks")}
             >
               + favoris
             </li>
           ) : (
             <li
-              className="book-card__btn-add-list"
+              className="button-update__btn-add-list"
               onClick={() =>
                 removeFromList(bookInfos.idApi, "listFavoritesBooks")
               }

@@ -19,6 +19,7 @@
       color: $white;
     }
   }
+
   &__infos {
     display: flex;
     flex-direction: column;
@@ -45,5 +46,10 @@
 
   &__summary {
     overflow: auto;
+  }
+
+  &__comment {
+    display: flex;
+    color: $white;
   }
 }
