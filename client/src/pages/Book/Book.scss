@@ -90,6 +90,8 @@
 
   &__comment-list {
     display: flex;
+    align-items: center;
+    flex-direction: column;
     justify-content: center;
     width: 100%;
   }
@@ -99,6 +101,7 @@
     color: $white;
     background-color: $background-color;
     width: 50%;
+    margin: $space-3 0;
 
     img {
       width: 8rem;

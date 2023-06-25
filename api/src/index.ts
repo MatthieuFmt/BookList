@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import http from "http";
 // import { Server } from "socket.io";
 import cors from "cors";
@@ -20,11 +20,13 @@ import path from "path";
 dotenv.config();
 
 const app = express();
-app.get("/uploads/:filename", (req, res) => {
+
+app.get("/uploads/:filename", (req: Request, res: Response) => {
   const filename = req.params.filename;
   const imagePath = path.join(__dirname, "uploads", filename);
   res.sendFile(imagePath);
 });
+
 const PORT = process.env.PORT || 8000;
 
 // connection à la base de données MongoDB
