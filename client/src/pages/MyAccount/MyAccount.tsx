@@ -27,33 +27,30 @@ const MyAccount = () => {
   const updateProfilePicture = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+    return;
     const file = e.target.files?.[0];
 
     if (!file) {
+      console.error("Aucun fichier sélectionné.");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+
+    if (e.target.files?.[0]) {
+      formData.append("file", e.target.files[0]);
+      console.log(formData.get("file"));
+    }
 
     try {
-      const response = await fetchApi(
-        "user/update-profile-picture",
-        "POST",
-        formData
-      );
+      const response = await fetchApi("user/update-profile-picture", "POST", {
+        file: formData.get("file"),
+      });
 
-      if (response.status === 200) {
-        const data = await response.json();
-        console.log(data); // Afficher la réponse de l'API si nécessaire
-
-        // Mettre à jour le chemin de l'image de profil dans l'état local ou le contexte de l'application
-      } else {
-        // Gérer les erreurs si nécessaire
-      }
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
       console.error(error);
-      // Gérer les erreurs si nécessaire
     }
   };
 
