@@ -1,10 +1,12 @@
+import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import ButtonUpdateList from "../../components/ButtonUpdateList/ButtonUpdateList";
-import { formatDate } from "../../utils/helpers";
-import { useContext, useState } from "react";
-import { fetchApi } from "../../utils/api";
+
 import UserContext from "../../context/UserContext";
 import { CommentInterface } from "../../interfaces/interfaces";
+
+import ButtonUpdateList from "../../components/ButtonUpdateList/ButtonUpdateList";
+import { formatDate } from "../../utils/helpers";
+import { fetchApi } from "../../utils/api";
 
 const Book = () => {
   const location = useLocation();
@@ -13,6 +15,7 @@ const Book = () => {
   const { user, setUser } = useContext(UserContext);
 
   const [comment, setComment] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
 
   const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,6 +39,20 @@ const Book = () => {
 
     setComment("");
   };
+
+  // TODO: vérifier pour la prod
+  useEffect(() => {
+    if (user) {
+      if (process.env.NODE_ENV === "development") {
+        setProfilePicture(
+          window.location.origin.replace("5173", "8000") +
+            user.profilePicturePath
+        );
+      } else {
+        setProfilePicture(window.location.origin + user.profilePicturePath);
+      }
+    }
+  }, [user]);
 
   return (
     <main className="container book-page">
@@ -92,28 +109,31 @@ const Book = () => {
       </section>
       <section className="book-page__comments">
         <form onSubmit={(e) => sendComment(e)}>
-          <label htmlFor="comment">Ajouter un commentaire</label>
-          <textarea
-            id="comment"
-            onChange={(e) => setComment(e.target.value)}
-          ></textarea>
-          <button type="submit">Envoyer</button>
+          <label htmlFor="comment">Laisser un avis</label>
+          <div className="book-page__comment-inputs">
+            <textarea
+              id="comment"
+              onChange={(e) => setComment(e.target.value)}
+            ></textarea>
+            <button type="submit">Envoyer</button>
+          </div>
         </form>
 
-        <div className="book-page__comments-list">
+        <div className="book-page__comment-list">
           {bookInfos.listComments.map((comment: CommentInterface) => (
-            <div className="book-page__comment" key={comment._id}>
-              <div className="book-page__comment-header">
-                <img
-                  src="/api/src/uploads/default-user.png"
-                  alt="photo de profil"
-                />
-                <p>{comment.userPseudo}</p>
+            <div className="book-page__comment-card" key={comment._id}>
+              <img src={profilePicture} alt="photo de profil" />
+              <div className="book-page__comment-infos">
+                <div className="book-page__comment-header">
+                  <p className="book-page__comment-pseudo">
+                    {comment.userPseudo}
+                  </p>
+                  <p className="book-page__comment-date">
+                    {formatDate(comment.date)}
+                  </p>
+                </div>
+                <p className="book-page__comment-message">{comment.message}</p>
               </div>
-              <p className="book-page__comment-message">{comment.message}</p>
-              <p className="book-page__comment-date">
-                {formatDate(comment.date)}
-              </p>
             </div>
           ))}
         </div>

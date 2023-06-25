@@ -213,7 +213,7 @@ export const updateProfilePicture = async (
       return res.status(404).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
-    user.profilePicturePath = `./src/uploads/${req.file.filename}`;
+    user.profilePicturePath = `/uploads/${req.file.filename}`;
 
     user.save();
   } catch (error) {
@@ -255,7 +255,7 @@ export const deleteProfilePicture = async (
       res.status(200).json({ message: "Fichier supprimé avec succès" });
     });
 
-    user.profilePicturePath = "./src/uploads/default-user.png";
+    user.profilePicturePath = "/uploads/default-user.png";
 
     user.save();
 

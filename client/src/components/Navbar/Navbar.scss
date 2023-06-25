@@ -44,6 +44,8 @@
 
   .link {
     display: flex;
+    align-items: center;
+
     position: relative;
     margin: 0 $space-3;
     color: $white;

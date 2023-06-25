@@ -15,12 +15,16 @@ import conversationRoutes from "./routes/conversation.route";
 import authMiddleware from "./middleware/auth.middleware";
 import { limiter } from "./middleware/rate-limit.middleware";
 import { chatSocket } from "./config/socketio.config";
+import path from "path";
 
 dotenv.config();
 
 const app = express();
-app.use("/uploads", express.static("/api/src/uploads"));
-
+app.get("/uploads/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, "uploads", filename);
+  res.sendFile(imagePath);
+});
 const PORT = process.env.PORT || 8000;
 
 // connection à la base de données MongoDB

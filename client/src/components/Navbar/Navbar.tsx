@@ -23,6 +23,8 @@ const Navbar: React.FC<NavbarProps> = ({
   const token = sessionStorage.getItem("accessToken");
 
   const logout = () => {
+    console.log("logout");
+
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
     sessionStorage.removeItem("userId");
@@ -30,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   useEffect(() => {
-    if (token === null) {
+    if (!token) {
       navigate("/");
     }
   }, [token, navigate]);
@@ -41,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({
         <img src={logo} alt="logo" className="logo" />
       </div>
 
-      {!token && !user ? (
+      {!token ? (
         <div>
           <button
             className="navbar__btn"
