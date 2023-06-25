@@ -14,7 +14,6 @@ export interface IUser extends Document {
   email: string;
   password: string;
   profilePicturePath: string;
-  refreshToken: string;
   listRequestContacts: Array<string>;
   listContacts: Array<string>;
   listFavoritesBooks: Array<string>;
@@ -47,9 +46,8 @@ const UserSchema = new Schema({
   },
   profilePicturePath: {
     type: String,
-    default: "/default-user.png",
+    default: "/upload/default-user.png",
   },
-  refreshToken: { type: String, default: "" },
   listRequestContacts: { type: [String], default: [] },
   listContacts: { type: [String], default: [] },
   listFavoritesBooks: { type: [String], default: [] },

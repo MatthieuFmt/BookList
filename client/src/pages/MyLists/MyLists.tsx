@@ -13,11 +13,9 @@ const MyLists = () => {
     favorite: false,
   });
   const [inputSearch, setInputSearch] = useState<string>("");
-  // créer un bookInterface à la place de string
+
   const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
   const { user, setUser } = useContext(UserContext);
-
-  console.log(bookListDisplay);
 
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

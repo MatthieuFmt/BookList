@@ -8,6 +8,7 @@
     margin: $space-6 0;
     height: 20rem;
     width: 80%;
+    min-width: 300px;
     background-color: $background-color;
     color: $grey-2;
 
@@ -31,7 +32,6 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    // width: 80%;
   }
 
   &__title {
@@ -101,6 +101,7 @@
     color: $white;
     background-color: $background-color;
     width: 50%;
+    min-width: 300px;
     margin: $space-3 0;
 
     img {

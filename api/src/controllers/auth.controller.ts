@@ -39,7 +39,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    return res.status(201).json({ message: "User created", user: newUser });
+    return res.status(201).json({ message: "Utilisateur inscrit" });
   } catch (error) {
     // peut etre supprimer error dans les réponses
     if (error.code === 11000 && error.keyPattern.email) {
@@ -125,7 +125,6 @@ export const disconnectUser = async (req: Request, res: Response) => {
     // Ajouter le token à la liste noire
     tokenBlacklist.add(token);
 
-    user.refreshToken = "";
     await user.save();
 
     res.status(200).json({ message: "User disconnected" });

@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-  getUser,
+  getUsers,
   getList,
   updateProfilePicture,
   deleteProfilePicture,
@@ -11,11 +11,14 @@ import {
   responseRequestContact,
   deleteContact,
   getPropositionContacts,
+  getConnectedUser,
 } from "../controllers/user.controller";
 
 const router = express.Router();
 
-router.get("/get-user", getUser);
+router.get("/get-connected-user", getConnectedUser);
+
+router.post("/get-users", getUsers);
 
 router.get("/get-list/:list", getList);
 

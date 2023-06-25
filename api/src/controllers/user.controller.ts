@@ -158,7 +158,7 @@ export const addToBooksLists = async (req: CustomRequest, res: Response) => {
  * @param res - La réponse HTTP à renvoyer
  * @returns la réponse HTTP avec l'utilisateur récupéré ou un message d'erreur
  */
-export const getUser = async (req: CustomRequest, res: Response) => {
+export const getConnectedUser = async (req: CustomRequest, res: Response) => {
   try {
     const id = req.user.id;
     const user = await User.findById(id);
@@ -168,6 +168,28 @@ export const getUser = async (req: CustomRequest, res: Response) => {
     }
 
     return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
+  }
+};
+
+export const getUsers = async (req: CustomRequest, res: Response) => {
+  try {
+    const listId = req.body.listId;
+    const listUsers = await User.find({ _id: { $in: listId } }).select([
+      "pseudo",
+      "profilePicturePath",
+    ]);
+
+    if (!listUsers) {
+      return res
+        .status(404)
+        .json({ erreur: "Les utilisateurs n'existent pas" });
+    }
+
+    return res.status(200).json(listUsers);
   } catch (error) {
     console.error(error);
 

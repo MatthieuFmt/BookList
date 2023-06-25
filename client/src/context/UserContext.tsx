@@ -1,9 +1,9 @@
 import React from "react";
-import { User } from "../interfaces/interfaces";
+import { UserInterface } from "../interfaces/interfaces";
 
 interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void; // setUser peut maintenant accepter null
+  user: UserInterface | null;
+  setUser: (user: UserInterface | null) => void;
 }
 
 // Création du contexte avec une valeur par défaut

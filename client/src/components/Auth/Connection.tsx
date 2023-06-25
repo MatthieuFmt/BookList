@@ -44,6 +44,17 @@ const Connection: React.FC<ConnectionProps> = ({
         return alert("Erreur lors de la connexion");
       }
 
+      if (infoUser.user) {
+        if (process.env.NODE_ENV === "development") {
+          infoUser.user.profilePicturePath =
+            window.location.origin.replace("5173", "8000") +
+            infoUser.user.profilePicturePath;
+        } else {
+          infoUser.user.profilePicturePath =
+            window.location.origin + infoUser.user.profilePicturePath;
+        }
+      }
+
       setUser(infoUser.user);
 
       sessionStorage.setItem("accessToken", infoUser.accessToken);

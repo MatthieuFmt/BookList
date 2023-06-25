@@ -80,7 +80,7 @@ button {
 input:-webkit-autofill {
   animation-name: autofill;
   animation-fill-mode: both;
-} ////////////////////////////////////////////
+}
 
 label,
 input {
@@ -97,17 +97,12 @@ label {
 }
 
 input {
-  // font-weight: bold;
   background-color: $background-color;
   color: $first-color;
   outline: none;
   border: none;
   border-radius: 15px;
   @include transition();
-
-  &:focus {
-    // @include box-shadow(inset);
-  }
 }
 
 // corrige le backgroud blanc à l'auto-complétion

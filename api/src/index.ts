@@ -21,12 +21,6 @@ dotenv.config();
 
 const app = express();
 
-app.get("/uploads/:filename", (req: Request, res: Response) => {
-  const filename = req.params.filename;
-  const imagePath = path.join(__dirname, "uploads", filename);
-  res.sendFile(imagePath);
-});
-
 const PORT = process.env.PORT || 8000;
 
 // connection à la base de données MongoDB
@@ -37,6 +31,13 @@ app.use(express.json());
 
 // limite le nombre de requêtes par adresse ip
 app.use(limiter);
+
+// permet d'accéder aux photos de profils uploadées
+app.get("/uploads/:filename", (req: Request, res: Response) => {
+  const filename = req.params.filename;
+  const imagePath = path.join(__dirname, "uploads", filename);
+  res.sendFile(imagePath);
+});
 
 // routes
 app.use("/auth", authRoutes);

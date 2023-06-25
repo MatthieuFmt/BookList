@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import UserContext from "../../context/UserContext";
@@ -12,10 +12,9 @@ const Book = () => {
   const location = useLocation();
   const bookInfos = location.state;
 
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [comment, setComment] = useState("");
-  const [profilePicture, setProfilePicture] = useState("");
 
   const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,8 +24,8 @@ const Book = () => {
         `book/add-comment/${bookInfos.idApi}`,
         "POST",
         {
-          userPseudo: user.pseudo,
-          userPicture: user.profilePicturePath,
+          userPseudo: user?.pseudo,
+          userPicture: user?.profilePicturePath,
           message: comment,
           date: new Date(),
         }
@@ -39,20 +38,6 @@ const Book = () => {
 
     setComment("");
   };
-
-  // TODO: vérifier pour la prod
-  useEffect(() => {
-    if (user) {
-      if (process.env.NODE_ENV === "development") {
-        setProfilePicture(
-          window.location.origin.replace("5173", "8000") +
-            user.profilePicturePath
-        );
-      } else {
-        setProfilePicture(window.location.origin + user.profilePicturePath);
-      }
-    }
-  }, [user]);
 
   return (
     <main className="container book-page">
@@ -122,7 +107,7 @@ const Book = () => {
         <div className="book-page__comment-list">
           {bookInfos.listComments.map((comment: CommentInterface) => (
             <div className="book-page__comment-card" key={comment._id}>
-              <img src={profilePicture} alt="photo de profil" />
+              <img src={user?.profilePicturePath} alt="photo de profil" />
               <div className="book-page__comment-infos">
                 <div className="book-page__comment-header">
                   <p className="book-page__comment-pseudo">

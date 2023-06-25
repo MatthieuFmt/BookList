@@ -13,6 +13,7 @@ $breakpoints: (
   "large": 1000px,
   "xlarge": 2000px,
 );
+
 // Mixin pour les media queries
 @mixin respond-to($breakpoint) {
   @if map-has-key($breakpoints, $breakpoint) {
