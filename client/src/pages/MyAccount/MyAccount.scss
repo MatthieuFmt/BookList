@@ -31,6 +31,12 @@
       color: $first-color;
       margin: $space-4 0 $space-3;
     }
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
   }
 
   &__infos {

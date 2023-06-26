@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import Registration from "../../components/Auth/Registration";
 import Connection from "../../components/Auth/Connection";
+import { useNavigate } from "react-router-dom";
 
 interface HomeProps {
   toggleModalRegistration: boolean;
@@ -15,6 +16,12 @@ const Home: React.FC<HomeProps> = ({
   toggleModalConnection,
   setToggleModalConnection,
 }) => {
+  const navigate = useNavigate();
+
+  if (sessionStorage.getItem("accessToken")) {
+    return navigate("/bibliotheque");
+  }
+
   return (
     <>
       {toggleModalRegistration && (

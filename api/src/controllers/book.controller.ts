@@ -197,24 +197,6 @@ export const getRating = async (req: CustomRequest, res: Response) => {
   }
 };
 
-// export const getComments = async (req: CustomRequest, res: Response) => {
-//   try {
-//     const listComments = await Book.findOne({ idApi: req.params.id }).select(
-//       "listComments"
-//     );
-
-//     if (!listComments) {
-//       return res
-//         .status(404)
-//         .json({ erreur: "Le livre n'est pas présent en base de données" });
-//     }
-
-//     return res.status(200).json({ listComments });
-//   } catch (error) {
-//     return res.status(500).json({ erreur: "Une erreur s'est produite" });
-//   }
-// };
-
 export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
   try {
     const query = req.body.query;

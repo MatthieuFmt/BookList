@@ -3,10 +3,9 @@ export interface UserInterface {
   pseudo: string;
   email: string;
   profilePicturePath: string;
-  refreshToken: string;
   listRequestContacts: string[];
   listContacts: string[];
-  listFavoritesBooks: string[];
+  listBooksToExchange: string[];
   listBooksAlreadyRead: string[];
   listWishBooks: string[];
   listConversations: string[];

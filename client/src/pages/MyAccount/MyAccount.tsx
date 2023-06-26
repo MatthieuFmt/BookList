@@ -22,7 +22,7 @@ const MyAccount = () => {
       });
       setContacts(listContacts);
     })();
-  }, []);
+  }, [user]);
 
   const updateProfilePicture = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -87,24 +87,28 @@ const MyAccount = () => {
           Livre à lire <span> {user?.listWishBooks.length} </span>
         </p>
         <p>
-          Favoris <span> {user?.listWishBooks.length} </span>
+          A échanger <span> {user?.listWishBooks.length} </span>
         </p>
 
         <div className="my-account__contact-content">
-          <p>Vos contacts</p>
-          <ul>
-            {contacts.map((contact: ContactInterface) => {
-              return (
-                <article className="my-account__contact-card">
-                  <img
-                    src="http://localhost:8000/uploads/default-user.png"
-                    alt="photo de profil"
-                  />
-                  <li>{contact.pseudo}</li>
-                </article>
-              );
-            })}
-          </ul>
+          {contacts.length > 0 && (
+            <>
+              <p>Vos contacts</p>
+              <ul>
+                {contacts.map((contact: ContactInterface) => {
+                  return (
+                    <article className="my-account__contact-card">
+                      <img
+                        src="http://localhost:8000/uploads/default-user.png"
+                        alt="photo de profil"
+                      />
+                      <li>{contact.pseudo}</li>
+                    </article>
+                  );
+                })}
+              </ul>
+            </>
+          )}
         </div>
       </div>
     </main>

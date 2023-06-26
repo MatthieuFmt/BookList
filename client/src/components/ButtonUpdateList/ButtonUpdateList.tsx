@@ -15,19 +15,25 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
   const addToList = (bookId: string, list: string) => {
     fetchApi(`user/add-to-lists/${list}`, "POST", { bookId });
 
-    if (!user[list].includes(bookId)) {
-      setUser((prevUser: UserInterface) =>
-        Object.assign({}, prevUser, {
+    if (!user || !user[list]?.includes(bookId)) {
+      setUser((prevUser: UserInterface) => {
+        if (prevUser === null) {
+          return prevUser;
+        }
+
+        const updatedUser = {
+          ...prevUser,
           [list]: [...prevUser[list], bookId],
-        })
-      );
+        };
+        return updatedUser;
+      });
     }
   };
 
   const removeFromList = (bookId: string, list: string) => {
     fetchApi(`user/delete-from-lists/${list}`, "DELETE", { bookId });
 
-    if (user[list].includes(bookId)) {
+    if (user?.[list].includes(bookId)) {
       setUser((prevUser: UserInterface) => {
         const updatedList = prevUser[list].filter(
           (id: string) => id !== bookId
@@ -80,21 +86,21 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
             </li>
           )}
 
-          {!user?.listFavoritesBooks.includes(bookInfos.idApi) ? (
+          {!user?.listBooksToExchange.includes(bookInfos.idApi) ? (
             <li
               className="button-update__btn-add-list"
-              onClick={() => addToList(bookInfos.idApi, "listFavoritesBooks")}
+              onClick={() => addToList(bookInfos.idApi, "listBooksToExchange")}
             >
-              + favoris
+              + à échanger
             </li>
           ) : (
             <li
               className="button-update__btn-add-list"
               onClick={() =>
-                removeFromList(bookInfos.idApi, "listFavoritesBooks")
+                removeFromList(bookInfos.idApi, "listBooksToExchange")
               }
             >
-              - favoris
+              - à échanger
             </li>
           )}
         </ul>

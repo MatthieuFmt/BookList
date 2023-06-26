@@ -33,7 +33,7 @@ const MyLists = () => {
     let list = "";
     if (activeList.toRead) list = "listWishBooks";
     if (activeList.read) list = "listBooksAlreadyRead";
-    if (activeList.favorite) list = "listFavoritesBooks";
+    if (activeList.favorite) list = "listBooksToExchange";
     if (activeList.search) setBookListDisplay([]);
 
     if (list !== "") {
@@ -115,8 +115,8 @@ const MyLists = () => {
             })
           }
         >
-          <div>Favoris</div>
-          <div>({user?.listFavoritesBooks.length})</div>
+          <div>A échanger</div>
+          <div>({user?.listBooksToExchange.length})</div>
         </div>
       </aside>
 

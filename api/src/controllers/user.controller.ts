@@ -18,7 +18,7 @@ interface CustomRequest extends Request {
 
 function isBookListKey(value: string): value is BookListKey {
   const validKeys: BookListKey[] = [
-    "listFavoritesBooks",
+    "listBooksToExchange",
     "listBooksAlreadyRead",
     "listWishBooks",
   ];
@@ -181,7 +181,25 @@ export const getUsers = async (req: CustomRequest, res: Response) => {
     const listUsers = await User.find({ _id: { $in: listId } }).select([
       "pseudo",
       "profilePicturePath",
+      "listBooksToExchange",
     ]);
+
+    const processUserBooks = async () => {
+      for (const user of listUsers) {
+        const updatedBooks = await Promise.all(
+          user.listBooksToExchange.map(async (bookId) => {
+            const titleBook = await Book.findOne({ idApi: bookId }).select(
+              "title"
+            );
+            return titleBook.title;
+          })
+        );
+
+        user.listBooksToExchange = updatedBooks;
+      }
+    };
+
+    await processUserBooks();
 
     if (!listUsers) {
       return res

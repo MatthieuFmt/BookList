@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 
 export type BookListKey =
-  | "listFavoritesBooks"
+  | "listBooksToExchange"
   | "listBooksAlreadyRead"
   | "listWishBooks";
 
@@ -16,7 +16,7 @@ export interface IUser extends Document {
   profilePicturePath: string;
   listRequestContacts: Array<string>;
   listContacts: Array<string>;
-  listFavoritesBooks: Array<string>;
+  listBooksToExchange: Array<string>;
   listBooksAlreadyRead: Array<string>;
   listWishBooks: Array<string>;
   listConversations: Array<string>;
@@ -50,7 +50,7 @@ const UserSchema = new Schema({
   },
   listRequestContacts: { type: [String], default: [] },
   listContacts: { type: [String], default: [] },
-  listFavoritesBooks: { type: [String], default: [] },
+  listBooksToExchange: { type: [String], default: [] },
   listBooksAlreadyRead: { type: [String], default: [] },
   listWishBooks: { type: [String], default: [] },
   listConversations: { type: [String], default: [] },
