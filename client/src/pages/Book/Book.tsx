@@ -107,7 +107,12 @@ const Book = () => {
         <div className="book-page__comment-list">
           {bookInfos.listComments.map((comment: CommentInterface) => (
             <div className="book-page__comment-card" key={comment._id}>
-              <img src={user?.profilePicturePath} alt="photo de profil" />
+              <img
+                src={
+                  import.meta.env.VITE_API_BASE_URL + user?.profilePicturePath
+                }
+                alt="photo de profil"
+              />
               <div className="book-page__comment-infos">
                 <div className="book-page__comment-header">
                   <p className="book-page__comment-pseudo">

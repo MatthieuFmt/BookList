@@ -382,6 +382,8 @@ export const responseRequestContact = async (
       userSentRequest.listContacts.push(id);
     }
 
+    console.log(newListRequestContact);
+
     user.listRequestContacts = newListRequestContact;
 
     user.save();
@@ -439,7 +441,9 @@ export const deleteContact = async (req: CustomRequest, res: Response) => {
 
     deleteConversation(req, res, idUserConnected, idUserToDelete);
 
-    return res.status(200).json({ message: "Le contact a bien été supprimé" });
+    return res.status(200).json({
+      message: "Le contact a bien été supprimé",
+    });
   } catch (error) {
     console.error(error);
 
@@ -463,6 +467,41 @@ export const getPropositionContacts = async (
       .select("pseudo profilePicturePath")
       .limit(10)
       .exec();
+
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json("Une erreur s'est produite");
+  }
+};
+
+export const getUsersToExchange = async (req: CustomRequest, res: Response) => {
+  try {
+    const connectedUserId = req.user.id;
+    const booksSearch = req.body.booksSearch;
+
+    // Récupère les livres qui correspondent à la recherche
+    const books = await Book.find({
+      title: { $regex: booksSearch, $options: "i" },
+    }).select("idApi title");
+
+    const bookIds = books.map((book) => book.idApi);
+
+    // Récupère les utilisateurs qui ont un livre qui correspond à la recherche et qui ne sont pas l'utilisateur connecté
+    const users = await User.find({
+      _id: { $ne: connectedUserId },
+      listBooksToExchange: { $in: bookIds },
+    }).select("pseudo profilePicturePath listBooksToExchange");
+
+    // Parcourt chaque utilisateur et remplace les IDs des livres par leurs titres correspondants
+    for (const user of users) {
+      const updatedBooks = await Book.find({
+        idApi: { $in: user.listBooksToExchange },
+      }).select("title");
+
+      user.listBooksToExchange = updatedBooks.map((book) => book.title);
+    }
 
     return res.status(200).json(users);
   } catch (error) {

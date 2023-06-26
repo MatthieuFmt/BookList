@@ -1,18 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/UserContext";
 import { fetchApi } from "../../utils/api";
-
-interface ContactInterface {
-  pseudo: string;
-  profilePicturePath: string;
-  _id: string;
-}
+import { ContactInterface } from "../../interfaces/interfaces";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const MyAccount = () => {
   const { user, setUser } = useContext(UserContext);
 
   const [contacts, setContacts] = useState([]);
   const [showLayout, setShowLayout] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const listIdContacts = user?.listContacts;
@@ -27,7 +25,6 @@ const MyAccount = () => {
   const updateProfilePicture = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    return;
     const file = e.target.files?.[0];
 
     if (!file) {
@@ -41,6 +38,7 @@ const MyAccount = () => {
       formData.append("file", e.target.files[0]);
       console.log(formData.get("file"));
     }
+    return;
 
     try {
       const response = await fetchApi("user/update-profile-picture", "POST", {
@@ -73,7 +71,10 @@ const MyAccount = () => {
               />
             </>
           )}
-          <img src={user?.profilePicturePath} alt="photo de profile" />
+          <img
+            src={import.meta.env.VITE_API_BASE_URL + user?.profilePicturePath}
+            alt="photo de profile"
+          />
         </div>
 
         <h3>{user?.pseudo}</h3>
@@ -97,9 +98,16 @@ const MyAccount = () => {
               <ul>
                 {contacts.map((contact: ContactInterface) => {
                   return (
-                    <article className="my-account__contact-card">
+                    <article
+                      className="my-account__contact-card"
+                      key={contact._id}
+                      onClick={() => navigate("/communautee")}
+                    >
                       <img
-                        src="http://localhost:8000/uploads/default-user.png"
+                        src={
+                          import.meta.env.VITE_API_BASE_URL +
+                          contact.profilePicturePath
+                        }
                         alt="photo de profil"
                       />
                       <li>{contact.pseudo}</li>

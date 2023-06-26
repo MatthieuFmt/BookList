@@ -12,6 +12,7 @@ import {
   deleteContact,
   getPropositionContacts,
   getConnectedUser,
+  getUsersToExchange,
 } from "../controllers/user.controller";
 
 const router = express.Router();
@@ -19,6 +20,8 @@ const router = express.Router();
 router.get("/get-connected-user", getConnectedUser);
 
 router.post("/get-users", getUsers);
+
+router.post("/get-users-to-exchange", getUsersToExchange);
 
 router.get("/get-list/:list", getList);
 

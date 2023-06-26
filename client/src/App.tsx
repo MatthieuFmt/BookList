@@ -12,31 +12,13 @@ import UserContext from "./context/UserContext";
 import Book from "./pages/Book/Book";
 import MyAccount from "./pages/MyAccount/MyAccount";
 import { fetchApi } from "./utils/api";
+import Community from "./pages/Community/Community";
 
 function App() {
   const [toggleModalRegistration, setToggleModalRegistration] = useState(false);
   const [toggleModalConnection, setToggleModalConnection] = useState(false);
 
   const [user, setUser] = useState<UserInterface | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const connectedUser = await fetchApi("user/get-connected-user", "GET");
-
-      if (connectedUser) {
-        if (process.env.NODE_ENV === "development") {
-          connectedUser.profilePicturePath =
-            window.location.origin.replace("5173", "8000") +
-            connectedUser.profilePicturePath;
-        } else {
-          connectedUser.profilePicturePath =
-            window.location.origin + connectedUser.profilePicturePath;
-        }
-      }
-
-      setUser(connectedUser);
-    })();
-  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -62,6 +44,7 @@ function App() {
           <Route path="/bibliotheque" element={<MyLists />} />
           <Route path="/livre" element={<Book />} />
           <Route path="/mon-compte" element={<MyAccount />} />
+          <Route path="/communautee" element={<Community />} />
         </Routes>
       </div>
     </UserContext.Provider>

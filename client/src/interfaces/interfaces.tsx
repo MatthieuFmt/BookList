@@ -36,3 +36,10 @@ export interface CommentInterface {
   date: string;
   _id: string;
 }
+
+export interface ContactInterface {
+  listBooksToExchange: string[];
+  pseudo: string;
+  profilePicturePath: string;
+  _id: string;
+}

@@ -6,6 +6,7 @@ import message from "../../assets/images/message.svg";
 import exit from "../../assets/images/logout.svg";
 import logo from "../../assets/images/logo.svg";
 import UserContext from "../../context/UserContext";
+import { fetchApi } from "../../utils/api";
 
 interface NavbarProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
@@ -16,15 +17,13 @@ const Navbar: React.FC<NavbarProps> = ({
   setToggleModalRegistration,
   setToggleModalConnection,
 }) => {
-  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
-  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const token = sessionStorage.getItem("accessToken");
 
   const logout = () => {
-    console.log("logout");
-
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
     sessionStorage.removeItem("userId");
@@ -36,6 +35,18 @@ const Navbar: React.FC<NavbarProps> = ({
       navigate("/");
     }
   }, [token, navigate]);
+
+  useEffect(() => {
+    if (token) {
+      console.log("test");
+
+      (async () => {
+        const connectedUser = await fetchApi("user/get-connected-user", "GET");
+
+        setUser(connectedUser);
+      })();
+    }
+  }, [navigate]);
 
   return (
     <nav className="navbar">
@@ -70,11 +81,11 @@ const Navbar: React.FC<NavbarProps> = ({
           </NavLink>
 
           <NavLink
-            to="/messagerie"
+            to="/communautee"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             <img src={message} alt="livres" className="icon" />
-            Messagerie
+            Communautée
           </NavLink>
           <NavLink
             to="/mon-compte"

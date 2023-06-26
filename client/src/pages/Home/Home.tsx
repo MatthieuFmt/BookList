@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import Registration from "../../components/Auth/Registration";
 import Connection from "../../components/Auth/Connection";
 import { useNavigate } from "react-router-dom";
@@ -18,9 +18,11 @@ const Home: React.FC<HomeProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  if (sessionStorage.getItem("accessToken")) {
-    return navigate("/bibliotheque");
-  }
+  useEffect(() => {
+    if (sessionStorage.getItem("accessToken")) {
+      return navigate("/bibliotheque");
+    }
+  }, [navigate]);
 
   return (
     <>
