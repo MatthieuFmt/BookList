@@ -2,7 +2,7 @@ import { Schema, model, Document } from "mongoose";
 
 interface IRatings {
   userId: string;
-  rating: Number;
+  rating: number;
 }
 
 interface IComments {
@@ -51,7 +51,7 @@ const BookSchema = new Schema({
     type: [
       {
         userId: { type: String, required: true },
-        rating: { type: Int16Array, required: true, min: 1, max: 5 },
+        rating: { type: Number, required: true, min: 1, max: 5 },
       },
     ],
     default: [],
