@@ -1,24 +1,35 @@
-import { useContext, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import UserContext from "../../context/UserContext";
-import { CommentInterface } from "../../interfaces/interfaces";
+import { BookInterface, CommentInterface } from "../../interfaces/interfaces";
 
 import ButtonUpdateList from "../../components/ButtonUpdateList/ButtonUpdateList";
 import { formatDate } from "../../utils/helpers";
 import { fetchApi } from "../../utils/api";
 
 const Book = () => {
-  const location = useLocation();
-  const bookInfos = location.state;
+  const { id } = useParams();
 
   const { user } = useContext(UserContext);
 
   const [comment, setComment] = useState("");
+  const [bookInfos, setBookInfos] = useState<BookInterface>({
+    idApi: "",
+    author: "",
+    summary: "",
+    category: "",
+    imageLinks: "",
+    title: "",
+    publishedDate: "",
+    publisher: "",
+    isbn: "",
+    listComments: [],
+    listRating: [],
+  });
 
   const sendComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const newCommentList = await fetchApi(
         `book/add-comment/${bookInfos.idApi}`,
@@ -32,58 +43,68 @@ const Book = () => {
       );
 
       bookInfos.listComments = newCommentList;
+
+      setComment("");
     } catch (err) {
       return;
     }
-
-    setComment("");
   };
+
+  useEffect(() => {
+    (async () => {
+      const book = await fetchApi(`book/get-book/${id}`, "GET");
+      console.log(book);
+
+      setBookInfos(book);
+    })();
+  }, [id]);
+  console.log(bookInfos);
 
   return (
     <main className="container book-page">
       <section className="book-page__card">
-        <img src={bookInfos.imageLinks} alt="couverture du livre" />
+        <img src={bookInfos?.imageLinks} alt="couverture du livre" />
 
         <div className="book-page__infos">
           <div className="book-page__header">
-            <h3 className="book-page__title">{bookInfos.title}</h3>
+            <h3 className="book-page__title">{bookInfos?.title}</h3>
             <ButtonUpdateList bookInfos={bookInfos} />
           </div>
 
           <div className="book-page__other-infos">
-            {bookInfos.author && (
+            {bookInfos?.author && (
               <p>
                 <span>Auteur</span> {bookInfos.author}
               </p>
             )}
 
-            {bookInfos.publisher && (
+            {bookInfos?.publisher && (
               <p>
                 <span>Editeur</span> {bookInfos.publisher}
               </p>
             )}
 
-            {bookInfos.publishedDate && (
+            {bookInfos?.publishedDate && (
               <p>
-                <span>Date de sortie</span>{" "}
+                <span>Date de sortie</span>
                 {formatDate(bookInfos.publishedDate)}
               </p>
             )}
 
-            {bookInfos.isbn && (
+            {bookInfos?.isbn && (
               <p>
                 <span>ISBN</span> {bookInfos.isbn}
               </p>
             )}
 
-            {bookInfos.category && (
+            {bookInfos?.category && (
               <p>
                 <span>Catégorie</span> {bookInfos.category}
               </p>
             )}
           </div>
           <div className="book-page__summary">
-            {bookInfos.summary && (
+            {bookInfos?.summary && (
               <>
                 <span>Résumé</span>
                 <p>{bookInfos.summary}</p>
@@ -99,13 +120,14 @@ const Book = () => {
             <textarea
               id="comment"
               onChange={(e) => setComment(e.target.value)}
+              value={comment}
             ></textarea>
             <button type="submit">Envoyer</button>
           </div>
         </form>
 
         <div className="book-page__comment-list">
-          {bookInfos.listComments.map((comment: CommentInterface) => (
+          {bookInfos?.listComments.map((comment: CommentInterface) => (
             <div className="book-page__comment-card" key={comment._id}>
               <img
                 src={

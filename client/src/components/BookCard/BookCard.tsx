@@ -21,10 +21,6 @@ const BookCard: React.FC<BookCardProps> = ({
 
   const [showLayout, setShowLayout] = useState(false);
 
-  const showBookPage = (bookInfos: BookInterface) => {
-    navigate("/livre", { state: bookInfos });
-  };
-
   return (
     <article className="book-card">
       <div
@@ -36,7 +32,7 @@ const BookCard: React.FC<BookCardProps> = ({
         {showLayout && (
           <div
             className="book-card__layout"
-            onClick={() => showBookPage(bookInfos)}
+            onClick={() => navigate(`/livre/${bookInfos.idApi}`)}
           >
             Voir la page du livre
           </div>

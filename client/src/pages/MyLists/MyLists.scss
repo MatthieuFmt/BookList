@@ -19,20 +19,20 @@
     height: 5rem;
     width: 13rem;
     background-color: $background-color;
-    @include box-shadow(inset, $grey-5);
+    box-shadow: inset 1px 1px 5px $grey-5;
     cursor: pointer;
     @include transition(all, 0.2s);
 
     &:hover {
       color: $first-color;
       background-color: $second-color;
-      @include box-shadow(inset, $grey-5);
+      box-shadow: inset 1px 1px 5px $grey-5;
     }
 
     &.active {
       color: $first-color;
       background-color: $second-color;
-      @include box-shadow(inset, $grey-5);
+      box-shadow: inset 1px 1px 5px $grey-5;
     }
   }
 

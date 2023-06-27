@@ -25,8 +25,12 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
           ...prevUser,
           [list]: [...prevUser[list], bookId],
         };
+
         return updatedUser;
       });
+      // if (user) {
+      // user[list] = [...user[list], bookId];
+      // }
     }
   };
 
@@ -40,6 +44,8 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
         );
         return { ...prevUser, [list]: updatedList };
       });
+
+      // user[list] = user[list].filter((id: string) => id !== bookId);
     }
   };
 

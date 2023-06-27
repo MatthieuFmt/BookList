@@ -42,7 +42,7 @@ function App() {
           />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/bibliotheque" element={<MyLists />} />
-          <Route path="/livre" element={<Book />} />
+          <Route path="/livre/:id" element={<Book />} />
           <Route path="/mon-compte" element={<MyAccount />} />
           <Route path="/communautee" element={<Community />} />
         </Routes>

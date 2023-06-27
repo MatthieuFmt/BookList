@@ -1,0 +1,79 @@
+.conversation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+
+  // display: flex;
+  // align-items: center;
+
+  background-color: $grey-1;
+  width: 50%;
+  min-width: 300px;
+  height: 50%;
+  min-height: 300px;
+  border-radius: 10px;
+  padding: $space-3;
+  box-shadow: 0 0 5px $grey-5;
+
+  h4 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5%;
+  }
+
+  &__messages {
+    height: 80%;
+    overflow: auto;
+    margin: $space-4 0;
+  }
+
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5%;
+
+    input {
+      width: 100%;
+      background-color: $grey-4;
+      height: 100%;
+      border-radius: 50px 0 0 50px;
+    }
+
+    button {
+      background-color: $second-color;
+      color: $first-color;
+      height: 100%;
+      border-radius: 0 50px 50px 0;
+
+      &:hover {
+        background-color: $blue;
+      }
+    }
+  }
+
+  &__message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-3;
+    padding: $space-2;
+    border-radius: 10px;
+    background-color: $second-color;
+    color: $grey-1;
+    width: 50%;
+
+    &--me {
+      background-color: $grey-3;
+      margin-left: auto;
+      justify-content: flex-start;
+    }
+
+    &--other {
+      justify-content: flex-end;
+    }
+  }
+}

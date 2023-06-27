@@ -3,6 +3,7 @@ import UserContext from "../../context/UserContext";
 import { fetchApi } from "../../utils/api";
 import { ContactInterface } from "../../interfaces/interfaces";
 import loupe from "../../assets/images/loupe.svg";
+import Conversation from "../../components/Conversation/Conversation";
 
 const Community = () => {
   const { user, setUser } = useContext(UserContext);
@@ -11,10 +12,13 @@ const Community = () => {
   const [demandContact, setDemandContact] = useState([]);
   const [showDemandContact, setShowDemandContact] = useState(false);
 
+  const [showConversation, setShowConversation] = useState(false);
+  const [userToSpeak, setUserToSpeak] = useState("");
+
   const [inputSearch, setInputSearch] = useState("");
   const [usersSearch, setUsersSearch] = useState([]);
 
-  // récupère la liste des contacts de l'utilisateur connecté
+  // récupère la liste des contacts et celle des demande de contact de l'utilisateur connecté
   useEffect(() => {
     const listIdContacts = user?.listContacts;
     (async () => {
@@ -33,6 +37,7 @@ const Community = () => {
     })();
   }, []);
 
+  // récupère des utilisateurs qui proposent le livre recherché à l'échange
   const searchUserToExchange = async (
     e: React.ChangeEvent<HTMLFormElement>
   ) => {
@@ -51,8 +56,6 @@ const Community = () => {
         `user/request-contact/${idContact}`,
         "GET"
       );
-
-      console.log(response);
     } catch (err) {
       return alert(err);
     }
@@ -83,7 +86,6 @@ const Community = () => {
       return alert(err);
     }
 
-    console.log(demandContact);
     setDemandContact(
       demandContact.filter(
         (contact: ContactInterface) => contact._id !== idContact
@@ -91,7 +93,10 @@ const Community = () => {
     );
   };
 
-  console.log(demandContact);
+  const openConversation = (userToSpeak: string) => {
+    setUserToSpeak(userToSpeak);
+    setShowConversation(true);
+  };
 
   return (
     <main className="container community">
@@ -99,7 +104,7 @@ const Community = () => {
         <ul>
           {contacts.map((contact: ContactInterface) => {
             return (
-              <li>
+              <li key={contact._id}>
                 <img
                   src={
                     import.meta.env.VITE_API_BASE_URL +
@@ -107,7 +112,9 @@ const Community = () => {
                   }
                   alt="photo de profil"
                 />
-                <p>{contact.pseudo}</p>
+                <p onClick={() => openConversation(contact.pseudo)}>
+                  {contact.pseudo}
+                </p>
                 <button
                   className="community__btn community__btn--delete"
                   title="Supprimer des contacts"
@@ -120,6 +127,13 @@ const Community = () => {
           })}
         </ul>
       </aside>
+
+      {showConversation && (
+        <Conversation
+          userToSpeak={userToSpeak}
+          setShowConversation={setShowConversation}
+        />
+      )}
 
       <section className="community__users-search">
         {demandContact.length > 0 && (
@@ -135,7 +149,7 @@ const Community = () => {
                 <ul>
                   {demandContact.map((contact: ContactInterface) => {
                     return (
-                      <li>
+                      <li key={contact._id}>
                         <div className="community__user">
                           <img
                             src={
