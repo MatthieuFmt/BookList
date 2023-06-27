@@ -101,7 +101,7 @@ export const getAllConversations = async (
 
     const list = [];
     for (const conversation of listConversations) {
-      let newConversation = await Conversation.findById(conversation);
+      const newConversation = await Conversation.findById(conversation);
       list.push(newConversation);
     }
 

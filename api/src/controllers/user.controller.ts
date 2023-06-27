@@ -80,7 +80,7 @@ export const deleteFromBooksLists = async (
 
 export const getList = async (req: CustomRequest, res: Response) => {
   try {
-    let list = req.params.list;
+    const list = req.params.list;
 
     const userId = req.user.id;
 

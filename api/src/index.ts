@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import http from "http";
+// import http from "http";
 // import { Server } from "socket.io";
 import cors from "cors";
 
@@ -14,7 +14,7 @@ import conversationRoutes from "./routes/conversation.route";
 
 import authMiddleware from "./middleware/auth.middleware";
 import { limiter } from "./middleware/rate-limit.middleware";
-import { chatSocket } from "./config/socketio.config";
+// import { chatSocket } from "./config/socketio.config";
 import path from "path";
 
 dotenv.config();

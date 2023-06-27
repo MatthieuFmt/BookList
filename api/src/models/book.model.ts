@@ -51,7 +51,7 @@ const BookSchema = new Schema({
     type: [
       {
         userId: { type: String, required: true },
-        rating: { type: Number, required: true, min: 1, max: 5 },
+        rating: { type: Int16Array, required: true, min: 1, max: 5 },
       },
     ],
     default: [],
