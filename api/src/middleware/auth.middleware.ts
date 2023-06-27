@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 
 interface CustomRequest extends Request {
   user?: {
@@ -25,7 +25,7 @@ const authMiddleware = async (
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET as Secret);
 
     if (typeof decodedToken === "string") {
       throw new Error("Token invalide");

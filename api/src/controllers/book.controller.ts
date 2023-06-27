@@ -239,7 +239,7 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
     const query = req.body.query;
 
     const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&key=AIzaSyAVYpytKjjHfklW7B-z4IbV2P9xY3fahM4`
+      `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&key=${process.env.GOOGLE_API_KEY}`
     );
 
     const allBooks = await Book.find({}, { idApi: 1, _id: 0 });

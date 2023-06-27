@@ -5,7 +5,7 @@ import { transport } from "../config/nodemailer.config";
 import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 
 const tokenBlacklist = new Set<string>();
 
@@ -80,7 +80,7 @@ export const connectUser = async (req: Request, res: Response) => {
 
       const refreshToken = jwt.sign(
         refreshTokenPayload,
-        process.env.TOKEN_SECRET,
+        process.env.TOKEN_SECRET as Secret,
         {
           expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
         }
@@ -88,7 +88,7 @@ export const connectUser = async (req: Request, res: Response) => {
 
       const accessToken = jwt.sign(
         accessTokenPayload,
-        process.env.TOKEN_SECRET,
+        process.env.TOKEN_SECRET as Secret,
         {
           expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
         }
@@ -125,7 +125,7 @@ export const disconnectUser = async (req: Request, res: Response) => {
     // Ajouter le token à la liste noire
     tokenBlacklist.add(token);
 
-    await user.save();
+    await user?.save();
 
     res.status(200).json({ message: "User disconnected" });
   } else {
@@ -145,7 +145,10 @@ export const refreshToken = async (req: Request, res: Response) => {
       throw new Error();
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.TOKEN_SECRET);
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.TOKEN_SECRET as Secret
+    );
 
     if (!decoded) {
       return res.status(401).json({ erreur: "Refresh token invalide" });
@@ -157,7 +160,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     const newAccessToken = jwt.sign(
       accessTokenPayload,
-      process.env.TOKEN_SECRET,
+      process.env.TOKEN_SECRET as Secret,
       {
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
       }
@@ -233,7 +236,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     const dateExpireToken = user.passwordResetExpires;
     const dateNow = new Date().getTime();
 
-    if (dateExpireToken < dateNow) {
+    if (dateExpireToken && dateExpireToken < dateNow) {
       return res.status(401).json({ erreur: "Le token a expiré" });
     }
 
