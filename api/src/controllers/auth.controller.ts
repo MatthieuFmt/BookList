@@ -204,7 +204,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
       Si vous n'avez pas fait cette demande, veuillez ignorer cet e-mail et votre mot de passe restera inchangé.`,
     };
 
-    transport.sendMail(mailOptions, (erreur: any) => {
+    transport.sendMail(mailOptions, (erreur: Error | null) => {
       if (erreur) {
         return res.status(500).json({ erreur: erreur });
       }

@@ -231,8 +231,6 @@ export const updateProfilePicture = async (
 ) => {
   try {
     upload(req, res, (err: any) => {
-      console.log("-----------------");
-      console.log(req.file);
       if (err instanceof multer.MulterError) {
         res.status(400).send({ erreur: "Une erreur s'est produite" });
       } else if (err) {
