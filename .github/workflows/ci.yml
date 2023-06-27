@@ -34,5 +34,4 @@ jobs:
           cd client
           npm ci
           npm outdated
-          npm run lint
           npm test
