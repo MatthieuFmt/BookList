@@ -12,25 +12,29 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
 
   const [showAddList, setShowAddList] = useState(false);
 
+  let newUser: UserInterface = {
+    _id: user?._id as string,
+    pseudo: user?.pseudo as string,
+    email: user?.email as string,
+    profilePicturePath: user?.profilePicturePath as string,
+    listRequestContacts: user?.listRequestContacts as string[],
+    listContacts: user?.listContacts as string[],
+    listBooksToExchange: user?.listBooksToExchange as string[],
+    listBooksAlreadyRead: user?.listBooksAlreadyRead as string[],
+    listWishBooks: user?.listWishBooks as string[],
+    listConversations: user?.listConversations as string[],
+    passwordResetToken: user?.passwordResetToken as string,
+    passwordResetExpires: user?.passwordResetExpires as number,
+    __v: user?.__v as number,
+  };
+
   const addToList = (bookId: string, list: string) => {
     fetchApi(`user/add-to-lists/${list}`, "POST", { bookId });
 
     if (!user || !user[list]?.includes(bookId)) {
-      setUser((prevUser: UserInterface) => {
-        if (prevUser === null) {
-          return prevUser;
-        }
+      newUser[list] = [...newUser[list], bookId];
 
-        const updatedUser = {
-          ...prevUser,
-          [list]: [...prevUser[list], bookId],
-        };
-
-        return updatedUser;
-      });
-      // if (user) {
-      // user[list] = [...user[list], bookId];
-      // }
+      setUser(newUser);
     }
   };
 
@@ -38,14 +42,8 @@ const ButtonUpdateList: React.FC<ButtonUpdateProps> = ({ bookInfos }) => {
     fetchApi(`user/delete-from-lists/${list}`, "DELETE", { bookId });
 
     if (user?.[list].includes(bookId)) {
-      setUser((prevUser: UserInterface) => {
-        const updatedList = prevUser[list].filter(
-          (id: string) => id !== bookId
-        );
-        return { ...prevUser, [list]: updatedList };
-      });
-
-      // user[list] = user[list].filter((id: string) => id !== bookId);
+      newUser[list] = user[list].filter((id: string) => id !== bookId);
+      setUser(newUser);
     }
   };
 

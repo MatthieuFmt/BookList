@@ -145,6 +145,11 @@
     background-color: $background-color;
 
     margin: $space-3 0;
+
+    img {
+      height: 10rem;
+      width: 10rem;
+    }
   }
 
   &__user-infos {
