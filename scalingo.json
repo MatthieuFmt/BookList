@@ -2,7 +2,7 @@
   "name": "BookList",
   "region": "eu-west-1",
   "plan": "dev",
-  "buildpacks": ["nodejs"],
+  "buildpacks": [{ "url": "https://github.com/Scalingo/multi-buildpack.git" }],
   "formation": {
     "web": {
       "size": "1:Small",
@@ -13,8 +13,8 @@
     "NODE_ENV": "production"
   },
   "scripts": {
-    "build": "npm run build",
-    "start": "npm run start"
+    "build": "cd client && npm install && npm run build && cd ../api && npm install && npm run build",
+    "start": "cd client && npm install && npm run build && cd ../api && npm install && npm run start"
   },
-  "predeploy": ["npm ci --no-audit"]
+  "predeploy": []
 }
