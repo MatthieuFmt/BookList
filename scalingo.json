@@ -1,0 +1,20 @@
+{
+  "name": "NomDeVotreApplication",
+  "region": "eu-west-1",
+  "plan": "dev",
+  "buildpacks": ["nodejs"],
+  "formation": {
+    "web": {
+      "size": "1:Small",
+      "quantity": 1
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "scripts": {
+    "build": "npm run build",
+    "start": "npm run start"
+  },
+  "predeploy": ["npm ci --no-audit"]
+}
