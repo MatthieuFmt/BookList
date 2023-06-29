@@ -1,5 +1,5 @@
 {
-  "name": "NomDeVotreApplication",
+  "name": "BookList",
   "region": "eu-west-1",
   "plan": "dev",
   "buildpacks": ["nodejs"],
