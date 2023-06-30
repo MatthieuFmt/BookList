@@ -36,6 +36,10 @@ app.use(limiter);
 app.get("/uploads/:filename", (req: Request, res: Response) => {
   const filename = req.params.filename;
   const imagePath = path.join(__dirname, "uploads", filename);
+
+  console.log("__dirname");
+  console.log(__dirname);
+
   res.sendFile(imagePath);
 });
 
