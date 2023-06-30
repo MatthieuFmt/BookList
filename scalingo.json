@@ -1,5 +1,5 @@
 {
   "name": "booklist",
   "image": "scalingo/nodejs",
-  "command": "cd client && npm run build && cd .. && cd api && npm start"
+  "command": "cd client && npm run build && cd .. && cd api && npm run start"
 }
