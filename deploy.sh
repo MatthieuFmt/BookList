@@ -1,8 +1,8 @@
 #!/bin/bash
 BOOKLIST_PATH=$(pwd)
-if [[ $1 = "prod" || $1 = "dev" ]] && [[ $2 = "down" || $2 = "up" ]]; then
-  fileEnv="docker-compose.${1}.yml"
-  downOrUp=$2
+if [[ $1 = "down" || $1 = "up" ]]; then
+  fileEnv="docker-compose.yml"
+  downOrUp=$1
   echo "Running docker-compose -f $BOOKLIST_PATH/$fileEnv $downOrUp"
   
   if [[ $downOrUp == "up" ]]; then
@@ -11,5 +11,5 @@ if [[ $1 = "prod" || $1 = "dev" ]] && [[ $2 = "down" || $2 = "up" ]]; then
     docker-compose -f "$BOOKLIST_PATH/$fileEnv" $downOrUp
   fi
 else
-  echo "Need to follow format ./deploy.sh prod|dev down|up"
+  echo "Need to follow format ./deploy.sh down|up"
 fi
