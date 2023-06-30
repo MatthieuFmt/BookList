@@ -1,0 +1,5 @@
+{
+  "name": "booklist",
+  "image": "scalingo/nodejs",
+  "command": "cd client && npm install && npm start"
+}
