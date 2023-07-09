@@ -250,7 +250,7 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
 
     const newArray = listApiBooks?.items.map((book: GoogleBook) => {
       book.idApi = book.id;
-      book.author = book.volumeInfo.authors[0];
+      book.author = book.volumeInfo.authors ? book.volumeInfo.authors[0] : "";
       book.summary = book.volumeInfo.description;
       book.category = book.volumeInfo.categories
         ? book.volumeInfo.categories[0]
@@ -271,9 +271,11 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
       book.title = book.volumeInfo.title;
       book.publishedDate = book.volumeInfo.publishedDate;
       book.publisher = book.volumeInfo.publisher;
-      book.isbn = book.volumeInfo.industryIdentifiers[1]
-        ? book.volumeInfo.industryIdentifiers[1].identifier
-        : book.volumeInfo.industryIdentifiers[0].identifier;
+      book.isbn =
+        book.volumeInfo.industryIdentifiers &&
+        book.volumeInfo.industryIdentifiers[1]
+          ? book.volumeInfo.industryIdentifiers[1].identifier
+          : book.volumeInfo.industryIdentifiers[0].identifier;
       book.listComments = [];
       book.listRatings = [];
 

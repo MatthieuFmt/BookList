@@ -46,7 +46,7 @@ const UserSchema = new Schema({
   },
   profilePicturePath: {
     type: String,
-    default: "/upload/default-user.png",
+    default: "/uploads/default-user.png",
   },
   listRequestContacts: { type: [String], default: [] },
   listContacts: { type: [String], default: [] },

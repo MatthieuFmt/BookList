@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Route, Routes } from "react-router-dom";
 
@@ -11,7 +11,6 @@ import MyLists from "./pages/MyLists/MyLists";
 import UserContext from "./context/UserContext";
 import Book from "./pages/Book/Book";
 import MyAccount from "./pages/MyAccount/MyAccount";
-import { fetchApi } from "./utils/api";
 import Community from "./pages/Community/Community";
 
 function App() {

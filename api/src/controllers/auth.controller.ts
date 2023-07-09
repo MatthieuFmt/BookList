@@ -59,16 +59,21 @@ export const connectUser = async (req: Request, res: Response) => {
   try {
     const { password, email } = req.body;
 
+    if (!password || !email) {
+      return res
+        .status(400)
+        .json({ erreur: "Veuillez remplir tous les champs" });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ erreur: "User not found" });
+      return res.status(400).json({ erreur: "L'utilisateur n'existe pas" });
     }
 
     const compare = await bcrypt.compare(password, user.password);
 
     if (compare) {
-      // génère un token
       const refreshTokenPayload = {
         id: user._id,
         email: user.email,
@@ -78,6 +83,7 @@ export const connectUser = async (req: Request, res: Response) => {
         email: user.email,
       };
 
+      // génère un refresh et un access token
       const refreshToken = jwt.sign(
         refreshTokenPayload,
         process.env.TOKEN_SECRET as Secret,

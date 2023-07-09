@@ -12,6 +12,7 @@ const MyLists = () => {
     toRead: false,
     favorite: false,
   });
+
   const [inputSearch, setInputSearch] = useState<string>("");
 
   const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
@@ -45,7 +46,7 @@ const MyLists = () => {
   }, [activeList]);
 
   return (
-    <main className="container my-lists">
+    <main data-testid="my-lists-rendered" className="container my-lists">
       <aside className="my-lists__sidebar">
         <div
           className={
@@ -65,6 +66,7 @@ const MyLists = () => {
           <div>Recherche</div>
         </div>
         <div
+          data-testid="list-title-to-read"
           className={
             activeList.toRead
               ? "my-lists__title-list active"
@@ -150,7 +152,7 @@ const MyLists = () => {
           );
         })}
 
-        {bookListDisplay.length === 0 && !activeList.search && (
+        {bookListDisplay?.length === 0 && !activeList.search && (
           <div className="my-lists__search-link">
             La liste est vide.
             <span

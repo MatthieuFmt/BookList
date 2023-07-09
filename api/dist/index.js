@@ -15,6 +15,8 @@ const book_routes_1 = __importDefault(require("./routes/book.routes"));
 const conversation_route_1 = __importDefault(require("./routes/conversation.route"));
 const auth_middleware_1 = __importDefault(require("./middleware/auth.middleware"));
 const rate_limit_middleware_1 = require("./middleware/rate-limit.middleware");
+// import { chatSocket } from "./config/socketio.config";
+const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8000;
@@ -27,7 +29,7 @@ app.use(rate_limit_middleware_1.limiter);
 // permet d'accéder aux photos de profils uploadées
 app.get("/uploads/:filename", (req, res) => {
     const filename = req.params.filename;
-    // const imagePath = path.join(__dirname, "uploads", filename);
+    const imagePath = path_1.default.join(__dirname, "uploads", filename);
     console.log("__dirname");
     console.log(__dirname);
     res.sendFile(imagePath);
