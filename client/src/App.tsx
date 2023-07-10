@@ -44,6 +44,17 @@ function App() {
           <Route path="/livre/:id" element={<Book />} />
           <Route path="/mon-compte" element={<MyAccount />} />
           <Route path="/communaute" element={<Community />} />
+          <Route
+            path="/*"
+            element={
+              <Home
+                toggleModalRegistration={toggleModalRegistration}
+                setToggleModalRegistration={setToggleModalRegistration}
+                toggleModalConnection={toggleModalConnection}
+                setToggleModalConnection={setToggleModalConnection}
+              />
+            }
+          />
         </Routes>
       </div>
     </UserContext.Provider>
