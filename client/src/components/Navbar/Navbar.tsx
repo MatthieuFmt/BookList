@@ -81,11 +81,11 @@ const Navbar: React.FC<NavbarProps> = ({
           </NavLink>
 
           <NavLink
-            to="/communautee"
+            to="/communaute"
             className={({ isActive }) => (isActive ? "link active" : "link")}
           >
             <img src={message} alt="livres" className="icon" />
-            Communautée
+            Communauté
           </NavLink>
           <NavLink
             to="/mon-compte"

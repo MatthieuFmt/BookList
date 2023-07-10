@@ -10,14 +10,23 @@ type UserRegistrationData = {
 
 interface RegistrationProps {
   setToggleModalRegistration: Dispatch<SetStateAction<boolean>>;
+  setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
+  setPassword: Dispatch<SetStateAction<string>>;
+  setEmail: Dispatch<SetStateAction<string>>;
+  email: string;
+  password: string;
 }
 
 const Registration: React.FC<RegistrationProps> = ({
   setToggleModalRegistration,
+  setToggleModalConnection,
+  setPassword,
+  setEmail,
+  email,
+  password,
 }) => {
   const [pseudo, setPseudo] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const register = (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,8 +38,16 @@ const Registration: React.FC<RegistrationProps> = ({
       password,
       confirmPassword,
     };
+    try {
+      fetchApi("auth/register", "POST", userData);
+    } catch (e) {
+      return alert("Erreur lors de l'inscription");
+    }
 
-    fetchApi("auth/register", "POST", userData);
+    setToggleModalRegistration(false);
+    setToggleModalConnection(true);
+    setEmail(email);
+    setPassword(password);
   };
 
   return (

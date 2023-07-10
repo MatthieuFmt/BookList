@@ -101,7 +101,7 @@ const MyAccount = () => {
                     <article
                       className="my-account__contact-card"
                       key={contact._id}
-                      onClick={() => navigate("/communautee")}
+                      onClick={() => navigate("/communaute")}
                     >
                       <img
                         src={

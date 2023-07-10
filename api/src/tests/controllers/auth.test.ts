@@ -70,7 +70,6 @@ describe("POST /auth/connect", () => {
     );
   });
 
-  // N'oubliez pas de nettoyer après les tests
   afterAll(async () => {
     await User.deleteOne({ email: "test@mail.fr" });
   });

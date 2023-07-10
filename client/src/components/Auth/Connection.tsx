@@ -5,6 +5,10 @@ import UserContext from "../../context/UserContext";
 
 interface ConnectionProps {
   setToggleModalConnection: Dispatch<SetStateAction<boolean>>;
+  setPassword: Dispatch<SetStateAction<string>>;
+  setEmail: Dispatch<SetStateAction<string>>;
+  password: string;
+  email: string;
 }
 
 type UserConnectionData = {
@@ -18,10 +22,11 @@ type ForgottenPasswordData = {
 
 const Connection: React.FC<ConnectionProps> = ({
   setToggleModalConnection,
+  setPassword,
+  setEmail,
+  password,
+  email,
 }) => {
-  const [email, setEmail] = useState("matt136@hotmail.fr");
-  const [password, setPassword] = useState("azERTY123$");
-
   const [showInputForgotPassword, setShowInputForgotPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
@@ -96,7 +101,7 @@ const Connection: React.FC<ConnectionProps> = ({
       <section className="modal">
         {showInputForgotPassword ? (
           <>
-            <h3 className="modal__title">Mot de pass oublié</h3>
+            <h3 className="modal__title">Mot de passe oublié</h3>
 
             {emailSent ? (
               <div className="modal__msg-email-sent">

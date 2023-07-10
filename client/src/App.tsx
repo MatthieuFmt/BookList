@@ -43,7 +43,7 @@ function App() {
           <Route path="/bibliotheque" element={<MyLists />} />
           <Route path="/livre/:id" element={<Book />} />
           <Route path="/mon-compte" element={<MyAccount />} />
-          <Route path="/communautee" element={<Community />} />
+          <Route path="/communaute" element={<Community />} />
         </Routes>
       </div>
     </UserContext.Provider>

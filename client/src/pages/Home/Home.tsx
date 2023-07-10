@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Registration from "../../components/Auth/Registration";
 import Connection from "../../components/Auth/Connection";
 import { useNavigate } from "react-router-dom";
@@ -24,14 +24,30 @@ const Home: React.FC<HomeProps> = ({
     }
   }, [navigate]);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <>
       {toggleModalRegistration && (
-        <Registration setToggleModalRegistration={setToggleModalRegistration} />
+        <Registration
+          setToggleModalRegistration={setToggleModalRegistration}
+          setToggleModalConnection={setToggleModalConnection}
+          setPassword={setPassword}
+          setEmail={setEmail}
+          password={password}
+          email={email}
+        />
       )}
 
       {toggleModalConnection && (
-        <Connection setToggleModalConnection={setToggleModalConnection} />
+        <Connection
+          setToggleModalConnection={setToggleModalConnection}
+          setEmail={setEmail}
+          setPassword={setPassword}
+          password={password}
+          email={email}
+        />
       )}
 
       <main className="container home">
