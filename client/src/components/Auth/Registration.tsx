@@ -29,7 +29,7 @@ const Registration: React.FC<RegistrationProps> = ({
 
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const register = (e: React.FormEvent<HTMLFormElement>) => {
+  const register = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const userData: UserRegistrationData = {
@@ -38,9 +38,10 @@ const Registration: React.FC<RegistrationProps> = ({
       password,
       confirmPassword,
     };
-    try {
-      fetchApi("auth/register", "POST", userData);
-    } catch (e) {
+
+    const test = await fetchApi("auth/register", "POST", userData);
+    console.log(test);
+    if (test.errors) {
       return alert("Erreur lors de l'inscription");
     }
 

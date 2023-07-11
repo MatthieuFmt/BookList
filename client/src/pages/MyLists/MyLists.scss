@@ -23,6 +23,10 @@
     cursor: pointer;
     @include transition(all, 0.2s);
 
+    @include respond-to("small") {
+      width: 8rem;
+    }
+
     &:hover {
       color: $first-color;
       background-color: $second-color;

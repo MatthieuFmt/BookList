@@ -38,8 +38,6 @@ const Navbar: React.FC<NavbarProps> = ({
 
   useEffect(() => {
     if (token) {
-      console.log("test");
-
       (async () => {
         const connectedUser = await fetchApi("user/get-connected-user", "GET");
 

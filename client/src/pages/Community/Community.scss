@@ -7,6 +7,10 @@
     height: 100%;
     background-color: $background-color;
 
+    @include respond-to("small") {
+      width: 8rem;
+    }
+
     ul {
       display: flex;
       flex-direction: column;
@@ -83,7 +87,6 @@
     li {
       height: 5rem;
       display: flex;
-      // flex-direction: column;
       justify-content: space-between;
       align-items: center;
       margin: $space-2 0;
@@ -114,10 +117,11 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+
     input {
       border-radius: 50px 0 0 50px;
       width: 35%;
-      min-width: 250px;
+      min-width: 210px;
     }
 
     button {

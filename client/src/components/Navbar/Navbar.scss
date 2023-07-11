@@ -12,6 +12,10 @@
   padding: 0 $space-5;
   box-shadow: 0 0 5px $black;
 
+  @include respond-to("small") {
+    padding: 0 $space-2;
+  }
+
   &__logo .logo {
     width: 15rem;
   }
@@ -51,6 +55,10 @@
     margin: 0 $space-3;
     color: $white;
     padding: $space-2 0;
+
+    @include respond-to("small") {
+      margin: 0 0.5em;
+    }
 
     .icon {
       width: 1.5rem;

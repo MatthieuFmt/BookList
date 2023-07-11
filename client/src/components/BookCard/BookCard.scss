@@ -1,14 +1,17 @@
 .book-card {
   display: flex;
-  width: 50%;
-  height: 14rem;
+  width: 80%;
+  height: 15rem;
   margin: $space-4 $space-6;
   background-color: $background-color;
   color: $grey-2;
-  min-width: 350px;
+  min-width: 230px;
   max-height: 200px;
   @include transition();
 
+  @include respond-to("medium") {
+    margin: $space-3;
+  }
   &:hover {
     transform: scale(1.01);
   }

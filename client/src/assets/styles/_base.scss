@@ -20,6 +20,10 @@
 
 html {
   font-size: clamp(12px, 0.8vw, 200px);
+
+  @include respond-to("small") {
+    font-size: clamp(8px, 0.8vw, 50px);
+  }
 }
 
 body,
@@ -75,7 +79,7 @@ button {
 .container {
   background-color: $foreground-color;
   min-height: 100vh;
-  padding-top: 8vh;
+  padding-top: 50px;
 }
 
 input:-webkit-autofill {
@@ -113,5 +117,6 @@ input:-webkit-autofill:focus {
 }
 
 .icon {
+  min-width: 1.5rem;
   width: 1.5rem;
 }

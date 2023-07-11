@@ -6,10 +6,34 @@ import { User, IUser } from "../models/user.model";
 
 import bcrypt from "bcryptjs";
 import jwt, { Secret } from "jsonwebtoken";
+import { body, validationResult } from "express-validator";
 
 const tokenBlacklist = new Set<string>();
 
 export const createUser = async (req: Request, res: Response) => {
+  await Promise.all([
+    body("pseudo")
+      .notEmpty()
+      .withMessage("Pseudo manquant")
+      .isLength({ min: 3, max: 20 })
+      .withMessage("Le pseudo doit comporter entre 3 et 20 caractères")
+      .run(req),
+    body("email").isEmail().withMessage("Email invalide").run(req),
+    body("password")
+      .isLength({ min: 8 })
+      .withMessage("Le mot de passe doit comporter au moins 8 caractères")
+      .run(req),
+    body("confirmPassword")
+      .custom((value, { req }) => value === req.body.password)
+      .withMessage("Les mots de passe doivent correspondre")
+      .run(req),
+  ]);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const { pseudo, password, confirmPassword, email } = req.body;
 

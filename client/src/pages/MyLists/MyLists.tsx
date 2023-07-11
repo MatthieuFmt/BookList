@@ -16,7 +16,7 @@ const MyLists = () => {
   const [inputSearch, setInputSearch] = useState<string>("");
 
   const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +27,10 @@ const MyLists = () => {
       query: inputSearch,
     });
 
-    setBookListDisplay(searchedBooks);
+    console.log(searchedBooks);
+    if (searchedBooks) {
+      setBookListDisplay(searchedBooks);
+    }
   };
 
   useEffect(() => {

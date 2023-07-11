@@ -57,4 +57,5 @@ const BookSchema = new Schema({
     default: [],
   },
 });
+
 export const Book = model<IBook>("Book", BookSchema);
