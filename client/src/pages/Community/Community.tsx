@@ -3,6 +3,7 @@ import UserContext from "../../context/UserContext";
 import { fetchApi } from "../../utils/api";
 import { ContactInterface } from "../../interfaces/interfaces";
 import loupe from "../../assets/images/loupe.svg";
+import deleteIcon from "../../assets/images/delete.svg";
 import Conversation from "../../components/Conversation/Conversation";
 
 const Community = () => {
@@ -35,7 +36,7 @@ const Community = () => {
       });
       setDemandContact(listRequestContacts);
     })();
-  }, []);
+  }, [user]);
 
   // récupère des utilisateurs qui proposent le livre recherché à l'échange
   const searchUserToExchange = async (
@@ -102,22 +103,24 @@ const Community = () => {
           {contacts.map((contact: ContactInterface) => {
             return (
               <li key={contact._id}>
-                <img
-                  src={
-                    import.meta.env.VITE_API_BASE_URL +
-                    contact.profilePicturePath
-                  }
-                  alt="photo de profil"
-                />
-                <p onClick={() => openConversation(contact.pseudo)}>
-                  {contact.pseudo}
-                </p>
+                <div>
+                  <img
+                    src={
+                      import.meta.env.VITE_API_BASE_URL +
+                      contact.profilePicturePath
+                    }
+                    alt="photo de profil"
+                  />
+                  <p onClick={() => openConversation(contact.pseudo)}>
+                    {contact.pseudo}
+                  </p>
+                </div>
                 <button
                   className="community__btn community__btn--delete"
-                  title="Supprimer des contacts"
+                  title="Supprimer le contact"
                   onClick={() => deleteContact(contact._id)}
                 >
-                  -
+                  <img src={deleteIcon} alt="supprimer" className="icon" />
                 </button>
               </li>
             );

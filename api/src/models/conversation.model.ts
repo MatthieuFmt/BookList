@@ -30,6 +30,7 @@ const ConversationSchema = new Schema({
     default: [],
   },
 });
+
 export const Conversation = model<IConversation>(
   "Conversation",
   ConversationSchema

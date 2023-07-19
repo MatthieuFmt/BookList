@@ -5,10 +5,7 @@
   transform: translate(-50%, -50%);
   z-index: 100;
 
-  // display: flex;
-  // align-items: center;
-
-  background-color: $grey-1;
+  background-color: $background-color;
   width: 50%;
   min-width: 300px;
   height: 50%;
@@ -22,6 +19,7 @@
     align-items: center;
     justify-content: center;
     height: 5%;
+    color: $first-color;
   }
 
   &__messages {
@@ -34,11 +32,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 5%;
+    height: 7%;
 
     input {
       width: 100%;
-      background-color: $grey-4;
+      background-color: $foreground-color;
       height: 100%;
       border-radius: 50px 0 0 50px;
     }
