@@ -38,11 +38,11 @@ const Registration: React.FC<RegistrationProps> = ({
       password,
       confirmPassword,
     };
-
-    const test = await fetchApi("auth/register", "POST", userData);
-    console.log(test);
-    if (test.errors) {
-      return alert("Erreur lors de l'inscription");
+    try {
+      const response = await fetchApi("auth/register", "POST", userData);
+      if (!response) throw new Error("Erreur lors de l'inscription");
+    } catch (err) {
+      return alert(err);
     }
 
     setToggleModalRegistration(false);

@@ -30,7 +30,7 @@ const Connection: React.FC<ConnectionProps> = ({
   const [showInputForgotPassword, setShowInputForgotPassword] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 

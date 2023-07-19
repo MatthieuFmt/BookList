@@ -13,23 +13,29 @@ const MyLists = () => {
     favorite: false,
   });
 
-  const [inputSearch, setInputSearch] = useState<string>("");
-
-  const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
   const { user } = useContext(UserContext);
 
+  // liste des livres à afficher
+  const [bookListDisplay, setBookListDisplay] = useState<BookInterface[]>([]);
+  // valeur de l'input de recherche
+  const [bookToSearch, setBookToSearch] = useState<string>("");
+
+  // fonction qui permet de rechercher un livre dans l'API Google Books
   const searchBook = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!inputSearch) return;
+    if (!bookToSearch) return;
 
-    const searchedBooks = await fetchApi("book/fetch-googlebook", "POST", {
-      query: inputSearch,
-    });
+    const response: BookInterface[] = await fetchApi(
+      "book/fetch-googlebook",
+      "POST",
+      {
+        query: bookToSearch,
+      }
+    );
 
-    console.log(searchedBooks);
-    if (searchedBooks) {
-      setBookListDisplay(searchedBooks);
+    if (response) {
+      setBookListDisplay(response);
     }
   };
 
@@ -135,7 +141,7 @@ const MyLists = () => {
               type="text"
               placeholder="Rechercher un livre"
               onChange={(e) =>
-                setInputSearch(e.target.value.replace(/ /g, "+"))
+                setBookToSearch(e.target.value.replace(/ /g, "+"))
               }
             />
             <button type="submit">

@@ -5,6 +5,7 @@ import { BookInterface } from "../../interfaces/interfaces";
 import { formatDate } from "../../utils/helpers";
 
 import ButtonUpdateList from "../ButtonUpdateList/ButtonUpdateList";
+import defaultBookCover from "../../assets/images/default-book.jpg";
 
 interface BookCardProps {
   bookInfos: BookInterface;
@@ -28,7 +29,10 @@ const BookCard: React.FC<BookCardProps> = ({
         onMouseEnter={() => setShowLayout(true)}
         onMouseLeave={() => setShowLayout(false)}
       >
-        <img src={bookInfos.imageLinks} alt="image de couverture" />
+        <img
+          src={bookInfos.imageLinks ? bookInfos.imageLinks : defaultBookCover}
+          alt="image de couverture"
+        />
         {showLayout && (
           <div
             className="book-card__layout"

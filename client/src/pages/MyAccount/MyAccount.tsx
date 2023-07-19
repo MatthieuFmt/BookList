@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../../context/UserContext";
 import { fetchApi } from "../../utils/api";
 import { ContactInterface } from "../../interfaces/interfaces";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MyAccount = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [contacts, setContacts] = useState([]);
   const [showLayout, setShowLayout] = useState(false);

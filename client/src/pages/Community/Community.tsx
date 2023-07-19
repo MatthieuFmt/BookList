@@ -6,7 +6,7 @@ import loupe from "../../assets/images/loupe.svg";
 import Conversation from "../../components/Conversation/Conversation";
 
 const Community = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const [contacts, setContacts] = useState([]);
   const [demandContact, setDemandContact] = useState([]);
@@ -52,10 +52,7 @@ const Community = () => {
 
   const addContact = async (idContact: string) => {
     try {
-      const response = await fetchApi(
-        `user/request-contact/${idContact}`,
-        "GET"
-      );
+      await fetchApi(`user/request-contact/${idContact}`, "GET");
     } catch (err) {
       return alert(err);
     }

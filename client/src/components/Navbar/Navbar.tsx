@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({
   setToggleModalRegistration,
   setToggleModalConnection,
 }) => {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 
