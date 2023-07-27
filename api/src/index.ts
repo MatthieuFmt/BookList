@@ -26,7 +26,12 @@ const PORT = process.env.PORT || 8000;
 // connection à la base de données MongoDB
 connectToDatabase();
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.APP_URL,
+  allowedHeaders: "Content-Type, Authorization",
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // limite le nombre de requêtes par adresse ip

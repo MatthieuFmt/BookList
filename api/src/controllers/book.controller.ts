@@ -13,37 +13,36 @@ interface CustomRequest extends Request {
 
 interface GoogleBook {
   idApi: string;
-  id: string; // Ajout de la propriété 'id'
-  kind: string; // Ajout de la propriété 'kind'
-  accessInfo: string;
-  etag: string;
-  saleInfo: string;
-  searchInfo: string;
-  selfLink: string;
-  author: string;
-  summary: string;
-  category: string;
-  imageLinks: string;
-  title: string;
-  publishedDate: string;
-  publisher: string;
-  isbn: string;
-  listComments: any[];
-  listRatings: any[];
+  id: string;
+  kind?: string;
+  accessInfo?: string;
+  etag?: string;
+  saleInfo?: string;
+  searchInfo?: string;
+  selfLink?: string;
+  author?: string;
+  summary?: string;
+  category?: string;
+  imageLinks?: string;
+  title?: string;
+  publishedDate?: string;
+  publisher?: string;
+  isbn?: string;
+  listComments?: any[];
+  listRatings?: any[];
   volumeInfo: {
-    // Propriétés spécifiques de volumeInfo
-    authors: string[];
-    description: string;
+    authors?: string[];
+    description?: string;
     categories?: string[];
     imageLinks?: {
-      thumbnail: string;
-      smallThumbnail: string;
+      thumbnail?: string;
+      smallThumbnail?: string;
     };
-    title: string;
-    publishedDate: string;
-    publisher: string;
-    industryIdentifiers: {
-      identifier: string;
+    title?: string;
+    publishedDate?: string;
+    publisher?: string;
+    industryIdentifiers?: {
+      identifier?: string;
     }[];
   };
 }
@@ -250,7 +249,7 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
 
     const newArray = listApiBooks?.items.map((book: GoogleBook) => {
       book.idApi = book.id;
-      book.author = book.volumeInfo.authors ? book.volumeInfo.authors[0] : "";
+      book.author = book?.volumeInfo.authors ? book.volumeInfo.authors[0] : "";
       book.summary = book.volumeInfo.description;
       book.category = book.volumeInfo.categories
         ? book.volumeInfo.categories[0]

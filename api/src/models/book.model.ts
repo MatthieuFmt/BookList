@@ -28,7 +28,7 @@ export interface IBook extends Document {
 
 const BookSchema = new Schema({
   idApi: { type: String, required: true },
-  author: { type: String, required: true },
+  author: { type: String },
   summary: { type: String },
   category: { type: String },
   imageLinks: { type: String },

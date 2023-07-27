@@ -50,31 +50,31 @@ const BookCard: React.FC<BookCardProps> = ({
 
         {bookInfos.author && (
           <p>
-            <span>Auteur</span> {bookInfos.author}
+            <span>Auteur </span> {bookInfos.author}
           </p>
         )}
 
         {bookInfos.publisher && (
           <p>
-            <span>Editeur</span> {bookInfos.publisher}
+            <span>Editeur </span> {bookInfos.publisher}
           </p>
         )}
 
         {bookInfos.publishedDate && (
           <p>
-            <span>Date de sortie</span> {formatDate(bookInfos.publishedDate)}
+            <span>Date de sortie </span> {formatDate(bookInfos.publishedDate)}
           </p>
         )}
 
         {bookInfos.isbn && (
           <p>
-            <span>ISBN</span> {bookInfos.isbn}
+            <span>ISBN </span> {bookInfos.isbn}
           </p>
         )}
 
         {bookInfos.category && (
           <p>
-            <span>Catégorie</span> {bookInfos.category}
+            <span>Catégorie </span> {bookInfos.category}
           </p>
         )}
       </div>

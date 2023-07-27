@@ -8,6 +8,8 @@ import ButtonUpdateList from "../../components/ButtonUpdateList/ButtonUpdateList
 import { formatDate } from "../../utils/helpers";
 import { fetchApi } from "../../utils/api";
 
+import defaultBookCover from "../../assets/images/default-book.jpg";
+
 const Book = () => {
   const { id } = useParams();
 
@@ -58,12 +60,18 @@ const Book = () => {
       setBookInfos(book);
     })();
   }, [id]);
-  console.log(bookInfos);
 
   return (
     <main className="container book-page">
       <section className="book-page__card">
-        <img src={bookInfos?.imageLinks} alt="couverture du livre" />
+        <img
+          src={
+            bookInfos && bookInfos.imageLinks
+              ? bookInfos.imageLinks
+              : defaultBookCover
+          }
+          alt="couverture du livre"
+        />
 
         <div className="book-page__infos">
           <div className="book-page__header">
@@ -86,27 +94,27 @@ const Book = () => {
 
             {bookInfos?.publishedDate && (
               <p>
-                <span>Date de sortie</span>
+                <span>Date de sortie </span>
                 {formatDate(bookInfos.publishedDate)}
               </p>
             )}
 
             {bookInfos?.isbn && (
               <p>
-                <span>ISBN</span> {bookInfos.isbn}
+                <span>ISBN </span> {bookInfos.isbn}
               </p>
             )}
 
             {bookInfos?.category && (
               <p>
-                <span>Catégorie</span> {bookInfos.category}
+                <span>Catégorie </span> {bookInfos.category}
               </p>
             )}
           </div>
           <div className="book-page__summary">
             {bookInfos?.summary && (
               <>
-                <span>Résumé</span>
+                <span>Résumé </span>
                 <p>{bookInfos.summary}</p>
               </>
             )}
