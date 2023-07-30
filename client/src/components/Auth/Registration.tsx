@@ -38,6 +38,19 @@ const Registration: React.FC<RegistrationProps> = ({
       password,
       confirmPassword,
     };
+
+    if (password !== confirmPassword) {
+      return alert("Les mots de passe ne correspondent pas");
+    }
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return alert(
+        "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial"
+      );
+    }
+
     try {
       const response = await fetchApi("auth/register", "POST", userData);
       if (!response) throw new Error("Erreur lors de l'inscription");
