@@ -27,6 +27,7 @@ const authMiddleware = async (
   try {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET as Secret);
 
+    // si le token est invalide, decodedToken est une string
     if (typeof decodedToken === "string") {
       throw new Error("Token invalide");
     }
