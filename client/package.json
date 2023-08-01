@@ -19,7 +19,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1",
     "sass": "^1.62.1",
-    "vite": "^4.3.9"
+    "vite": "^4.4.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.7",
