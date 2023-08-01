@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Book, IBook } from "../models/book.model";
 import { User } from "../models/user.model";
-// import fetch from "node-fetch";
 
 interface CustomRequest extends Request {
   user: {
@@ -237,13 +236,16 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
   try {
     const query = req.body.query;
 
+    if (!query)
+      return res
+        .status(400)
+        .json({ erreur: "Veuillez entrer le titre d'un livre" });
+
     const response = await fetch(
       `https://www.googleapis.com/books/v1/volumes?q=intitle:${query}&key=${process.env.GOOGLE_API_KEY}`
     );
 
-    const allBooks = await Book.find({}, { idApi: 1, _id: 0 });
-
-    const idApiValues = allBooks ? allBooks.map((book) => book.idApi) : [];
+    const allBooks = (await Book.distinct("idApi")) || [];
 
     const listApiBooks = await response.json();
 
@@ -287,7 +289,7 @@ export const fetchGoogleBook = async (req: CustomRequest, res: Response) => {
       delete book.selfLink;
       delete book.volumeInfo;
 
-      if (!idApiValues.includes(book.idApi)) {
+      if (!allBooks.includes(book.idApi)) {
         (async () => {
           await Book.create(book);
         })();
