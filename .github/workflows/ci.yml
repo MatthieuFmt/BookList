@@ -1,27 +1,27 @@
 name: CI
 
-on:
+on: # est déclenché au push sur la branche "dev"
   push:
     branches:
       - "dev"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest # spécifie que le job sera exécuté sur la dernière version d'Ubuntu
     strategy:
       matrix:
         node-version: [18.x]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # utilise l'action GitHub "checkout" version 3 pour extraire le code
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3 # utilise l'action GitHub "setup-node" version 3 pour installer Node.js
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies and run tests for API
+      - name: run tests for API
         run: |
           cd api
           npm ci
@@ -29,9 +29,10 @@ jobs:
           npm run lint
           npm run test
 
-      - name: Install dependencies and run tests for Client
+      - name: run tests for Client
         run: |
           cd client
           npm ci
           npm outdated
-          npm test
+          npm run lint
+          npm run test

@@ -5,8 +5,6 @@ import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 interface CustomRequest extends Request {
   user?: {
     id: string;
-    email: string;
-    newAccessToken: string | null;
   };
 }
 // étape 2 on crée un middleware qui check si l'access token est encore valide à chaque appel api
@@ -25,6 +23,7 @@ const authMiddleware = async (
   }
 
   try {
+    // on vérifie que le token est valide
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET as Secret);
 
     // si le token est invalide, decodedToken est une string
@@ -32,9 +31,10 @@ const authMiddleware = async (
       throw new Error("Token invalide");
     }
 
-    const { id, email } = decodedToken as JwtPayload;
+    const { id } = decodedToken as JwtPayload;
 
-    req.user = { id, email, newAccessToken: null };
+    // on ajoute l'id de l'utilisateur à la requête
+    req.user = { id };
 
     next();
   } catch (error) {

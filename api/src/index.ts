@@ -27,7 +27,6 @@ const PORT = process.env.PORT || 8000;
 connectToDatabase();
 
 const corsOptions = {
-  // origin: process.env.APP_URL,
   origin: process.env.APP_URL,
 };
 

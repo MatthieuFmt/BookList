@@ -92,19 +92,26 @@ export const connectUser = async (req: Request, res: Response) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ erreur: "L'utilisateur n'existe pas" });
+      return res
+        .status(400)
+        .json({ erreur: "Mot de passe ou email incorrect" });
     }
 
-    const compare = await bcrypt.compare(password, user.password);
+    // vérifie que le mot de passe une fois hashé correspond à celui enregistré en bdd
+    const passwordCorresponding = await bcrypt.compare(password, user.password);
 
-    if (compare) {
+    if (!passwordCorresponding) {
+      return res
+        .status(400)
+        .json({ erreur: "Mot de passe ou email incorrect" });
+    }
+
+    if (passwordCorresponding) {
       const refreshTokenPayload = {
         id: user._id,
-        email: user.email,
       };
       const accessTokenPayload = {
         id: user._id,
-        email: user.email,
       };
 
       // génère un refresh et un access token
@@ -124,17 +131,11 @@ export const connectUser = async (req: Request, res: Response) => {
         }
       );
 
-      await user.save();
-
       return res.json({
         user: user,
         refreshToken: refreshToken,
         accessToken: accessToken,
       });
-    } else {
-      return res
-        .status(400)
-        .json({ erreur: "Mot de passe ou email incorrect" });
     }
   } catch (error) {
     return res

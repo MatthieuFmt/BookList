@@ -59,8 +59,8 @@ describe("POST /auth/connect", () => {
     expect(response.status).toBe(400); // Le statut de la réponse doit être 400
     expect(response.body).toHaveProperty(
       "erreur",
-      "L'utilisateur n'existe pas"
-    ); // Le corps de la réponse doit avoir une propriété "erreur" avec la valeur "L'utilisateur n'existe pas"
+      "Mot de passe ou email incorrect"
+    ); // Le corps de la réponse doit avoir une propriété "erreur" avec la valeur "Mot de passe ou email incorrect"
   });
 
   // des champs manquants devraient retourner une erreur
